@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <Client id="1" name="Cymo Tecnologia em Gestão"/>
+    <Client id="2" name="Cymo"/>
+    <Client id="3" name="Tecnologia"/>
+    <Client id="4" name="Gestão"/>
+    <Client id="5" name="EXISTE_ENTIDADE_COM_ESSE_NOME"/>
+    
+    <User_Group id="1" name="Superusuario"/>
+    <User_Group id="2" name="Cliente 1"/>
+    <User_Group id="3" name="Cliente 2"/>
+    <User_Group id="4" name="Cliente 3"/>
+    <User_Group id="5" name="EXISTE_ENTIDADE_COM_ESSE_NOME"/>
+    
+    <User id="1" name="Rafael Carvalhaes" username="rafaelpossas" password="1234" client_id="1" isEnabled="true" user_group_id="1"/>
+    <User id="2" name="André Nacácio" username="andrenacacio" password="1234" client_id="1" isEnabled="true" user_group_id="1"/>
+    <User id="3" name="André Sulivam" username="andresulivam" password="1234" client_id="1" isEnabled="true" user_group_id="1"/>
+    <User id="4" name="Ricardo Damasceno" username="ricardodamasceno" password="1234" client_id="1" isEnabled="true" user_group_id="1"/>
+    <User id="5" name="EXISTE_ENTIDADE_COM_ESSE_NOME" username="user" password="1234" client_id="1" isEnabled="true" user_group_id="2"/>
+    
+    <Category id="1" name="Bug"/>
+    <Category id="2" name="Dúvida"/>
+    <Category id="3" name="Serviço"/>
+    <Category id="4" name="Inovação"/>
+    <Category id="5" name="EXISTE_ENTIDADE_COM_ESSE_NOME"/>
+    
+    <Priority id="1" name="Baixa"/>
+    <Priority id="2" name="Média"/>
+    <Priority id="3" name="Alta"/>
+    <Priority id="4" name="Urgente"/>
+    <Priority id="5" name="EXISTE_ENTIDADE_COM_ESSE_NOME"/>
+
+
+    <Ticket id="1" title="Erro 1" description="Descricao 1 - OPEN" isopen="true" 
+            user_id="1" start_date="2014-10-10" end_date="2014-10-10" passos_para_reproducao="PASSO A PASSO" 
+            category_id="1" client_id="1" priority_id="1" estimate_time="2014-10-10" responsavel_id="1"/>
+    <Ticket id="2" title="Erro 2" description="Descricao 2 - CLOSED" isopen="true" 
+            user_id="1" start_date="2014-10-10" end_date="2014-10-10" passos_para_reproducao="PASSO A PASSO" 
+            category_id="1" client_id="1" priority_id="1" estimate_time="2014-10-10" responsavel_id="1"/>
+    <Ticket id="3" title="Erro 3" description="Descricao 3 - OPEN" isopen="true" 
+            user_id="1" start_date="2014-10-10" end_date="2014-10-10" passos_para_reproducao="PASSO A PASSO" 
+            category_id="2" client_id="1" priority_id="2" estimate_time="2014-10-10" responsavel_id="1"/>
+    <Ticket id="4" title="Erro 4" description="Descricao 4 - CLOSED" isopen="true" 
+            user_id="1" start_date="2014-10-10" end_date="2014-10-10" passos_para_reproducao="PASSO A PASSO" 
+            category_id="2" client_id="1" priority_id="2" estimate_time="2014-10-10" responsavel_id="1"/>
+    <Ticket id="5" title="EXISTE_ENTIDADE_COM_ESSE_NOME" description="EXISTE_ENTIDADE_COM_ESSE_NOME" isopen="true" 
+            user_id="1" start_date="2014-10-10" end_date="2014-10-10" passos_para_reproducao="EXISTE_ENTIDADE_COM_ESSE_NOME" 
+            category_id="2" client_id="1" priority_id="3" estimate_time="2014-10-10" responsavel_id="1"/>
+</dataset>

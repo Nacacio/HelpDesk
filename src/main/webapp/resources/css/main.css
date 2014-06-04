@@ -1,0 +1,543 @@
+/* Login Styles */
+.default_background{
+    background-color: #e0e0e0 !important;
+}
+.loginDockbar {
+    background-color: dimgray;
+    border-color: dimgray;
+}
+/*Fonts*/
+.font_color_white_small{
+    color: ghostwhite;
+    font-size: small;
+}
+.font_color_black_large{
+    color: #000000 ;
+    font-size: large;
+}
+.font_color_gray_bold_large{
+    color:#5d5d5d;
+    font-size: large;
+    font-weight: bold;
+}
+.font_style_header{
+    font-size: 14px;
+    font-weight: bold;
+    font-family:'Lucida Grande', Arial, Sans;
+}
+#titleHeader {
+    color:#000;
+    font-size:20px;
+    font-weight:bold;
+    font-family:'Lucida Grande', Arial, Sans;
+}
+/*Custom Buttons*/
+.tab-button{
+    display:inline-block;
+    text-align:center !important;
+    height:35px;
+    width:86px;
+    text-decoration:none !important;
+    color:#777777;
+    font-family:Arial !important;
+    font-size:12px !important;
+    font-weight:bold !important;
+    font-style:normal !important;
+    line-height:40px;
+    text-indent:0;
+    
+    
+    -moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+    -webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+    box-shadow:inset 0px 1px 0px 0px #ffffff;
+    background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #d1d1d1), color-stop(1, #dfdfdf) );
+    background:-moz-linear-gradient( center top, #d1d1d1 5%, #dfdfdf 100% );
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#d1d1d1', endColorstr='#dfdfdf');
+    background-color:#d1d1d1;
+    -webkit-border-top-left-radius:15px;
+    -moz-border-radius-topleft:15px;
+    border-top-left-radius:15px;
+    -webkit-border-top-right-radius:15px;
+    -moz-border-radius-topright:15px;
+    border-top-right-radius:15px;
+    -webkit-border-bottom-right-radius:0px;
+    -moz-border-radius-bottomright:0px;
+    border-bottom-right-radius:0px;
+    -webkit-border-bottom-left-radius:0px;
+    -moz-border-radius-bottomleft:0px;
+    border-bottom-left-radius:0px;
+    text-indent:0;
+    border:1px solid #d1d1d1;
+}
+.tab-button-pressed{
+    -moz-box-shadow:inset 0px 1px 0px 0px #97c4fe;
+    -webkit-box-shadow:inset 0px 1px 0px 0px #97c4fe;
+    box-shadow:inset 0px 1px 0px 0px #97c4fe;
+    background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #3d94f6), color-stop(1, #1e62d0) );
+    background:-moz-linear-gradient( center top, #3d94f6 5%, #1e62d0 100% );
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#3d94f6', endColorstr='#1e62d0');
+    background-color:#3d94f6;
+    -webkit-border-top-left-radius:15px;
+    -moz-border-radius-topleft:15px;
+    border-top-left-radius:15px;
+    -webkit-border-top-right-radius:15px;
+    -moz-border-radius-topright:15px;
+    border-top-right-radius:15px;
+    -webkit-border-bottom-right-radius:0px;
+    -moz-border-radius-bottomright:0px;
+    border-bottom-right-radius:0px;
+    -webkit-border-bottom-left-radius:0px;
+    -moz-border-radius-bottomleft:0px;
+    border-bottom-left-radius:0px;
+    border:1px solid #337fed;
+    color:#ffffff !important;
+    
+}
+.tab-button:hover {
+    background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #dfdfdf), color-stop(1, #d1d1d1) );
+    background:-moz-linear-gradient( center top, #dfdfdf 5%, #d1d1d1 100% );
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#dfdfdf', endColorstr='#d1d1d1');
+    background-color:#dfdfdf;
+    cursor: pointer;
+}
+.tab-button-pressed:hover {
+    background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #1e62d0), color-stop(1, #3d94f6) );
+    background:-moz-linear-gradient( center top, #1e62d0 5%, #3d94f6 100% );
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#1e62d0', endColorstr='#3d94f6');
+    background-color:#1e62d0;
+    cursor: pointer;
+}
+.blue_button {
+    background: #1b376c !important;
+    height: 30px;
+    padding: 2.5px 8px 2.5px 8px;
+    
+}
+.blue_button .x-btn-inner{
+    color: #ffffff !important;
+    font-size: 16px;
+    font-weight: bold;
+}
+.settings_sidemenu_button{
+    border-style: none !important;
+    background: transparent !important;
+    background-color: #e0e0e0 !important;
+    background-image: none !important;
+}
+.settings_sidemenu_button .x-btn-inner{
+    text-align: left !important;
+    font-size: 14px !important;
+}
+.settings_sidemenu_button:hover{
+    background-color: #d1d1d1 !important;
+    border-style: none !important;
+}
+
+.background-white-and-shadow{
+    background-color: #FFFFFF !important;
+    box-shadow:-5px 0px 4px #BBBBBB;
+}
+.background-white{
+    background-color: #FFFFFF !important;
+}
+
+.background-teste{
+    background-color: #1e62d0 !important;
+}
+
+
+.sidemenu-button{
+    display:inline-block;
+    text-align:center !important;
+    height:40px;
+    color:#000000;
+    font-family:Arial !important;
+    font-size:13px !important;
+    font-weight:bold !important;
+    font-style:normal !important;
+    line-height:40px;
+    text-indent:0; 
+    
+    border-style: solid none solid none;
+    border-width: 0.1em 0px 0.1em 0px;
+    border-color: #BBBBBB;    
+    margin-bottom: -0.1em;    
+    z-index: 9999;//para sobrepor o botão a todos os outros elementos
+
+    
+    
+}
+.sidemenu-button-pressed{
+    background:#FFFFFF;
+    color:#337fed !important;   
+}
+.sidemenu-button:hover {
+    background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #dfdfdf), color-stop(1, #d1d1d1) );
+    background:-moz-linear-gradient( center top, #dfdfdf 5%, #d1d1d1 100% );
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#dfdfdf', endColorstr='#d1d1d1');
+    background-color:#dfdfdf;
+    cursor: pointer;
+}
+.sidemenu-button-pressed:hover {
+    background:#FFFFFF !important;
+    color:#337fed !important;
+    cursor: pointer;
+}
+.grid-style-row .x-grid-cell-inner{
+    overflow: hidden;
+    padding: 10px;
+    white-space: nowrap;
+    font-size:13px !important;
+    
+}
+
+.grid-style-header .x-column-header-inner{
+    border-top: solid;
+    border-top-color: #BBBBBB;
+    border-width: 0.1em;
+    font-size:15px !important;
+    font-weight:bold !important;
+    overflow: hidden;
+    
+    white-space: nowrap;
+}
+
+.bold-words{
+    font-weight: bold;
+}
+
+.btn-save-changes{
+    background-color:#1e62d0;
+    text-align: center;
+    color: #ffffff;
+    height: 35px;
+    width: 70px;
+    font-size: 14px;
+    font-weight: bold;
+    padding-top: 10px;
+    
+    -webkit-border-top-left-radius:5px;
+    -moz-border-radius-topleft:5px;
+    border-top-left-radius:5px;
+    -webkit-border-top-right-radius:5px;
+    -moz-border-radius-topright:5px;
+    border-top-right-radius:5px;
+    -webkit-border-bottom-right-radius:5px;
+    -moz-border-radius-bottomright:5px;
+    border-bottom-right-radius:5px;
+    -webkit-border-bottom-left-radius:5px;
+    -moz-border-radius-bottomleft:5px;
+    border-bottom-left-radius:5px;    
+}
+
+.btn-save-changes:hover {
+    background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #1e62d0), color-stop(1, #3d94f6) );
+    background:-moz-linear-gradient( center top, #1e62d0 5%, #3d94f6 100% );
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#1e62d0', endColorstr='#3d94f6');
+    background-color:#1e62d0;
+    cursor: pointer;
+}
+
+.btn_new_ticket{
+    margin-bottom: 30px !important;
+    width: 275px !important;
+    height: 60px !important;
+}
+
+.btn_new_ticket .x-btn-inner {
+    font-size: 17px !important;
+    font-weight: bold !important;
+    font-family: Arial, Sans !important;
+} 
+
+.ticket-details-first-container{
+    background: #F7F7F7;
+    width: 767px;
+    height: 103px;
+    margin: 15px 0 20px 20px !important;
+}
+
+.ticket-details-first-container-ticketState{
+    color:#333;
+    font-size:14px;
+    width: 767px !important;
+    font-family: lsans,"Lucida Sans","Lucida Grande",Lucida,"Lucida Sans Unicode",sans-serif;
+    margin: 2px 2px 2px 2px !important;
+}
+
+.ticket-details-first-container-ticketName{
+    color:#333;
+    font-size:28px;
+    font-weight: bold;
+    width: 767px !important;
+    font-family: lsans,"Lucida Sans","Lucida Grande",Lucida,"Lucida Sans Unicode",sans-serif;
+    top: 30px !important;
+    margin: 2px 2px 2px 2px !important;
+}
+
+.ticket-details-first-container-ticketOwner{
+    color:#333;
+    font-size:14px;
+    top: 70px !important;
+    height: 103px;
+    width: 767px !important;
+    font-family: lsans,"Lucida Sans","Lucida Grande",Lucida,"Lucida Sans Unicode",sans-serif;
+    margin: 2px 2px 2px 2px !important;
+}
+
+.ticket-details-second-container{
+    border:1px solid #CCC;
+    padding-left:20px;
+    width: 767px;
+    height: 252px;
+    margin: 15px 0 20px 20px !important;
+}
+
+.title-new{
+    font-size:20px;    
+    font-weight: bold;
+    font-family: lsans,"Lucida Sans","Lucida Grande",Lucida,"Lucida Sans Unicode",sans-serif;
+}
+
+.new-label-title{
+    color:#000000 !important;
+    font-size:12px !important;
+    font-weight: bold !important;
+}
+
+.new-ticket-label{
+    color:#333 !important;
+    font-size:10px !important;
+    margin-bottom: 15px !important;
+}
+
+.new-ticket-label-click{
+    color:#333 !important;
+    font-size:10px !important;
+    text-decoration: underline;
+    margin-bottom: 15px !important;
+}
+
+.new-ticket-label-click:hover{
+    cursor: pointer !important;
+    border-style: none !important;
+    background: transparent !important;                      
+}
+
+.new-ticket-item{
+    margin-bottom: 15px !important;
+}
+
+.new-ticket-save-button{
+    background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #00aaea), color-stop(1, #007cdb) );
+    background:-moz-linear-gradient( center top, #00aaea) 5%, #007cdb 100% ;
+
+    border: 1px solid #007ed2;
+
+    -webkit-border-top-left-radius:5px;
+    -moz-border-radius-topleft:5px;
+    border-top-left-radius:5px;
+
+    -webkit-border-top-right-radius:5px;
+    -moz-border-radius-topright:5px;
+    border-top-right-radius:5px;
+
+    -webkit-border-bottom-right-radius:5px;
+    -moz-border-radius-bottomright:5px;
+    border-bottom-right-radius:5px;
+
+    -webkit-border-bottom-left-radius:5px;
+    -moz-border-radius-bottomleft:5px;
+    border-bottom-left-radius:5px;
+
+    text-align:center !important;
+    color:#FFF;
+    font-size:15px;    
+    font-family: lsans,"Lucida Sans","Lucida Grande",Lucida,"Lucida Sans Unicode",sans-serif;
+}
+
+.new-ticket-save-button:hover{
+    background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #0086c8), color-stop(1, #0052a5) );
+    background:-moz-linear-gradient( center top, #0086c8) 5%, #0052a5 100% ;
+
+    cursor: pointer;
+}
+
+.bold-words{
+    font-weight: bold;
+}
+
+.bordless-and-grey-background{
+    border: 0px transparent !important;
+    background-color: #F5F5F5;    
+}
+
+.grey-background{
+    border: 0.1em solid #DDD;    
+    background-color: #F5F5F5;    
+}
+
+.description-ticket{    
+    font-size: 15px
+}
+.description-ticket-bold{
+    font-weight: bold;
+    font-size: 15px
+}
+.panel-answer{
+    border: 0.1em solid #DDD;    
+}
+
+.panel-answer .x-panel-header-text-container{
+     font-size: 14px;
+}
+
+.panel-answer .x-panel-header{
+    background-image: none;
+    border:0;
+    background: #F5F5F5;
+}
+
+.panel-answer .x-panel-header:hover{
+    cursor: pointer;
+}
+
+
+.panel-answer .x-panel-body{
+    color: black;
+    background-color:#F5F5F5 ; 
+    font-size: 13px;
+    border: 0;
+    padding: 10px;
+    padding-left: 30px;
+    
+}
+.panel-answer .x-panel-header-horizontal-noborder {
+    padding: 10px 10px 10px 10px;
+}
+.panel-answer .x-panel-header-horizontal {
+   padding: 10px 10px 10px 10px;
+}
+
+.btn-ticket-details-edit{    
+    border:0;
+    padding:0;
+}
+
+.btn-ticket-details-edit .x-btn-inner{
+    background-color: #FFF;
+}
+
+.btn_anexar .x-btn-inner{
+    color: #000 !important;
+    font-size: 12px;
+    font-weight: bold;  
+}
+.bordless{
+    border: 0px transparent !important;
+}
+
+.bold-words{
+    font-weight: bold;
+}
+
+.bold-words-size15{
+    font-weight: bold;
+    font-size: 15;
+}
+.tickets-control-description{
+    background-color: #1e62d0;
+    color: #FFFFFF;
+    font-weight: bold;
+}
+.tickets-control-description-grid{
+    background-color: #DDD;
+    border: 0px transparent !important;
+}
+.dashbord-links-buttons{
+    border: 0px transparent !important;
+}
+.grid-style-header td > div:hover{
+    cursor:pointer;
+    text-decoration: underline;
+
+}
+.custom-grid .x-grid-row-over .x-grid-cell { 
+    background-color: #ff6; 
+    border-bottom-color: #999; 
+    border-bottom-style: dashed; 
+    border-top-color: #999; 
+    border-top-style: dashed; 
+}
+.x-livesearch-match {
+    font-weight: bold;
+    background-color: yellow;
+}
+.report-title{
+    font-size:17px;   
+    font-weight: bold;
+    margin-left: 15px !important;
+    color: #333;  
+    font-family: lsans,"Lucida Sans","Lucida Grande",Lucida,"Lucida Sans Unicode",sans-serif;
+}
+
+.rounded_frame {
+    border: 1px solid #CCCCCC;
+    border-bottom: 1px;
+    border-left: 1px;
+    border-top: 1px;
+
+
+    background-color: #FFFFFF;
+    color: #333 !important; 
+    font-weight: bold !important;
+    font-size: 14px !important;
+
+    font-family: lsans,"Lucida Sans","Lucida Grande",Lucida,"Lucida Sans Unicode",sans-serif !important;
+
+    border-top-left-radius: 5px;
+    -webkit-border-top-left-radius:5px;
+    -moz-border-radius-topleft:5px;
+
+    border-top-right-radius: 5px;
+    -webkit-border-top-right-radius: 5px;
+    -moz-border-radius-topright: 5px;/*
+
+    border-bottom-right-radius: 5px;
+    -webkit-border-bottom-right-radius: 5px;
+    -moz-border-radius-bottomright: 5px;
+
+    border-bottom-left-radius: 5px;
+    -webkit-border-bottom-left-radius: 5px;
+    -moz-border-radius-bottomleft: 5px;*/
+
+    width: 787px !important; 
+    margin-top: 15px !important;
+    margin-left: 10px !important;
+    /*    margin-bottom: 3px !important;*/
+}
+
+.font_size_graphic{
+    font-size: 8px !important;
+}
+
+.tooltip_graphic{
+    background-color: #FFFFFF;
+    font-family: lsans,"Lucida Sans","Lucida Grande",Lucida,"Lucida Sans Unicode",sans-serif !important;
+
+    border-top-left-radius: 5px;
+    -webkit-border-top-left-radius:5px;
+    -moz-border-radius-topleft:5px;
+
+    border-top-right-radius: 5px;
+    -webkit-border-top-right-radius: 5px;
+    -moz-border-radius-topright: 5px;
+
+    border-bottom-right-radius: 5px;
+    -webkit-border-bottom-right-radius: 5px;
+    -moz-border-radius-bottomright: 5px;
+
+    border-bottom-left-radius: 5px;
+    -webkit-border-bottom-left-radius: 5px;
+    -moz-border-radius-bottomleft: 5px;
+}

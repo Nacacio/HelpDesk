@@ -1,0 +1,128 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.br.helpdesk.controller;
+
+import com.br.helpdesk.model.User;
+import com.br.helpdesk.repository.CategoryRepository;
+import com.br.helpdesk.service.ReportsService;
+import java.io.UnsupportedEncodingException;
+import java.util.Date;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+/**
+ *
+ * @author rafaelpossas
+ */
+@Controller
+@RequestMapping("/reports")
+public class ReportsController {
+
+    @Autowired
+    private ReportsService reportsService;
+
+    /**
+     * @author andresulivam
+     * 
+     * Requisição do Json para o gráfico de evolução dos tickets por categoria.
+     * 
+     * @param user
+     * @param tickets
+     * @param dateFrom
+     * @param dateTo
+     * @param unit
+     * @param response
+     * @return
+     * @throws UnsupportedEncodingException 
+     */
+    @RequestMapping(value = "/getgraphiccategory/{user}", method = RequestMethod.GET, params = {"tickets", "dateFrom", "dateTo", "unit"})
+    public @ResponseBody
+    String getGraphicCategory(@PathVariable String user,
+            @RequestParam(value = "tickets") String tickets,
+            @RequestParam(value = "dateFrom") Date dateFrom,
+            @RequestParam(value = "dateTo") Date dateTo,
+            @RequestParam(value = "unit") String unit,
+            HttpServletResponse response) throws UnsupportedEncodingException {
+        return reportsService.getGraphic(user, tickets, dateFrom, dateTo, unit, false, response);
+    }
+
+    /**
+     * @author andresulivam
+     * 
+     * Requisição do JSON para os dados do combobox de consolidados por mês na tela de relatórios.
+     * @param response
+     * @return
+     * @throws UnsupportedEncodingException 
+     */
+    @RequestMapping(value = "/getfieldsconsolidatedpermonth", method = RequestMethod.GET)
+    public @ResponseBody
+    String getFieldsConsolidatedPerMonth(HttpServletResponse response) throws UnsupportedEncodingException {
+        return reportsService.getFieldsConsolidatedPerMonth(response);
+    }
+
+    /**
+     * @author andresulivam
+     * 
+     * Requisição do JSON para o datagrid de consolidados por mês por categoria.
+     * @param period
+     * @param response
+     * @return
+     * @throws UnsupportedEncodingException 
+     */
+    @RequestMapping(value = "/getgridconsolidatedpermonth", method = RequestMethod.GET, params = {"period"})
+    public @ResponseBody
+    String getGridConsolidatedPerMonth(@RequestParam(value = "period") String period, HttpServletResponse response) throws UnsupportedEncodingException {
+        return reportsService.getGridConsolidatedPerMonth(period, "category", response);
+    }
+    
+    /**
+     * @author andresulivam
+     * 
+     * Requisição do Json para o gráfico de evolução dos tickets por cliente.
+     * 
+     * @param user
+     * @param tickets
+     * @param dateFrom
+     * @param dateTo
+     * @param unit
+     * @param response
+     * @return
+     * @throws UnsupportedEncodingException 
+     */
+    @RequestMapping(value = "/getgraphicclient/{user}", method = RequestMethod.GET, params = {"tickets", "dateFrom", "dateTo", "unit"})
+    public @ResponseBody
+    String getGraphicClient(@PathVariable String user,
+            @RequestParam(value = "tickets") String tickets,
+            @RequestParam(value = "dateFrom") Date dateFrom,
+            @RequestParam(value = "dateTo") Date dateTo,
+            @RequestParam(value = "unit") String unit,
+            HttpServletResponse response) throws UnsupportedEncodingException {
+        return reportsService.getGraphic(user, tickets, dateFrom, dateTo, unit, true, response);
+    }
+
+    /**
+     * @author andresulivam
+     * 
+     * Requisição do JSON para o datagrid de consolidados por mês por cliente.
+     * @param period
+     * @param response
+     * @return
+     * @throws UnsupportedEncodingException 
+     */
+    @RequestMapping(value = "/getgridconsolidatedpermonthclient", method = RequestMethod.GET, params = {"period"})
+    public @ResponseBody
+    String getGridConsolidatedPerMonthClient(@RequestParam(value = "period") String period, HttpServletResponse response) throws UnsupportedEncodingException {
+        return reportsService.getGridConsolidatedPerMonth(period, "client", response);
+    }
+
+}

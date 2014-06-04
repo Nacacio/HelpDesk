@@ -1,0 +1,128 @@
+.pt_BR {
+    background-image:url('../img/pt_BR.png') !important;
+}
+.en{
+    background-image:url('../img/en.png') !important;
+}
+
+.es {
+    background-image:url('../img/es.png') !important;
+}
+.key {
+    background-image:url('../img/login_24.png') !important;
+}
+.submit_16{
+    background-image:url('../img/submit_16.png') !important;
+}
+.profile_16{
+    background-image:url('../img/profile_16.png') !important
+}
+.profile_32{
+    background-image:url('../img/profile_32.png') !important
+}
+.logout_16{
+    background-image:url('../img/logout_16.png') !important
+}
+.close_32{
+    background-image:url('../img/close_32.png') !important
+}
+.menu_16{
+    background-image:url('../img/menu_16.png') !important
+}
+.home_16{
+    background-image:url('../img/home_16.png') !important
+}
+.config_16{
+    background-image:url('../img/config_16.png') !important
+}
+.users_32{
+    background-image:url('../img/users_32.png') !important
+}
+.ticket_32{
+    background-image:url('../img/ticket_32.png') !important
+}
+.add_16{
+    background-image:url('../img/add_16.png') !important
+}
+.add_24{
+    background-image:url('../img/add_24.png') !important
+}
+.add_32{
+    background-image:url('../img/add_32.png') !important
+}
+.delete_16{
+    background-image:url('../img/delete_16.png') !important
+}
+.delete_24{
+    background-image:url('../img/delete_24.png') !important
+}
+.delete_32{
+    background-image:url('../img/delete_32.png') !important
+}
+.edit_16{
+    background-image:url('../img/edit_16.png') !important
+}
+.edit_24{
+    background-image:url('../img/edit_24.png') !important
+}
+.edit_32{
+    background-image:url('../img/edit_32.png') !important
+}
+.search_16{
+    background-image:url('../img/search_16.png') !important
+}
+.search_24{
+    background-image:url('../img/search_24.png') !important
+}
+.search_32{
+    background-image:url('../img/search_32.png') !important
+}
+.save_16{
+    background-image:url('../img/save_16.png') !important
+}
+.save_24{
+    background-image:url('../img/save_24.png') !important
+}
+.save_32{
+    background-image:url('../img/save_32.png') !important
+}
+.cancel_16{
+    background-image:url('../img/cancel_16.png') !important
+}
+.cancel_24{
+    background-image:url('../img/cancel_24.png') !important
+}
+.cancel_32{
+    background-image:url('../img/cancel_32.png') !important
+}
+.capslock{
+    background:url('../img/warning_24.png') no-repeat center left;
+    padding:2px;
+    padding-left:20px;
+    font-weight:700;
+}
+.logout_24 {
+    background-image:url('../img/logout_24.png') !important;
+}
+
+.plus_icon_24 {
+    background-image:url('../img/plus_icon_24.png') !important;
+    width: 24px !important;
+    height: 24px !important;
+    margin: 15px;
+}
+.edit_ticket {
+    background-image:url('../img/edit.png') !important;
+}
+
+.open_folder_24 {
+    background-image:url('../img/open_folder_24.png') !important;
+}
+
+.open_folder_16 {
+    background-image:url('../img/open_folder_16.png') !important;
+}
+
+.clip {
+    background-image:url('../img/icone_clip.png') !important;
+}
