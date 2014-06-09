@@ -128,6 +128,13 @@ public class Ticket {
     public String getTitle() {
         return title;
     }
+    public String getStepsTicket() {
+        return stepsTicket;
+    }
+
+    public void setStepsTicket(String stepsTicket) {
+        this.stepsTicket = stepsTicket;
+    }
     public User getResponsavel() {
         return responsavel;
     }

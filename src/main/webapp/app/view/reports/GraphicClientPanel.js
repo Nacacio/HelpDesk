@@ -10,7 +10,7 @@ Ext.define('Helpdesk.view.reports.GraphicClientPanel', {
     autoScroll: true,
     requires: ['Helpdesk.view.reports.GraphicClient',
         'Helpdesk.view.reports.FormGraphicClient',
-        'Helpdesk.view.reports.FormConsolidatedPerMonthClient',
+        'Helpdesk.view.reports.FormConsolidatedPerMonth',
         'Helpdesk.view.reports.GridConsolidatedPerMonthClient'],
     renderTo: Ext.getBody(),
     layout: {
@@ -39,14 +39,12 @@ Ext.define('Helpdesk.view.reports.GraphicClientPanel', {
             cls: 'rounded_frame',
             title: translations.CONSOLIDATED_PER_MONTH,
             id: 'panelConsolidatedPerMonthClient',
-            height: 1150,
             layout: {
                 type: 'vbox'
             },
             items: [
                 {
-                    id: 'formConsolidatedPerMonthClient',
-                    xtype: 'formconsolidatedpermonthclient'
+                    xtype: 'formconsolidatedpermonth'
                 },
                 {
                     xtype: 'container',
@@ -66,16 +64,16 @@ Ext.define('Helpdesk.view.reports.GraphicClientPanel', {
         {
             xtype: 'panel',
             cls: 'rounded_frame',
-            id: 'panelHightLitghtCurrentClient',
+            id: 'panelHighLightCurrentClient',
             title: translations.HIGHLIGHT_CURRENT,
-            height: 250,
             layout: {
                 type: 'vbox'
             },
             items: [
                 {
                     xtype: 'container',
-                    id: 'containerHightligthCurrentClient',
+                    cls: 'highlightcurrent_panel',
+                    id: 'containerHighlightCurrentClient',
                     layout: {
                         type: 'vbox'
                     }

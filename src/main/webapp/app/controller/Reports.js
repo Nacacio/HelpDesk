@@ -12,6 +12,8 @@
 Ext.define('Helpdesk.controller.Reports', {
     extend: 'Ext.app.Controller',
     views: ['reports.Reports',
+        'Helpdesk.view.reports.GraphicCategoryPanel',
+        'Helpdesk.view.reports.GraphicClientPanel',
         'Helpdesk.view.reports.FormGraphicCategory',
         'Helpdesk.view.reports.FormPanelUser',
         'Helpdesk.view.reports.FormConsolidatedPerMonth'],
@@ -25,10 +27,10 @@ Ext.define('Helpdesk.controller.Reports', {
             'formgraphiccategory button#btnFind': {
                 click: this.getGraphicCategory
             },
-            'formconsolidatedpermonth button#see': {
+            'graphiccategorypanel formconsolidatedpermonth button': {
                 click: this.getGridConsolidatedPerMonth
             },
-            'formconsolidatedpermonthclient button#seeClient': {
+            'graphicclientpanel formconsolidatedpermonth button': {
                 click: this.getGridConsolidatedPerMonthClient
             },
             'formgraphicclient button#btnFindClient': {
@@ -43,6 +45,10 @@ Ext.define('Helpdesk.controller.Reports', {
         {
             ref: 'cardPanel',
             selector: 'viewport > container#maincardpanel'
+        },
+        {
+            ref: 'mainHeader',
+            selector: 'viewport mainheader'
         },
         {
             ref: 'reportsCardContainer',
@@ -67,6 +73,10 @@ Ext.define('Helpdesk.controller.Reports', {
         {
             ref: 'graphicClientPanel',
             selector: 'reports > #reportscardpanel > reportsbyclient > graphicclientpanel'
+        },
+        {
+            ref: 'mainHeaderSettings',
+            selector: '#settings'
         }
     ],
     index: function() {
@@ -74,6 +84,11 @@ Ext.define('Helpdesk.controller.Reports', {
         this.getReportsCardPanel().getLayout().setActiveItem(Helpdesk.Globals.reports_category_view);
         this.formatConsolidatedPerMonth();
         this.formatFormsGraphicCategory();
+        this.formatHighlightCurrent();
+
+        var mainHeader = this.getMainHeader();
+        var btnReports = mainHeader.down("#reports");
+        btnReports.toggle(true);
     },
     /**
      * @author andresulivam
@@ -118,7 +133,6 @@ Ext.define('Helpdesk.controller.Reports', {
     formatFormsGraphicCategory: function() {
         this.getGraphicCategory();
         this.getGridConsolidatedPerMonth();
-
     },
     /**
      * @author andresulivam
@@ -136,7 +150,7 @@ Ext.define('Helpdesk.controller.Reports', {
      * Formatar tela de relatórios de clientes. Formata gráfico e datagrid. 
      * @returns {undefined}
      */
-    formatFormsGraphicClient: function() {        
+    formatFormsGraphicClient: function() {
         this.getGraphicClient();
         this.getGridConsolidatedPerMonthClient();
     },
@@ -156,13 +170,13 @@ Ext.define('Helpdesk.controller.Reports', {
 
         // ------------ Referencia para os combobox que usarão os campos do Json de resposta. ----------        
         var panelCategory = graphicCategoryPanel.items.get('panelConsolidatedPerMonth');
-        var cmbBoxMonthCategory = panelCategory.down('#formConsolidatedPerMonth').down('#cmbMonth');
+        var cmbBoxMonthCategory = panelCategory.down('formconsolidatedpermonth').down('combobox');
 
         var panelUser = graphicUserPanel.items.get('panelConsolidatedPerMonthUser');
-        var cmbBoxMonthUser = panelUser.down('#formConsolidatedPerMonthUser').down('#cmbMonthUser');
+        var cmbBoxMonthUser = panelUser.down('formconsolidatedpermonth').down('combobox');
 
         var panelClient = graphicClientPanel.items.get('panelConsolidatedPerMonthClient');
-        var cmbBoxMonthClient = panelClient.down('#formConsolidatedPerMonthClient').down('#cmbMonthClient');
+        var cmbBoxMonthClient = panelClient.down('formconsolidatedpermonth').down('combobox');
         //---------------------------------------------------------------------------------------------
 
         // Formatando label que aparecerá para o usuário no combobox.
@@ -260,7 +274,6 @@ Ext.define('Helpdesk.controller.Reports', {
                 reportsGraphic = graphicPanel.down('graphicclient');
             }
 
-
             var data = jsonObj[0];
             var fields;
             fields = Object.keys(data);
@@ -279,16 +292,18 @@ Ext.define('Helpdesk.controller.Reports', {
                         radius: 7
                     },
                     axis: 'left',
-                    title: fields[i],
+                    title: translations[fields[i]],
                     xField: 'date',
                     yField: fields[i],
                     tips: {
                         trackMouse: true,
-                        width: 80,
-                        height: 40,
+                        width: 120,
+                        height: 80,
                         cls: 'tooltip_graphic',
                         renderer: function(storeItem, item) {
-                            this.setTitle(storeItem.get('date') + '<br />' + fields[i] + '<br />' + storeItem.get([fields[i]]));
+                           // console.log(date);
+                           // console.log(this.yField);
+                           // this.setTitle(storeItem.get('date') + '<br />' + fields[i - 1] + '<br />' + storeItem.get('fields[i]'));
                         }
                     },
                     markerConfig: {
@@ -308,8 +323,8 @@ Ext.define('Helpdesk.controller.Reports', {
 
             reportsGraphic.getStore().loadData([], false);
 
-            for (var i = 0; i < jsonObj.length; i++) {
-                var record = Ext.ModelManager.create(jsonObj[i], 'DynamicModel');
+            for (var j = 0; j < jsonObj.length; j++) {
+                var record = Ext.ModelManager.create(jsonObj[j], 'DynamicModel');
                 reportsGraphic.getStore().add(record);
             }
 
@@ -325,7 +340,9 @@ Ext.define('Helpdesk.controller.Reports', {
     getGridConsolidatedPerMonth: function() {
         var graphicCategoryPanel = this.getGraphicCategoryPanel();
         var panel = graphicCategoryPanel.items.get('panelConsolidatedPerMonth');
-        var cmbBoxMonth = panel.down('#formConsolidatedPerMonth').down('#cmbMonth');
+        var cmbBoxMonth = panel.down('formconsolidatedpermonth').down('combobox');
+        var grid = panel.down('gridconsolidatedpermonth');
+        grid.setLoading();
         var period = cmbBoxMonth.getValue();
 
         if (period === null) {
@@ -381,6 +398,9 @@ Ext.define('Helpdesk.controller.Reports', {
         var openTo = 0;
         name = translations.TOTAL;
         for (var i = 0; i < jsonObj.length; i++) {
+            if (type === 'category') {
+                jsonObj[i].name = translations[jsonObj[i].name];
+            }
             var record = Ext.ModelManager.create(jsonObj[i], 'DynamicModel');
             grid.getStore().add(record);
             // calculando a soma dos tickets para após o loop completo, criar o objeto com os valores totais de tickets nas categorias.
@@ -400,6 +420,7 @@ Ext.define('Helpdesk.controller.Reports', {
         total.data.openTo = openTo;
 
         grid.getStore().add(total);
+        grid.setLoading(false);
     },
     /**
      * @author andresulivam
@@ -408,6 +429,139 @@ Ext.define('Helpdesk.controller.Reports', {
      * @returns {undefined}
      */
     formatHighlightCurrent: function() {
+        var reportsStore = this.getReportsStore();
+
+        reportsStore.getHighlightCurrentCategory(this.callbackHighlightCurrentCategory, this);
+        reportsStore.getHighlightCurrentClient(this.callbackHighlightCurrentClient, this);
+    },
+    callbackHighlightCurrentCategory: function(result) {
+        this.formatHighlightCurrentByScreen(result, 'category');
+    },
+    callbackHighlightCurrentClient: function(result) {
+        this.formatHighlightCurrentByScreen(result, 'client');
+    },
+    formatHighlightCurrentByScreen: function(result, type) {
+        var jsonObj = $.parseJSON('[' + result + ']');
+        var panel;
+        var highlightCurrent;
+        var container;
+        var text;
+        var value;
+        var label;
+        var containerTemp;
+        if (type === 'client') {
+            panel = this.getGraphicClientPanel();
+            highlightCurrent = panel.down('#panelHighLightCurrentClient');
+            container = highlightCurrent.down('#containerHighlightCurrentClient');
+            for (var i = 0; i < jsonObj.length; i++) {
+                value = jsonObj[i].value;
+                text = jsonObj[i].text.split(":");
+                containerTemp = {
+                    xtype: 'container',
+                    layout: {
+                        type: 'hbox',
+                        align: 'stretch'
+                    },
+                    style: {
+                        'padding-bottom': '5px'
+                    },
+                    items: [
+                        {
+                            xtype: 'label',
+                            text: value,
+                            style: {
+                                'font-weight': 'bold'
+                            },
+                            margin: 2
+                        },
+                        {
+                            xtype: 'label',
+                            text: translations[text[0]],
+                            margin: 2
+                        },
+                        {
+                            xtype: 'label',
+                            text: text[1],
+                            style: {
+                                'font-weight': 'bold'
+                            },
+                            margin: 2
+                        }
+                    ]
+                };
+                container.add(containerTemp);
+            }
+        } else if (type === 'category') {
+            panel = this.getGraphicCategoryPanel();
+            highlightCurrent = panel.down('#panelHighLightCurrent');
+            container = highlightCurrent.down('#containerHighlightCurrent');
+            for (var i = 0; i < jsonObj.length; i++) {
+                value = jsonObj[i].value + ' ';
+                text = jsonObj[i].text.split(":");
+                if (i !== 0) {
+                    containerTemp = {
+                        xtype: 'container',
+                        layout: {
+                            type: 'hbox',
+                            align: 'stretch'
+                        },
+                        style: {
+                            'padding-bottom': '5px'
+                        },
+                        items: [
+                            {
+                                xtype: 'label',
+                                text: value,
+                                style: {
+                                    'font-weight': 'bold'
+                                },
+                                margin: 2
+                            },
+                            {
+                                xtype: 'label',
+                                text: translations[text[0]],
+                                margin: 2
+                            },
+                            {
+                                xtype: 'label',
+                                style: {
+                                    'font-weight': 'bold'
+                                },
+                                text: translations[text[1]],
+                                margin: 2
+                            }
+                        ]
+                    };
+                } else if (i === 0) {
+                    containerTemp = {
+                        xtype: 'container',
+                        style: {
+                            'padding-bottom': '5px'
+                        },
+                        layout: {
+                            type: 'hbox',
+                            align: 'stretch'
+                        },
+                        items: [
+                            {
+                                xtype: 'label',
+                                text: value,
+                                style: {
+                                    'font-weight': 'bold'
+                                },
+                                margin: 2
+                            },
+                            {
+                                xtype: 'label',
+                                text: translations[text[0]],
+                                margin: 2
+                            }
+                        ]
+                    };
+                }
+                container.add(containerTemp);
+            }
+        }
 
     },
     /**
@@ -420,7 +574,7 @@ Ext.define('Helpdesk.controller.Reports', {
         var graphicUserPanel = this.getGraphicUserPanel();
         var panel = graphicUserPanel.down('#formPanelUser');
         var cmbBox = panel.down('usercombobox');
-        
+
         console.log(cmbBox);
 //      reportsStore.getGraphicCategory(this.callbackGraphicCategory, Helpdesk.Globals.user, this, tickets, dateFieldFrom.value, dateFieldTo.value, unit);
     },
@@ -465,8 +619,10 @@ Ext.define('Helpdesk.controller.Reports', {
     getGridConsolidatedPerMonthClient: function() {
         var graphicClientPanel = this.getGraphicClientPanel();
         var panel = graphicClientPanel.items.get('panelConsolidatedPerMonthClient');
-        var cmbBoxMonth = panel.down('#formConsolidatedPerMonthClient').down('#cmbMonthClient');
+        var cmbBoxMonth = panel.down('formconsolidatedpermonth').down('combobox');
+        var grid = panel.down('gridconsolidatedpermonthclient');
         var period = cmbBoxMonth.getValue();
+        grid.setLoading();
 
         if (period === null) {
             period = "";

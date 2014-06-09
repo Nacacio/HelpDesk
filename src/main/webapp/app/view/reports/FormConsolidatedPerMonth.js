@@ -18,12 +18,10 @@ Ext.define('Helpdesk.view.reports.FormConsolidatedPerMonth', {
             width: 300,
             valueField: 'name',
             displayField: 'value',
-            queryMode: 'local',
-            id: 'cmbMonth'
+            queryMode: 'local'
         },
         {
             xtype: 'button',
-            id: 'see',
             margin: 6,
             height: 20,
             text: translations.SEE

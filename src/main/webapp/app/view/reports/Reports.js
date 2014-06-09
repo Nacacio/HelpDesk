@@ -31,7 +31,7 @@ Ext.define('Helpdesk.view.reports.Reports', {
             layout: 'card',
             itemId: 'reportscardpanel',
             defaults: {
-                padding: 10,
+                padding: '20 0 50 10',
                 cls: 'background-white-and-shadow'
             },
             items: [

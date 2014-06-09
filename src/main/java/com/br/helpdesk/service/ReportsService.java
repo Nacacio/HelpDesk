@@ -6,6 +6,7 @@ import com.br.helpdesk.model.Client;
 import com.br.helpdesk.model.ClientContainer;
 import com.br.helpdesk.model.ConsolidatedPerMonthContainer;
 import com.br.helpdesk.model.GraphicContainer;
+import com.br.helpdesk.model.HighlightCurrentContainer;
 import com.br.helpdesk.model.MonthContainer;
 import com.br.helpdesk.model.Ticket;
 import com.br.helpdesk.model.User;
@@ -600,6 +601,104 @@ public class ReportsService {
                     + "\",\"openFrom\":\"" + list.get(i).getOpenFrom()
                     + "\",\"openTo\":\"" + list.get(i).getOpenTo() + "\"}";
         }
+        return resultado;
+    }
+    
+    /**
+     * @author andresulivam
+     *
+     * Gera JSON para os destaques atuais na tela de relatórios de categoria.
+     *
+     * @return
+     */
+    public String getHighlightCurrentCategory() {
+        String resultado = "";
+        List<Category> listCategory = (List) categoryService.findAll();
+        List<Ticket> listTicket = ticketService.findByIsOpen(true);
+        List<HighlightCurrentContainer> list = new ArrayList<HighlightCurrentContainer>();
+        HighlightCurrentContainer highLightTemp;
+
+        highLightTemp = new HighlightCurrentContainer();
+        highLightTemp.setValue(listCategory.size());
+        highLightTemp.setText("HABILITADED_CATEGORIES");
+        list.add(highLightTemp);
+
+        int cont = 0;
+
+        for (Category temp : listCategory) {
+            for (Ticket ticketTemp : listTicket) {
+                if (ticketTemp.getCategory().getId().equals(temp.getId())) {
+                    cont++;
+                }
+            }
+            if (cont > 0) {
+                highLightTemp = new HighlightCurrentContainer();
+                highLightTemp.setValue(cont);
+                highLightTemp.setText("IN_CATEGORY:" + temp.getName());
+                list.add(highLightTemp);
+            }
+            cont = 0;
+        }
+        resultado = getJsonHighlightCurrent(list);
+        return resultado;
+    }
+
+    /**
+     * @author andresulivam
+     *
+     * Converte list no JSON para destaques atuais.
+     * @param list
+     * @return
+     */
+    public String getJsonHighlightCurrent(List<HighlightCurrentContainer> list) {
+        String resultado = "";
+
+        for (int i = 0; i < list.size(); i++) {
+            if (i != 0) {
+                resultado += ",";
+            }
+            resultado += "{\"value\":\"" + list.get(i).getValue()
+                    + "\",\"text\":\"" + list.get(i).getText() + "\"}";
+        }
+        return resultado;
+    }
+
+    /**
+     * @author andresulivam
+     *
+     * Gera JSON para os destaques atuais na tela de relatórios de clientes.
+     *
+     * @return
+     */
+    public String getHighlightCurrentClient() {
+        String resultado = "";
+        List<Client> listClient = (List) clientService.findAll();
+        List<Ticket> listTicket = ticketService.findByIsOpen(true);
+        List<HighlightCurrentContainer> list = new ArrayList<HighlightCurrentContainer>();
+        HighlightCurrentContainer highLightTemp;
+
+        highLightTemp = new HighlightCurrentContainer();
+        highLightTemp.setValue(listClient.size());
+        highLightTemp.setText("REGISTERED_CLIENTS");
+        list.add(highLightTemp);
+
+        int cont = 0;
+
+        for (Client temp : listClient) {
+            for (Ticket ticketTemp : listTicket) {
+                if (ticketTemp.getClient().getId().equals(temp.getId())) {
+                    cont++;
+                }
+            }
+            if (cont > 0) {
+                highLightTemp = new HighlightCurrentContainer();
+                highLightTemp.setValue(cont);
+                highLightTemp.setText("TICKETS_OPEN_OF_CLIENT:" + temp.getName());
+                list.add(highLightTemp);
+            }
+            cont = 0;
+        }
+        resultado = getJsonHighlightCurrent(list);
         return resultado;
     }
 

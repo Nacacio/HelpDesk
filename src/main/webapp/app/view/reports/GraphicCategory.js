@@ -7,7 +7,6 @@ Ext.define('Helpdesk.view.reports.GraphicCategory', {
     extend: 'Ext.chart.Chart',
     style: 'background:#fff',
     alias: 'widget.graphiccategory',
-    renderTo: Ext.getBody(),
     requires: [
         'Ext.fx.target.Sprite',
         'Ext.layout.container.Fit',
@@ -24,7 +23,7 @@ Ext.define('Helpdesk.view.reports.GraphicCategory', {
             this.setLoading(false);
         }
     },
-    height: 440,
+    height: 500,
     width: 770,
     animate: true,
     shadow: true,
@@ -37,15 +36,20 @@ Ext.define('Helpdesk.view.reports.GraphicCategory', {
             type: 'Numeric',
             minimum: 0,
             position: 'left',
-            baseCls: 'font_size_graphic',
-            title: translations.QUANTITY_OF_CREATED_TICKETS,
+            setTitle: translations.QUANTITY_OF_CREATED_TICKETS,
             minorTickSteps: 1,
             grid: true
-        }, {
+        }, 
+        {
             id: 'axeCategory',
-            type: 'Category',
+            type: 'Time',
+            dateFormat: 'M d',
+            minorTickSteps: 1,
             position: 'bottom',
-            fields: ['date']
-//            grid: true
-        }]
+            fields: ['date'],
+            label   : {
+             rotation:{degrees:290}
+            }
+        }
+    ]
 });

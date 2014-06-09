@@ -34,9 +34,6 @@ Ext.define('Helpdesk.view.reports.ReportsSideMenu', {
         {                    
             itemId:'buttonExportData',
             text: translations.EXPORT_DATA
-        },
-        {
-            xtype: 'tbfill'  
         }
     ]
 });

@@ -67,6 +67,10 @@ Ext.define('Helpdesk.controller.Ticket', {
             selector: 'viewport > container#maincardpanel'
         },
         {
+            ref: 'mainHeader',
+            selector: 'viewport mainheader'
+        },
+        {
             ref: 'ticketPanel',
             selector: 'ticket #ticketgrid'
         },
@@ -97,6 +101,9 @@ Ext.define('Helpdesk.controller.Ticket', {
         else{
             this.setSideMenuButtonText();
         }
+        var mainHeader = this.getMainHeader();
+        var btnTicket = mainHeader.down("#ticket");
+        btnTicket.toggle(true);
     },
     
     /**
