@@ -48,8 +48,8 @@ public class Ticket {
     private String title;
     
     @Lob
-    @Column(name="PASSOS_PARA_REPRODUCAO")
-    private String passosParaReproducao;
+    @Column(name="STEPS_TICKET")
+    private String stepsTicket;
 
     @ManyToOne
     @JoinColumn(name="RESPONSAVEL_ID",nullable = true)
@@ -128,9 +128,13 @@ public class Ticket {
     public String getTitle() {
         return title;
     }
+    
+    public String getStepsTicket() {
+        return stepsTicket;
+    }
 
-    public String getPassosParaReproducao() {
-        return passosParaReproducao;
+    public void setStepsTicket(String stepsTicket) {
+        this.stepsTicket = stepsTicket;
     }
 
     public User getResponsavel() {
@@ -163,10 +167,6 @@ public class Ticket {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public void setPassosParaReproducao(String passosParaReproducao) {
-        this.passosParaReproducao = passosParaReproducao;
     }
 
     public void setResponsavel(User responsavel) {

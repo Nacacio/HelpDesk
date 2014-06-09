@@ -487,7 +487,6 @@
     border-left: 1px;
     border-top: 1px;
 
-
     background-color: #FFFFFF;
     color: #333 !important; 
     font-weight: bold !important;
@@ -501,9 +500,9 @@
 
     border-top-right-radius: 5px;
     -webkit-border-top-right-radius: 5px;
-    -moz-border-radius-topright: 5px;/*
-
-    border-bottom-right-radius: 5px;
+    -moz-border-radius-topright: 5px;
+    
+    /*border-bottom-right-radius: 5px;
     -webkit-border-bottom-right-radius: 5px;
     -moz-border-radius-bottomright: 5px;
 
@@ -514,11 +513,11 @@
     width: 787px !important; 
     margin-top: 15px !important;
     margin-left: 10px !important;
-    /*    margin-bottom: 3px !important;*/
+    margin-bottom: 3px !important;
 }
 
 .font_size_graphic{
-    font-size: 8px !important;
+    font-size: 4px !important;
 }
 
 .tooltip_graphic{
@@ -540,4 +539,14 @@
     border-bottom-left-radius: 5px;
     -webkit-border-bottom-left-radius: 5px;
     -moz-border-radius-bottomleft: 5px;
+}
+
+.highlightcurrent_panel{
+    color: #333;
+    padding-top: 15px !important;
+    padding-left: 20px !important;
+    padding-bottom: 10px !important;
+    margin: 6px;
+    font-size: 14px;
+    font-weight: normal;
 }

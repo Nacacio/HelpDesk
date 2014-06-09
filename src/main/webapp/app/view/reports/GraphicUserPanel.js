@@ -12,7 +12,7 @@ Ext.define('Helpdesk.view.reports.GraphicUserPanel', {
         'Helpdesk.view.reports.FormPanelUser',
         'Helpdesk.view.reports.FormGraphicUser',
         'Helpdesk.view.reports.GridConsolidatedPerMonthUser',
-        'Helpdesk.view.reports.FormConsolidatedPerMonthUser'],
+        'Helpdesk.view.reports.FormConsolidatedPerMonth'],
     renderTo: Ext.getBody(),
     layout: {
         type: 'vbox',
@@ -21,7 +21,6 @@ Ext.define('Helpdesk.view.reports.GraphicUserPanel', {
     items: [
         {
             xtype: 'label',
-            padding: '9 5 5 5',
             text: translations.SELECT_A_USER
         },
         {
@@ -62,8 +61,7 @@ Ext.define('Helpdesk.view.reports.GraphicUserPanel', {
             },
             items: [
                 {
-                    id: 'formConsolidatedPerMonthUser',
-                    xtype: 'formconsolidatedpermonthuser'
+                    xtype: 'formconsolidatedpermonth'
                 },
                 {
                     xtype: 'container',

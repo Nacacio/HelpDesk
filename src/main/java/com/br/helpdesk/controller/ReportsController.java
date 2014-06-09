@@ -124,5 +124,35 @@ public class ReportsController {
     String getGridConsolidatedPerMonthClient(@RequestParam(value = "period") String period, HttpServletResponse response) throws UnsupportedEncodingException {
         return reportsService.getGridConsolidatedPerMonth(period, "client", response);
     }
+    
+        /**
+     * @author andresulivam
+     *
+     * Requisição do JSON para a tela de destaques atuais na tela de relatórios
+     * de categoria.
+     *
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/gethighlightcurrentcategory", method = RequestMethod.GET)
+    public @ResponseBody
+    String getHighlightCurrentCategory(HttpServletResponse response) {
+        return reportsService.getHighlightCurrentCategory();
+    }
+
+    /**
+     * @author andresulivam
+     *
+     * Requisição do JSON para a tela de destaques atuais na tela de relatórios
+     * de clientes.
+     *
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/gethighlightcurrentclient", method = RequestMethod.GET)
+    public @ResponseBody
+    String getHighlightCurrentClient(HttpServletResponse response) {
+        return reportsService.getHighlightCurrentClient();
+    }
 
 }

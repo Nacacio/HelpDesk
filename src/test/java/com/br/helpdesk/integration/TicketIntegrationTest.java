@@ -278,7 +278,7 @@ public class TicketIntegrationTest {
         newTicket.setClient(client);
         newTicket.setUser(user);
         
-        newTicket.setPassosParaReproducao("Passos para Reprodução");
+        newTicket.setStepsTicket("Passos para Reprodução");
         newTicket.setDescription("Description");
         newTicket.setTitle("Assunto");
         

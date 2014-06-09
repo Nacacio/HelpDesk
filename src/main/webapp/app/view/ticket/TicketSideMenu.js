@@ -20,23 +20,20 @@ Ext.define('Helpdesk.view.ticket.TicketSideMenu', {
     },
      items: [       
         {                    
-            itemId:'buttonTodos'
+            itemId:'buttonAll'
         },
         {                    
-            itemId:'buttonMeusTickets'
+            itemId:'buttonMyTickets'
         },
         {                    
-            itemId:'buttonSemResponsavel'
+            itemId:'buttonWithoutResponsible'
         },
         {                    
-            itemId:'buttonEmAndamento',
+            itemId:'buttonOpened',
             pressed: true
         },
         {                   
-            itemId:'buttonFechado'
-        },
-        {
-            xtype: 'tbfill'  
+            itemId:'buttonClosed'
         }
     ]
 });

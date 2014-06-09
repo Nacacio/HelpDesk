@@ -12,7 +12,6 @@ Ext.define('Helpdesk.view.reports.GraphicCategoryPanel', {
         'Helpdesk.view.reports.FormGraphicCategory',
         'Helpdesk.view.reports.FormConsolidatedPerMonth',
         'Helpdesk.view.reports.GridConsolidatedPerMonth'],
-    renderTo: Ext.getBody(),
     layout: {
         type: 'vbox',
         align: 'stretch'
@@ -29,7 +28,6 @@ Ext.define('Helpdesk.view.reports.GraphicCategoryPanel', {
                     xtype: 'formgraphiccategory'
                 },
                 {
-                    renderTo: Ext.getBody(),
                     xtype: 'graphiccategory'
                 }
             ]
@@ -39,13 +37,11 @@ Ext.define('Helpdesk.view.reports.GraphicCategoryPanel', {
             cls: 'rounded_frame',
             title: translations.CONSOLIDATED_PER_MONTH,
             id: 'panelConsolidatedPerMonth',
-            height: 320,
             layout: {
                 type: 'vbox'
             },
             items: [
                 {
-                    id: 'formConsolidatedPerMonth',
                     xtype: 'formconsolidatedpermonth'
                 },
                 {
@@ -66,20 +62,19 @@ Ext.define('Helpdesk.view.reports.GraphicCategoryPanel', {
         {
             xtype: 'panel',
             cls: 'rounded_frame',
-            id: 'panelHightLitghtCurrent',
+            id: 'panelHighLightCurrent',
             title: translations.HIGHLIGHT_CURRENT,
-            height: 250,
             layout: {
                 type: 'vbox'
             },
             items: [
                 {
                     xtype: 'container',
-                    id: 'containerHightligthCurrent',
+                    cls: 'highlightcurrent_panel',
+                    id: 'containerHighlightCurrent',
                     layout: {
                         type: 'vbox'
                     }
-
                 }]
         }
     ]

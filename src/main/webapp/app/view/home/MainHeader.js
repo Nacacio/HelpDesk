@@ -33,19 +33,22 @@ Ext.define('Helpdesk.view.home.MainHeader', {
             xtype: 'button',
             itemId: 'home',
             text: translations.HOME,            
-            baseCls: 'tab-button'
+            baseCls: 'tab-button',
+            hidden: true
         },
         {
             xtype: 'button',
             text: translations.TICKETS,
             itemId: 'ticket',
-            baseCls: 'tab-button'
+            baseCls: 'tab-button',
+            hidden: true
         },
         {
             xtype: 'button',
             text: translations.REPORTS,
             itemId: 'reports',
-            baseCls: 'tab-button'
+            baseCls: 'tab-button',
+            hidden: true
         },
         {
             xtype: 'tbfill'

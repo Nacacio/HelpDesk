@@ -29,7 +29,7 @@ Ext.define('Helpdesk.view.Viewport', {
                     xtype: 'servererror'
                 },
                 {
-                    xtype: 'home',                   
+                    xtype: 'home'
                 },
                 {
                     xtype: 'ticket'

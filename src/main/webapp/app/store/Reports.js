@@ -70,5 +70,17 @@ Ext.define('Helpdesk.store.Reports', {
                 period: period
             },
             success: Ext.bind(callbackfunction, scope)});
+    },
+    getHighlightCurrentCategory: function(callbackfunction,scope) {
+        $.ajax({
+            type: 'GET',
+            url: 'reports/gethighlightcurrentcategory',
+            success: Ext.bind(callbackfunction, scope)});
+    },
+    getHighlightCurrentClient: function(callbackfunction,scope) {
+        $.ajax({
+            type: 'GET',
+            url: 'reports/gethighlightcurrentclient',
+            success: Ext.bind(callbackfunction, scope)});
     }
 });

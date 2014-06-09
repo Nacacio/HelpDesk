@@ -15,8 +15,7 @@ Ext.define('Helpdesk.view.dashboard.Dashboard',{
             xtype:'panel',
             layout:'hbox',
             bodyPadding:15,
-            baseCls:'borless',
-            
+            baseCls:'borless',            
             items:[
                 {
                     xtype:'panel',
@@ -35,12 +34,12 @@ Ext.define('Helpdesk.view.dashboard.Dashboard',{
                                   xtype:'panel',
                                   padding:'5 0 5 5',
                                   baseCls:'bordless',
-                                  html:'<a href="">'+translations.SEE_FULL_REPORT+'</a>'
+                                  html:'<a href="#reports">'+translations.SEE_FULL_REPORT+'</a>'
                                 },
                                 {
                                     xtype:'dashboardcategory',
                                     width:600,
-                                    height:400,
+                                    height:400
                                 }
                             ]
                             
@@ -71,12 +70,12 @@ Ext.define('Helpdesk.view.dashboard.Dashboard',{
                                         {
                                             xtype:'datagridagent',
                                             width:300,
-                                            height:230,
+                                            height:230
                                         },
                                         {
                                             xtype:'datagridclient',
                                             width:300,
-                                            height:230,
+                                            height:230
                                         }
                                     ]
                                 },
@@ -93,8 +92,7 @@ Ext.define('Helpdesk.view.dashboard.Dashboard',{
                                             baseCls:'tickets-control-description',
                                             padding:'8 0 0 5',
                                             html:translations.TICKET,
-                                            height:30,
-                                            
+                                            height:30                                            
                                         },
                                         {
                                             xtype:'tableticket'
@@ -114,7 +112,7 @@ Ext.define('Helpdesk.view.dashboard.Dashboard',{
                                 {
                                     xtype:'dashboardusers',
                                     width:600,
-                                    height:400,
+                                    height:400
                                 }
                             ]
                         },
@@ -129,7 +127,7 @@ Ext.define('Helpdesk.view.dashboard.Dashboard',{
                                 {
                                     xtype:'dashboardstatuschart',
                                     width:600,
-                                    height:400,
+                                    height:400
                                 }
                             ]                            
                         }                        
@@ -185,7 +183,7 @@ Ext.define('Helpdesk.view.dashboard.Dashboard',{
                                     xtype:'text',
                                     text:translations.HELP_AND_SUPPORT,
                                     baseCls:'bold-words-size15',
-                                    padding:'0 0 5 0',
+                                    padding:'0 0 5 0'
                                 },
                                 {
                                   xtype:'form',

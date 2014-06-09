@@ -12,16 +12,15 @@
 Ext.define('Helpdesk.controller.Home', {
     extend: 'Ext.app.Controller',
     views: ['home.Home'],
-    stores:[
+    stores: [
         'Users'
     ],
     init: function() {
         this.control({
-            
-            'mainheader':{
-                afterrender:this.setButtonsAndView
+            'mainheader': {
+                afterrender: this.setButtonsAndView
             },
-            'mainheader button': {                                                
+            'mainheader button': {
                 click: this.onMainNavClick
             }
         });
@@ -42,6 +41,10 @@ Ext.define('Helpdesk.controller.Home', {
             selector: 'viewport > container#maincardpanel'
         },
         {
+            ref: 'mainHeader',
+            selector: 'viewport mainheader'
+        },
+        {
             ref: 'serverError',
             selector: 'servererror > #errorPanel'
         },
@@ -50,43 +53,34 @@ Ext.define('Helpdesk.controller.Home', {
             selector: '#settings'
         }
     ],
-    
-    setButtonsAndView:function(form){
-        var store = new Helpdesk.store.Users();      
-        store.proxy.url='user/'+Helpdesk.Globals.user;
-        store.load({
-            callback:function(){
-                
-                if(store.data.items[0].data.userGroup.id === 1){
-                    form.down('button#home').toggle(true);
-                    form.down('button#ticket').toggle(false);
-                    form.down('button#home').setVisible(true);
-                    
-                }else{
-                    form.down('button#home').toggle(false);
-                    form.down('button#ticket').toggle(true);
-                    form.down('button#home').setVisible(false);
-                    Ext.Router.redirect('ticket');                   
-                }                
-                store.proxy.url='user';
-                store.load();
-            }
-        });
-        
-    },    
-    onError: function(error){
+    setButtonsAndView: function(form) {
+        var mainHeader = this.getMainHeader();
+        var btnHome = mainHeader.down("#home");
+        var btnTicket = mainHeader.down("#ticket");
+        var btnReports = mainHeader.down("#reports");
+        if (Helpdesk.Globals.userLogged.userGroup.id !== 1) {
+            btnHome.setVisible(false);
+            btnTicket.setVisible(true);
+            btnReports.setVisible(false);
+            this.getMainHeaderSettings().setVisible(false);
+            Ext.Router.redirect('ticket');
+        } else {
+            btnTicket.setVisible(true);
+            btnHome.setVisible(true);
+            btnReports.setVisible(true);
+            this.getMainHeaderSettings().setVisible(true);
+        }
+
+    },
+    onError: function(error) {
         this.getServerError().update(error);
         this.getCardPanel().getLayout().setActiveItem(Helpdesk.Globals.errorview);
     },
     index: function() {
         this.getCardPanel().getLayout().setActiveItem(Helpdesk.Globals.homeview);
-        if(Helpdesk.Globals.userLogged.userGroup.id === 1){
-            this.getMainHeaderSettings().setVisible(true);
-        }
-        else{
-            this.getMainHeaderSettings().setVisible(false);
-        }
-      
+        var mainHeader = this.getMainHeader();
+        var btnHome = mainHeader.down("#home");
+        btnHome.toggle(true);
     },
     /*
      * This function controls the history router declared in app.js.
@@ -94,8 +88,8 @@ Ext.define('Helpdesk.controller.Home', {
      * and then redirect to the page according to the button id. The mappings
      * can be found in app.js.
      */
-    onMainNavClick: function(btn) {            
-        if(btn.itemId === 'logout'){
+    onMainNavClick: function(btn) {
+        if (btn.itemId === 'logout') {
             Ext.Ajax.request({
                 url: 'logout',
                 success: function(response) {
@@ -103,7 +97,7 @@ Ext.define('Helpdesk.controller.Home', {
                 }
             });
         }
-        else{
+        else {
             Ext.Router.redirect(btn.itemId);
         }
     }

@@ -32,18 +32,18 @@
 
 
     <Ticket id="1" title="Erro 1" description="Descricao 1 - OPEN" isopen="true" 
-            user_id="1" start_date="2014-10-10" end_date="2014-10-10" passos_para_reproducao="PASSO A PASSO" 
+            user_id="1" start_date="2014-10-10" end_date="2014-10-10" steps_ticket="PASSO A PASSO" 
             category_id="1" client_id="1" priority_id="1" estimate_time="2014-10-10" responsavel_id="1"/>
     <Ticket id="2" title="Erro 2" description="Descricao 2 - CLOSED" isopen="true" 
-            user_id="1" start_date="2014-10-10" end_date="2014-10-10" passos_para_reproducao="PASSO A PASSO" 
+            user_id="1" start_date="2014-10-10" end_date="2014-10-10" steps_ticket="PASSO A PASSO" 
             category_id="1" client_id="1" priority_id="1" estimate_time="2014-10-10" responsavel_id="1"/>
     <Ticket id="3" title="Erro 3" description="Descricao 3 - OPEN" isopen="true" 
-            user_id="1" start_date="2014-10-10" end_date="2014-10-10" passos_para_reproducao="PASSO A PASSO" 
+            user_id="1" start_date="2014-10-10" end_date="2014-10-10" steps_ticket="PASSO A PASSO" 
             category_id="2" client_id="1" priority_id="2" estimate_time="2014-10-10" responsavel_id="1"/>
     <Ticket id="4" title="Erro 4" description="Descricao 4 - CLOSED" isopen="true" 
-            user_id="1" start_date="2014-10-10" end_date="2014-10-10" passos_para_reproducao="PASSO A PASSO" 
+            user_id="1" start_date="2014-10-10" end_date="2014-10-10" steps_ticket="PASSO A PASSO" 
             category_id="2" client_id="1" priority_id="2" estimate_time="2014-10-10" responsavel_id="1"/>
     <Ticket id="5" title="EXISTE_ENTIDADE_COM_ESSE_NOME" description="EXISTE_ENTIDADE_COM_ESSE_NOME" isopen="true" 
-            user_id="1" start_date="2014-10-10" end_date="2014-10-10" passos_para_reproducao="EXISTE_ENTIDADE_COM_ESSE_NOME" 
+            user_id="1" start_date="2014-10-10" end_date="2014-10-10" steps_ticket="EXISTE_ENTIDADE_COM_ESSE_NOME" 
             category_id="2" client_id="1" priority_id="3" estimate_time="2014-10-10" responsavel_id="1"/>
 </dataset>
