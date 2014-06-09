@@ -9,11 +9,7 @@ Ext.define('Helpdesk.store.Tickets', {
     model: 'Helpdesk.model.Ticket',
     storeId: 'tickets',
     autoLoad: false,
-    pageSize: 10,
-    start:0,
-    limit: 10,
-    pageSize:10,   
-    autoLoad: false,    
+    pageSize: Helpdesk.Globals.pageSizeGrid,
     constructor: function(config) {
         // applyIf means only copy if it doesn't exist
         Ext.applyIf(config, {
@@ -22,6 +18,22 @@ Ext.define('Helpdesk.store.Tickets', {
             })
         });
         this.callParent([config]);
+    },
+    onCreateRecords: function(records, operation, success) {
+        if (success) {           
+            Ext.Msg.alert(translations.INFORMATION, translations.TICKET+' '+translations.SAVED_WITH_SUCCESS);
+        }
+    },
+    onUpdateRecords: function(records, operation, success) {
+        if (success) {
+            Ext.Msg.alert(translations.INFORMATION, translations.TICKET+' '+translations.UPDATED_WITH_SUCCESS);
+        }
+    },
+    onDestroyRecords: function(records, operation, success){
+        if(success){
+            Ext.Msg.alert(translations.INFORMATION, translations.TICKET+' '+translations.DELETED_WITH_SUCCESS);
+            this.callParent(arguments);
+        }
     }
 });
 

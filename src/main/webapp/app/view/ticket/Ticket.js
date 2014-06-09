@@ -32,11 +32,11 @@ Ext.define('Helpdesk.view.ticket.Ticket', {
            border: 0,
            layout: 'card',
            padding: '50 20 50 20',
+           autoScroll:true,
            items:[{
                    xtype: 'container',
                    itemId:'maincontainer',
                    //layout:'border',
-                   height: "100%",
                    cls: 'background-white',
                    items:[
                        {
@@ -78,7 +78,7 @@ Ext.define('Helpdesk.view.ticket.Ticket', {
                        ,{
                            xtype: 'ticketgrid',
                            itemId: 'ticketgrid',
-                           region:'center'                
+                           region:'center'
                        }
                    ]
                },
@@ -89,5 +89,5 @@ Ext.define('Helpdesk.view.ticket.Ticket', {
                    xtype:'ticketdetails'                    
                }
            ]
-       }],
+       }]
 });

@@ -473,6 +473,40 @@
     font-weight: bold;
     background-color: yellow;
 }
+
+.btn-grey{
+     background-color:#e0e0e0;
+     text-align: center;    
+     height: 35px;    
+     width: 70px;
+     font-size: 14px;
+     font-weight: bold;
+     padding-top: 10px;
+     color:#000000;
+     border:1px solid #BBBBBB;
+     
+     -webkit-border-top-left-radius:5px;
+     -moz-border-radius-topleft:5px;
+     border-top-left-radius:5px;
+     -webkit-border-top-right-radius:5px;
+     -moz-border-radius-topright:5px;
+     border-top-right-radius:5px;
+     -webkit-border-bottom-right-radius:5px;
+     -moz-border-radius-bottomright:5px;
+     border-bottom-right-radius:5px;
+     -webkit-border-bottom-left-radius:5px;
+     -moz-border-radius-bottomleft:5px;
+     border-bottom-left-radius:5px;    
+ }
+ 
+ .btn-grey:hover {
+     background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #1e62d0), color-stop(1, #3d94f6) );
+     background:-moz-linear-gradient( center top, #1e62d0 5%, #3d94f6 100% );
+     filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#1e62d0', endColorstr='#3d94f6');
+     background-color:#dfdfdf !important;;
+     cursor: pointer;
+  }
+  
 .report-title{
     font-size:17px;   
     font-weight: bold;

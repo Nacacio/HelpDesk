@@ -13,7 +13,7 @@ Ext.define('Helpdesk.model.Ticket',{
         {name: 'estimateTime'},
         {name: 'description'},
         {name: 'title'},
-        {name: 'passosParaReproducao'},
+        {name: 'stepsTicket'},
         {name: 'user'},     
         {name: 'responsavel'},
         {name: 'category'},

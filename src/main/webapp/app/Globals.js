@@ -41,5 +41,7 @@ Ext.define('Helpdesk.Globals',{
     reports_category_view: 0,
     reports_user_view: 1,
     reports_client_view: 2,
-    reports_export_view: 3
+    reports_export_view: 3,
+    
+    pageSizeGrid: 30
 });

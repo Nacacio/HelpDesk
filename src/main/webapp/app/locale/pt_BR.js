@@ -54,6 +54,7 @@ translations = {
     CONSOLIDATED_PER_MONTH: 'Consolidado por mês',
     CREATED: 'Criados',
     CLOSEDS: 'Fechados',
+    CLOSE_TICKET:'Fechar ticket',
     
     
     //############################################## [ D ] ##############################################//

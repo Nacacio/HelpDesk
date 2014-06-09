@@ -13,8 +13,7 @@ Ext.define('Helpdesk.view.home.MainHeader', {
         type: 'hbox',
         align: 'bottom'
     },
-    defaults: {
-        padding: '0 20',
+    defaults: {        
         toggleGroup: 'main-nav',
         allowDepress: false
     },
