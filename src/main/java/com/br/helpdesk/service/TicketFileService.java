@@ -3,6 +3,9 @@ package com.br.helpdesk.service;
 import com.br.helpdesk.model.TicketFile;
 import com.br.helpdesk.repository.TicketFileRepository;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.ServletContext;
@@ -42,9 +45,18 @@ public class TicketFileService{
         return repository.findOne(codigo);
     }   
     
-    public String createFile(Long idFile,ServletContext contexto){
+    public List<TicketFile> findByTicket(Long idTicket){        
+        return repository.findByTicket(idTicket);
+    }
+    
+    public String createFile(Long idFile,ServletContext contexto) throws FileNotFoundException, IOException{
         TicketFile ticketFile = findById(idFile);
         File file = getFile(ticketFile.getName(),contexto);
+        FileOutputStream fos = new FileOutputStream(file);
+        fos.write(ticketFile.getByteArquivo());
+        fos.flush();
+        fos.close();
+        
         return returnJSON(file.getName(),"",contexto);
     }
     private String returnJSON(String nomeArquivo,String erro,ServletContext contexto){
@@ -97,5 +109,29 @@ public class TicketFileService{
             diretorio = new File("ArquivosTemp/");
         }
         return diretorio;
+    }
+    
+    public String getListFilesJSON(List<TicketFile> ticketFileList){
+        if(ticketFileList != null && ticketFileList.size() > 0){
+            String retornoJSON = "[";
+            for (TicketFile ticketFile : ticketFileList) {
+                retornoJSON+= "{";
+                retornoJSON+= "fileId:'"+ticketFile.getId()+"', ";
+                retornoJSON+= "fileName:'"+ticketFile.getName()+"', ";
+                retornoJSON+= "fileTicketId:'"+ticketFile.getTicket().getId()+"', ";
+                if(ticketFile.getTicketAnswer() != null){
+                    retornoJSON+= "fileTicketAnswerId:'"+ticketFile.getTicketAnswer().getId()+"'";
+                }
+                else{
+                    retornoJSON+= "fileTicketAnswerId:''";
+                }
+                retornoJSON+= "},";
+            }
+            retornoJSON += "]"; 
+            
+            return retornoJSON;
+        }
+        return "";
+        
     }
 }

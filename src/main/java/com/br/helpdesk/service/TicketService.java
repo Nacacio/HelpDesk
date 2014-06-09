@@ -45,6 +45,9 @@ public class TicketService{
     public List<Ticket> findByIsOpenAndUser(Boolean isOpen, User user){
         return IteratorUtils.toList(repository.findByIsOpenAndUser(isOpen,user).iterator());
     }
+    public List<Ticket> findByIsOpenAndUserWithPaging(Boolean isOpen, User user,Pageable pageable){
+        return IteratorUtils.toList(repository.findByIsOpenAndUser(isOpen,user,pageable).iterator());
+    }
     public List<Ticket> findByResponsavel(User user){
         return IteratorUtils.toList(repository.findByResponsavelAndIsOpen(user,true).iterator());
     }

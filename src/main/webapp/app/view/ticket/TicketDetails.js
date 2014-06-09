@@ -166,7 +166,7 @@ Ext.define('Helpdesk.view.ticket.TicketDetails',{
                     xtype:'panel',
                     baseCls:'bordless',
                     layout:{
-                        type:'vbox'
+                        type:'hbox'
                     },
                     items:[
                         {
@@ -175,6 +175,19 @@ Ext.define('Helpdesk.view.ticket.TicketDetails',{
                             id:'btnSaveAnswTkt',
                             width:90,
                             baseCls:'btn-save-changes'
+                        },
+                        {
+                            xtype:'form',
+                            baseCls:'bordless',
+                            width:580   
+                        },
+                        {
+                            xtype:'button',                            
+                            text:translations.CLOSE_TICKET,                            
+                            id:'btnCloseTkt',
+                            width:130,                            
+                            baseCls:'btn-grey'
+                            
                         }
                     ]
                 }               

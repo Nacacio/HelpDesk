@@ -3,20 +3,18 @@ Ext.define('Helpdesk.view.ticket.TicketGrid', {
     alias: 'widget.ticketgrid',
     store: 'Tickets',
     requires: ['Helpdesk.store.Tickets'],    
-    border:0,
-    height:400,    
+    border:0, 
     cls:'grid-style-header',
+    
     constructor: function(config){
         this.param = config.param; // get your param value from the config object
-        config.store = Ext.create('Helpdesk.store.Tickets', {}); // Blank Configuration needs to be passed in order to trigger the constructor call of the class
-//        this.dockedItems[0].store = config.store;
         config.store = Ext.create('Helpdesk.store.Tickets', {
-            pageSize: '10',
+            pageSize: Helpdesk.Globals.pageSizeGrid,
             reader: {
                 root: 'items',
                 totalProperty: 'total'
             }
-        }); // Blank Configuration needs to be passed in order to trigger the constructor call of the class
+        }); 
         this.callParent(arguments);
     },
     
@@ -65,9 +63,10 @@ Ext.define('Helpdesk.view.ticket.TicketGrid', {
     dockedItems: [{
         xtype: 'pagingtoolbar',
         itemId:'dockedItem',
-        store: 'Tickets',   // same store GridPanel is using
+        store: 'Tickets',   
         dock: 'bottom',
-        displayInfo: true        
+        displayInfo: true,
+        margin: '0 0 30 0'
     }]
 });
 

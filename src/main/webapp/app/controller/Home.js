@@ -48,11 +48,15 @@ Ext.define('Helpdesk.controller.Home', {
         {
             ref: 'mainHeaderSettings',
             selector: '#settings'
+        },
+        {
+            ref:'homeView',
+            selector:'home'
         }
     ],
     
     setButtonsAndView:function(form){
-        var store = new Helpdesk.store.Users();      
+        var store = new Helpdesk.store.Users();
         store.proxy.url='user/'+Helpdesk.Globals.user;
         store.load({
             callback:function(){
