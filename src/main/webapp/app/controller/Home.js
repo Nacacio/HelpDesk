@@ -59,30 +59,6 @@ Ext.define('Helpdesk.controller.Home', {
         }
     ],
     
-    setButtonsAndView:function(form){
-        var store = new Helpdesk.store.Users();
-        store.proxy.url='user/'+Helpdesk.Globals.user;
-        store.load({
-            callback:function(){
-                
-                if(store.data.items[0].data.userGroup.id === 1){
-                    form.down('button#home').toggle(true);
-                    form.down('button#ticket').toggle(false);
-                    form.down('button#home').setVisible(true);
-                    
-                }else{
-                    form.down('button#home').toggle(false);
-                    form.down('button#ticket').toggle(true);
-                    form.down('button#home').setVisible(false);
-                    Ext.Router.redirect('ticket');                   
-                }                
-                store.proxy.url='user';
-                store.load();
-            }
-        });
-        
-    },    
-    onError: function(error){
     setButtonsAndView: function(form) {
         var mainHeader = this.getMainHeader();
         var btnHome = mainHeader.down("#home");
