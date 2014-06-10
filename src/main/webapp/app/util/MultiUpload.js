@@ -165,14 +165,13 @@ Ext.define("Helpdesk.util.MultiUpload", {
             }); 
             
             Ext.Ajax.request({
-                url: 'ticket/uploadfiles',
+                url: 'ticket/files',
                 isUpload: true,
                 params: {ticketId:this.ticketId},
                 method: 'POST',
                 form: formEl,
-                scope: this
-             });   
-            
+                scope: this                    
+             });
             //Clear Fields
             this.filesListArchive.length = 0;
             this.fileslist.length = 0;

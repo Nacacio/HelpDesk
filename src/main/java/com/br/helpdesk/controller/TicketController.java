@@ -24,6 +24,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import org.springframework.web.bind.annotation.RequestParam;
@@ -205,12 +207,17 @@ public class TicketController {
         return ticketService.save(ticket);
     }
     
-    @RequestMapping(value = {"/uploadfiles"},method = {RequestMethod.POST})
+    /**
+     * upload
+     */
+    @RequestMapping(value = "/files", method = RequestMethod.POST)
     @ResponseBody
-    public String uploadImages(MultipartHttpServletRequest request, HttpServletResponse response) throws IOException {
-        Long ticketId = Long.parseLong(request.getParameter("ticketId"));
+    public String uploadFile(HttpServletRequest request,HttpServletResponse response) throws Exception {
+        Long ticketId = ServletRequestUtils.getRequiredLongParameter(request, "ticketId");        
         Ticket ticket = ticketService.findById(ticketId);
-        Collection<MultipartFile> filesCollection = request.getFileMap().values();
+        
+        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+        Collection<MultipartFile> filesCollection = multipartRequest.getFileMap().values();
         TicketFile file;
         try{
             for (MultipartFile multipartFile : filesCollection) {
@@ -218,25 +225,67 @@ public class TicketController {
                 file.setName(multipartFile.getOriginalFilename());
                 file.setByteArquivo(multipartFile.getBytes());
                 file.setTicket(ticket);
+                file.setContentType(multipartFile.getContentType());
                 fileService.save(file);
             }
         }
         catch (IOException e){
             return "{success: false}";
         }
-        
         return "{success: true}";
     }
+//    
+//    @RequestMapping(value = {"/uploadfiles"},method = {RequestMethod.POST})
+//    @ResponseBody
+//    public String uploadImages(MultipartHttpServletRequest request, HttpServletResponse response) throws IOException {
+//        Long ticketId = Long.parseLong(request.getParameter("ticketId"));
+//        Ticket ticket = ticketService.findById(ticketId);
+//        Collection<MultipartFile> filesCollection = request.getFileMap().values();
+//        TicketFile file;
+//        try{
+//            for (MultipartFile multipartFile : filesCollection) {
+//                file = new TicketFile();
+//                file.setName(multipartFile.getOriginalFilename());
+//                file.setByteArquivo(multipartFile.getBytes());
+//                file.setTicket(ticket);
+//                fileService.save(file);
+//            }
+//        }
+//        catch (IOException e){
+//            return "{success: false}";
+//        }
+//        
+//        return "{success: true}";
+//    }
     
-    @RequestMapping(value = "/downloadfiles", method = RequestMethod.POST, params={"idFile"})
+
+//    @RequestMapping(value = "/downloadfiles", method = RequestMethod.GET)
+//    @ResponseBody
+//    public void downloadFile(HttpServletRequest request,HttpServletResponse response) throws Exception {
+//        TicketFile ticketFile = fileService.findById(2L);
+//        
+//        response.setHeader("Content-Disposition", "attachment; filename=\"" +ticketFile.getName()+"\"");
+//        response.setHeader("Content-Type","application/octet-stream");
+//        response.getOutputStream().write(ticketFile.getByteArquivo());
+//        response.flushBuffer();
+//        //return fileService.createFile(idFile, request.getServletContext());
+//    }
+    
+     /**
+     * download
+     */
+    @RequestMapping(value = "/files", method = RequestMethod.GET)
     @ResponseBody
-    public void downloadFile(HttpServletRequest request,HttpServletResponse response,@RequestParam(value = "idFile") Long idFile) throws Exception {
-        TicketFile ticketFile = fileService.findById(idFile);
-        
-        response.setHeader("Content-Disposition", "attachment; filename=\"" +ticketFile.getName());
-        response.getOutputStream().write(ticketFile.getByteArquivo());
-        response.flushBuffer();
-        //return fileService.createFile(idFile, request.getServletContext());
+    public void downloadFile(HttpServletRequest request,HttpServletResponse response) throws Exception {
+        Long id = ServletRequestUtils.getRequiredLongParameter(request, "id");
+ 
+        TicketFile ticketFile = fileService.findById(id);
+         
+        response.setContentType(ticketFile.getContentType());
+        response.setContentLength(ticketFile.getByteArquivo().length);
+        response.setHeader("Content-Disposition","attachment; filename=\"" + ticketFile.getName() +"\"");
+ 
+        FileCopyUtils.copy(ticketFile.getByteArquivo(), response.getOutputStream());
     }
     
     @RequestMapping(value = "/fileslist", method = RequestMethod.POST, params={"idFile"})

@@ -191,8 +191,7 @@ Ext.define('Helpdesk.controller.Ticket', {
     /**
      * Faz a paginação do grid de tickets de acordo com a página selecionada
      */    
-    changeGridPage:function(toolbar,page){ 
-        
+    changeGridPage:function(toolbar,page){        
         var myscope = this;
         var limit = (page)*Helpdesk.Globals.pageSizeGrid;
         var start = limit-Helpdesk.Globals.pageSizeGrid;
@@ -207,18 +206,6 @@ Ext.define('Helpdesk.controller.Ticket', {
             callback: function(){               
                 myscope.backToDefaultStore(myscope);
                 myscope.setSideMenuButtonText();
-                //var toolbar = myscope.getTicketPanel().getDockedItems()[1];                
-                toolbar.getStore().proxy.url = myscope.getProxy(); 
-                console.log(toolbar.getStore().proxy.url);
-                toolbar.getStore().load({
-                    params:{
-                        user: Helpdesk.Globals.user          
-                    },
-                    callback:function(){
-                        myscope.getTicketPanel().getStore().proxy.url = 'ticket';
-                        toolbar.getStore().proxy.url = 'ticket'; 
-                    }
-                });  
             }
         }); 
     },
@@ -227,15 +214,15 @@ Ext.define('Helpdesk.controller.Ticket', {
         
         var form = this.getTicketSideMenu();
         
-        if(form.down('button#buttonTodos').pressed === true){
+        if(form.down('button#buttonAll').pressed === true){
             return 'ticket/all';    
-        }else if(form.down('button#buttonMeusTickets').pressed === true){
+        }else if(form.down('button#buttonMyTickets').pressed === true){
             return 'ticket/mytickets';    
-        }else if(form.down('button#buttonSemResponsavel').pressed === true){
+        }else if(form.down('button#buttonWithoutResponsible').pressed === true){
             return 'ticket/withoutresponsible';    
-        }else if(form.down('button#buttonEmAndamento').pressed === true){
+        }else if(form.down('button#buttonOpened').pressed === true){
             return 'ticket/opened';    
-        }else if(form.down('button#buttonFechado').pressed === true){
+        }else if(form.down('button#buttonClosed').pressed === true){
             return 'ticket/closed';    
         }else{
             return 'ticket/all';   
@@ -251,7 +238,7 @@ Ext.define('Helpdesk.controller.Ticket', {
         if(newValue!== null){           
             store.removeAll();            
             var storeTemp = new Helpdesk.store.Tickets(); 
-            storeTemp.proxy.url = getProxy();
+            storeTemp.proxy.url = this.getProxy();
             storeTemp.load({
                 params:{
                     user: Helpdesk.Globals.user
@@ -286,7 +273,7 @@ Ext.define('Helpdesk.controller.Ticket', {
                 }
             });
         }else{
-            store.proxy.url = getProxy();
+            store.proxy.url = this.getProxy();
             store.load({
                 params:{
                     user: Helpdesk.Globals.user,
@@ -355,19 +342,19 @@ Ext.define('Helpdesk.controller.Ticket', {
         this.getTicketCardContainer().getLayout().setActiveItem(Helpdesk.Globals.ticket_datagrid);
         this.getTicketEditContainer().getLayout().setActiveItem(Helpdesk.Globals.ticket_details_view);
         if(typeof this.getTicketPanel() !== 'undefined'){
-            if(btn.itemId === 'buttonTodos'){
+            if(btn.itemId === 'buttonAll'){
                 this.getAllTickets();
             }
-            else if(btn.itemId === 'buttonEmAndamento'){
+            else if(btn.itemId === 'buttonOpened'){
                 this.getTicketsEmAndamento();
             }
-            else if(btn.itemId === 'buttonFechado'){
+            else if(btn.itemId === 'buttonClosed'){
                 this.getTicketsFechado();     
             }  
-            else if(btn.itemId === 'buttonMeusTickets'){
+            else if(btn.itemId === 'buttonMyTickets'){
                 this.getMeusTickets();     
             }  
-            else if(btn.itemId === 'buttonSemResponsavel'){
+            else if(btn.itemId === 'buttonWithoutResponsible'){
                 this.getTicketsSemResponsavel();     
             }  
         }
@@ -385,7 +372,7 @@ Ext.define('Helpdesk.controller.Ticket', {
      */
     getAllTickets: function(){
         this.loadStoreBasic('all');
-        //this.downloadTeste();
+        this.downloadTeste();
     },
     
     /**
@@ -432,29 +419,29 @@ Ext.define('Helpdesk.controller.Ticket', {
                 var decodedString = Ext.decode(o.responseText);
                 
                 var sm = myscope.getTicketSideMenu();
-                var buttonTodos = sm.down('#buttonTodos');
-                var buttonEmAndamento = sm.down('#buttonEmAndamento');
-                var buttonFechado = sm.down('#buttonFechado');
-                var buttonMeusTickets = sm.down('#buttonMeusTickets');
-                var buttonSemResponsavel = sm.down('#buttonSemResponsavel');
-                buttonTodos.setText(translations.ALL +((decodedString.todos==='0')?(" "):(" ("+decodedString.todos+")")));  
-                buttonEmAndamento.setText(translations.IN_PROGRESS +((decodedString.abertos==='0')?(" "):(" ("+decodedString.abertos+")"))); 
-                buttonFechado.setText(translations.CLOSED+((decodedString.fechados==='0')?(" "):(" ("+decodedString.fechados+")"))); 
-                buttonMeusTickets.setText(translations.MY_TICKETS+((decodedString.mytickets === '0')?(" "):(" ("+decodedString.mytickets+")"))); 
-                buttonSemResponsavel.setText(translations.WITHOUT_RESPONSIBLE+((decodedString.withoutresponsible==='0')?(" "):(" ("+decodedString.withoutresponsible+")"))); 
+                var buttonAll = sm.down('#buttonAll');
+                var buttonOpened = sm.down('#buttonOpened');
+                var buttonClosed = sm.down('#buttonClosed');
+                var buttonMyTickets = sm.down('#buttonMyTickets');
+                var buttonWithoutResponsible = sm.down('#buttonWithoutResponsible');
+                buttonAll.setText(translations.ALL +((decodedString.todos==='0')?(" "):(" ("+decodedString.todos+")")));  
+                buttonOpened.setText(translations.IN_PROGRESS +((decodedString.abertos==='0')?(" "):(" ("+decodedString.abertos+")"))); 
+                buttonClosed.setText(translations.CLOSED+((decodedString.fechados==='0')?(" "):(" ("+decodedString.fechados+")"))); 
+                buttonMyTickets.setText(translations.MY_TICKETS+((decodedString.mytickets === '0')?(" "):(" ("+decodedString.mytickets+")"))); 
+                buttonWithoutResponsible.setText(translations.WITHOUT_RESPONSIBLE+((decodedString.withoutresponsible==='0')?(" "):(" ("+decodedString.withoutresponsible+")"))); 
                 if(Helpdesk.Globals.userGroup === "1"){//superusuario
-                    buttonTodos.setVisible(true);
-                    buttonEmAndamento.setVisible(true);
-                    buttonFechado.setVisible(true);
-                    buttonMeusTickets.setVisible(true);
-                    buttonSemResponsavel.setVisible(true);
+                    buttonAll.setVisible(true);
+                    buttonOpened.setVisible(true);
+                    buttonClosed.setVisible(true);
+                    buttonMyTickets.setVisible(true);
+                    buttonWithoutResponsible.setVisible(true);
                 }
                 else{//outros
-                    buttonTodos.setVisible(true);
-                    buttonEmAndamento.setVisible(true);
-                    buttonFechado.setVisible(true);
-                    buttonMeusTickets.setVisible(false);
-                    buttonSemResponsavel.setVisible(false);
+                    buttonAll.setVisible(true);
+                    buttonOpened.setVisible(true);
+                    buttonClosed.setVisible(true);
+                    buttonMyTickets.setVisible(false);
+                    buttonWithoutResponsible.setVisible(false);
                 }
                 
             }
@@ -695,40 +682,30 @@ Ext.define('Helpdesk.controller.Ticket', {
             },
             callback: function(){
                 myscope.backToDefaultStore(myscope);
-                myscope.setSideMenuButtonText();            
+                myscope.setSideMenuButtonText(); 
+                //loadStore to toolbar
+                var toolbar = myscope.getTicketPanel().getDockedItems()[1];                
+                toolbar.getStore().proxy.url = 'ticket/'+urlSimples;
+                toolbar.getStore().load({
+                    params:{
+                        user: Helpdesk.Globals.user          
+                    },
+                    callback:function(){
+                        toolbar.getStore().proxy.url = 'ticket';
+                    }
+                });
             }
         });
         
-        //loadStore to toolbar
-        var toolbar = myscope.getTicketPanel().getDockedItems()[1];                
-        toolbar.getStore().proxy.url = 'ticket/'+urlSimples;
-        toolbar.getStore().load({
-            params:{
-                user: Helpdesk.Globals.user          
-            },
-            callback:function(){
-                toolbar.getStore().proxy.url = 'ticket';
-            }
-        });
     },
     
     downloadTeste:function(){
-        Ext.Ajax.request({
-                    url: 'ticket/downloadfiles',
-                    method: 'POST',
-                    params: {
-                        idFile : 1
-                    },
-                    success: function (response, opts) {
-                        console.log(response);
-                        //                        var responseJSON = Ext.decode(response.responseText);
-                        //                        var urlFile = responseJSON.path + '/' + responseJSON.nomeArquivo;
-                        //                        
-                        //                        var link = document.createElement("a");
-                        //                        link.download = responseJSON.nomeArquivo;
-                        //                        link.href = urlFile;
-                        //                        link.click();
-                    }
-                });
+        var fileId = 4;
+        Ext.core.DomHelper.append(document.body, {
+            tag : 'iframe',
+            id : 'downloadIframe',
+            style : 'display:none;',
+            src : 'ticket/files?id='+fileId
+        });
     }
 });
