@@ -26,6 +26,24 @@ Ext.define('Helpdesk.view.ticket.TicketAnswerPanel', {
             }
         });
       }
-    }
+    },
+    items:[        
+        {
+            xtype: 'hiddenfield',
+            itemId: 'id'
+        },
+        {
+            xtype: 'hiddenfield',
+            itemId: 'idAnswer'
+        },
+        {
+            xtype: 'label',
+            itemId: 'corpo'            
+        },
+        {
+            xtype: 'container',
+            itemId: 'anexo'            
+        }
+    ]
 });
 

@@ -36,6 +36,10 @@ public class TicketFile{
     @Column(name="ARQ_BYTE",nullable=false)
     private byte[] byteArquivo;
     
+    @Basic
+    @Column(name= "CONTENT_TYPE")
+    private String contentType;
+    
 
 
     public Long getId() {
@@ -75,6 +79,14 @@ public class TicketFile{
 
     public void setTicketAnswer(TicketAnswer ticketAnswer) {
         this.ticketAnswer = ticketAnswer;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
     }
     
     

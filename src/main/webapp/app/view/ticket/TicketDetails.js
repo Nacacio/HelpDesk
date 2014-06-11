@@ -148,7 +148,21 @@ Ext.define('Helpdesk.view.ticket.TicketDetails',{
                     items:[
                         
                     ]
-                },       
+                },
+                {
+                 xtype:'panel',
+                    padding:'20 0 0 0',
+                    itemId:'tktFiles',
+                    width:800,
+                    border: 0,
+                    defaults: {
+                        // applied to each contained panel
+                        bodyStyle: 'padding:15px'            
+                    },
+                    items:[
+                        
+                    ]
+                },    
                 {
                     xtype:'text',
                     text:translations.TICKET_NEW_ANSWER,

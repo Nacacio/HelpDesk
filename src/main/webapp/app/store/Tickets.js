@@ -14,7 +14,10 @@ Ext.define('Helpdesk.store.Tickets', {
         // applyIf means only copy if it doesn't exist
         Ext.applyIf(config, {
             proxy: Ext.create('Helpdesk.proxy.Base', {
-                url: 'ticket'
+                url: 'ticket',
+                extraParams:{
+                    user:  Helpdesk.Globals.user
+                }
             })
         });
         this.callParent([config]);
