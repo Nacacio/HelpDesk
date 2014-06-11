@@ -583,16 +583,21 @@ Ext.define('Helpdesk.controller.Ticket', {
             answerStore.load({
                 callback:function(){ 
                     var resposta =  Ext.create('Helpdesk.view.ticket.TicketAnswerPanel',{
-                        title:record.data.userName,
-                        html:record.data.description
+                        title:record.data.userName
                     });
+                    resposta.down('label#corpo').text = record.data.description;
+                    resposta.down('hiddenfield#id').text = record.data.id;
+                    resposta.down('hiddenfield#idAnswer').text  = 0;
                     ticketView.down('panel#tktAnswers').items.add(resposta);  
+                    
                     
                     for(i=0;i<answerStore.getCount();i++){          
                         resposta =  Ext.create('Helpdesk.view.ticket.TicketAnswerPanel',{
                             title:answerStore.data.items[i].data.user.name,
-                            html:answerStore.data.items[i].data.description
-                        });                        
+                        });     
+                        resposta.down('label#corpo').text = answerStore.data.items[i].data.description;
+                        resposta.down('hiddenfield#idAnswer').text = answerStore.data.items[i].data.id;
+                        resposta.down('hiddenfield#id').text = record.data.id;
                         ticketView.down('panel#tktAnswers').items.add(resposta);                       
                     }
                     ticketView.down('panel#tktAnswers').doLayout();  
@@ -652,6 +657,8 @@ Ext.define('Helpdesk.controller.Ticket', {
         
     },
     getFilesFromRecord:function(ticketView,record){
+        var ticketFileField = ticketView.down('panel#tktFiles');
+       
         if(ticketView !== null && record !== null){   
             var idFile = record.data.id;
             Ext.Ajax.request({
@@ -663,7 +670,33 @@ Ext.define('Helpdesk.controller.Ticket', {
                 success: function (response, opts) {
                     if(response.responseText !== ''){
                         var responseJSON = Ext.decode(response.responseText);
-                        console.log(responseJSON);
+                        //console.log(responseJSON);
+                       
+                        var answersList = ticketView.down('panel#tktAnswers').items.items;
+                        
+                        for (var i = 0; i < answersList.length; i++){
+                            var answer = answersList[i];
+                            var idAnswer = answer.down('hiddenfield#idAnswer').text;
+                            var idTicket = answer.down('hiddenfield#id').text;
+                            var fileContainer = answer.down('container#anexo');
+                            for (var j = 0; j < responseJSON.length; j++){
+                                var file = responseJSON[j];
+                                var fileIdTicket = file.fileTicketId;
+                                var fileIdAnswer = file.fileTicketAnswerId;
+                                var fileName = file.fileName;
+                                if(idAnswer === 0){
+                                    if(fileIdAnswer === '' && fileIdTicket == idTicket){
+                                        console.log('ANEXO FROM TICKET DESCRIPTION');  
+                                        console.log(fileContainer);
+                                    }
+                                }
+                                else{
+                                    if(fileIdAnswer == idAnswer){
+                                        console.log('ANEXO FROM TICKET RESPOSTA');
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             });

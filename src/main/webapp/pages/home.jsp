@@ -12,11 +12,13 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        
         <script type="text/javascript">
                     var homeURL = '${ctx}';
-        </script>
+        </script>            
         <!-- Jquery -->
         <script src="<s:url value="/resources"/>/js/jquery-2.1.1.min.js"></script>
+        <script src="<s:url value="/resources"/>/js/jquery.form.min.js"></script>
         <!-- Framework -->
         <script src="<s:url value="/extjs"/>/ext-all-dev.js"></script>
         <!-- Locales -->
@@ -27,6 +29,7 @@
         <link href="<s:url value="/resources" />/css/images.css" rel="stylesheet" type="text/css" />
         
         <script src="<s:url value="/app"/>/app.js"></script>
+        
 
     </head>
     <body>

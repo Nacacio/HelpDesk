@@ -155,23 +155,106 @@ Ext.define("Helpdesk.util.MultiUpload", {
     },
     
     submitValues:function(){
-        if(this.filesListArchive.length > 0){
+        if(this.filesListArchive.length > 0){     
             var time = new Date().getTime();
             var formId = 'fileupload-form-' + time;
-            var formEl = Ext.DomHelper.append(Ext.getBody(), '<form id="' + formId + '" method="POST" enctype="multipart/form-data" class="x-hide-display"></form>');
+            var formEl = Ext.DomHelper.append(Ext.getBody(), '<form id="' + formId + '" method="POST" action="ticket/'+this.ticketId+'/files" enctype="multipart/form-data" class="x-hide-display"></form>');
 
             Ext.each(this.filesListArchive, function(fileField) {
                 formEl.appendChild(fileField);
             }); 
+//            Ext.Ajax.request({
+//                url: 'ticket/'+this.ticketId+'/files',
+//                isUpload: true,
+//                method: 'POST',
+//                form: formEl,
+//                scope: this
+//             });
+//            var form = $('#'+formId).ajaxForm({ 
+//                beforeSubmit: function() {
+//                    console.log("befor");
+//                    var url = form[0].action;
+//                    var pos = url.indexOf(";"); 
+//                    if (pos !== -1){ 
+//                        url = url.substring(0, pos); 
+//                    }  
+//                    // Start a simple clock task that updates a div once per second
+////                    var task = {
+////                        run: function(){
+////                            console.log("interval");
+////                            $.get(url + ".progress", function(data) {
+////                                console.log("ok");
+////                                if (!data) return;
+////                                data = data.split("/");                        
+////                                console.log(Math.round(data[0] / data[1] * 100) * 2 ); 
+////                            }); 
+////                        },
+////                        interval: 1000 //1 second
+////                    }                   
+////                    var runner = new Ext.util.TaskRunner();
+////                    runner.start(task); 
+//                    $.get(url + ".progress", function(data) {
+//                        console.log("ok");
+//                        if (!data) return;
+//                        data = data.split("/");                        
+//                        console.log(Math.round(data[0] / data[1] * 100) * 2 ); 
+//                    });
+//                    
+//                
+////                    time = Ext.tim(function() {  
+////                        console.log("interval");
+////                        $.get(url + ".progress", function(data) {
+////                            if (!data) return;
+////                            data = data.split("/");                        
+////                            console.log(Math.round(data[0] / data[1] * 100) * 2 ); 
+////                        },function(data){
+////                            console.log("ERRO");
+////                        }); 
+////                    }, 500); 
+//                }, 
+//                success: function() {
+//                    clearInterval(time);  
+//                    //elem.width(100 * 2); 
+//                }
+//            });
+//            form.submit();
             
-            Ext.Ajax.request({
-                url: 'ticket/files',
+            Ext.define('myAjax', {
+                extend: 'Ext.data.Connection',
+                singleton: true,
+                constructor : function(config){
+                    this.callParent([config]);
+                    this.on("beforerequest", function(conn, options, eOpts){
+                        console.info("beforerequest");
+                        var url = options.url;                   
+                        var pos = url.indexOf(";"); 
+                        if (pos != -1) url = url.substring(0, pos); 
+                        
+                        time = setInterval(function() {
+                            $.get(url + ".progress", function(data) {
+                                if (!data) return;
+                                data = data.split("/");
+                                
+                                console.warn(Math.round(data[0] / data[1] * 100) * 2 ); 
+                            }); 
+                        }, 500); 
+                    });
+                    this.on("requestcomplete", function(){
+                        console.info("requestcomplete");
+                    });
+                }
+            });
+            
+            
+            myAjax.request({
+                url: 'ticket/'+this.ticketId+'/files',
                 isUpload: true,
-                params: {ticketId:this.ticketId},
                 method: 'POST',
                 form: formEl,
                 scope: this                    
              });
+
+          
             //Clear Fields
             this.filesListArchive.length = 0;
             this.fileslist.length = 0;

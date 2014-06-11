@@ -76,4 +76,14 @@
             <servlet-name>extjs4-file-upload-spring</servlet-name>
             <url-pattern>*.action</url-pattern>
     </servlet-mapping>
+    
+    
+    <filter>
+        <filter-name>ProgressFilter</filter-name>
+        <filter-class>com.br.helpdesk.util.UploadProgressFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>ProgressFilter</filter-name>
+        <url-pattern>*.progress</url-pattern>
+    </filter-mapping>
 </web-app>

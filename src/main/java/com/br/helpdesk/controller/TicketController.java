@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import org.springframework.web.bind.annotation.RequestParam;
@@ -210,10 +211,9 @@ public class TicketController {
     /**
      * upload
      */
-    @RequestMapping(value = "/files", method = RequestMethod.POST)
+    @RequestMapping(value = "/{ticketId}/files", method = RequestMethod.POST)
     @ResponseBody
-    public String uploadFile(HttpServletRequest request,HttpServletResponse response) throws Exception {
-        Long ticketId = ServletRequestUtils.getRequiredLongParameter(request, "ticketId");        
+    public String uploadFile(HttpServletRequest request,HttpServletResponse response,@PathVariable(value="ticketId")Long ticketId ) throws Exception {
         Ticket ticket = ticketService.findById(ticketId);
         
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
