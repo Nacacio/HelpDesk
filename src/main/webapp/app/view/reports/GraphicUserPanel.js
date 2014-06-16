@@ -20,8 +20,13 @@ Ext.define('Helpdesk.view.reports.GraphicUserPanel', {
     },
     items: [
         {
+            padding: '0 0 0 20',
             xtype: 'label',
-            text: translations.SELECT_A_USER
+            text: translations.SELECT_A_USER,
+            style: {
+                marginBottom: '10px',
+                'font-weight': 'bold'
+            }
         },
         {
             id: 'formPanelUser',
@@ -30,6 +35,7 @@ Ext.define('Helpdesk.view.reports.GraphicUserPanel', {
         {
             xtype: 'label',
             cls: 'rounded_frame',
+            id: 'lblEvolutionTicketsByUser',
             text: translations.EVOLUTION_TICKETS_BY_USER,
             hidden: true
         },
@@ -41,7 +47,7 @@ Ext.define('Helpdesk.view.reports.GraphicUserPanel', {
             id: 'panelEvolutionTicketsByUser',
             items: [
                 {
-                  xtype: 'formgraphicuser'  
+                    xtype: 'formgraphicuser'
                 },
                 {
                     renderTo: Ext.getBody(),
@@ -55,7 +61,6 @@ Ext.define('Helpdesk.view.reports.GraphicUserPanel', {
             cls: 'rounded_frame',
             title: translations.CONSOLIDATED_PER_MONTH,
             id: 'panelConsolidatedPerMonthUser',
-            height: 320,
             layout: {
                 type: 'vbox'
             },

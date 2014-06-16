@@ -17,7 +17,7 @@ Ext.define('Helpdesk.controller.Reports', {
         'Helpdesk.view.reports.FormGraphicCategory',
         'Helpdesk.view.reports.FormPanelUser',
         'Helpdesk.view.reports.FormConsolidatedPerMonth'],
-    requires: ['Helpdesk.store.Reports', 'Helpdesk.store.Tickets', 'Helpdesk.util.Dialogs'],
+    requires: ['Helpdesk.store.Reports', 'Helpdesk.model.ConsolidatedPerMonthContainer', 'Helpdesk.store.Tickets', 'Helpdesk.util.Dialogs'],
     stores: ['Reports', 'Tickets'],
     init: function() {
         this.control({
@@ -27,17 +27,23 @@ Ext.define('Helpdesk.controller.Reports', {
             'formgraphiccategory button#btnFind': {
                 click: this.getGraphicCategory
             },
+            'formgraphicclient button#btnFindClient': {
+                click: this.getGraphicClient
+            },
+            'formgraphicuser button#btnFindUser': {
+                click: this.getGraphicUser
+            },
             'graphiccategorypanel formconsolidatedpermonth button': {
                 click: this.getGridConsolidatedPerMonth
             },
             'graphicclientpanel formconsolidatedpermonth button': {
                 click: this.getGridConsolidatedPerMonthClient
             },
-            'formgraphicclient button#btnFindClient': {
-                click: this.getGraphicClient
+            'graphicuserpanel formconsolidatedpermonth button': {
+                click: this.getGridConsolidatedPerMonthUser
             },
             'formpaneluser button#generateReport': {
-                click: this.getGraphicUser
+                click: this.generateReportsUser
             }
         });
     },
@@ -82,6 +88,7 @@ Ext.define('Helpdesk.controller.Reports', {
     index: function() {
         this.getCardPanel().getLayout().setActiveItem(Helpdesk.Globals.reportsview);
         this.getReportsCardPanel().getLayout().setActiveItem(Helpdesk.Globals.reports_category_view);
+        this.getReportsSideMenu().down('#buttonTicketsByCategory').toggle(true);
         this.formatConsolidatedPerMonth();
         this.formatFormsGraphicCategory();
         this.formatHighlightCurrent();
@@ -115,6 +122,7 @@ Ext.define('Helpdesk.controller.Reports', {
         }
         else if (btn.itemId === 'buttonTicketsByUser') {
             this.getReportsCardPanel().getLayout().setActiveItem(Helpdesk.Globals.reports_user_view);
+            this.formatFormsGraphicUser();
         }
         else if (btn.itemId === 'buttonTicketsByClient') {
             this.getReportsCardPanel().getLayout().setActiveItem(Helpdesk.Globals.reports_client_view);
@@ -141,8 +149,12 @@ Ext.define('Helpdesk.controller.Reports', {
      * @returns {undefined}
      */
     formatFormsGraphicUser: function() {
-//        this.getGraphicUser();
-//        this.getGridConsolidatedPerMonthUser();
+        var graphicUserPanel = this.getGraphicUserPanel();
+        var lbl = graphicUserPanel.down('#lblEvolutionTicketsByUser');
+        if (lbl.hidden !== true) {
+            this.getGraphicUser();
+            this.getGridConsolidatedPerMonthUser();
+        }
     },
     /**
      * @author andresulivam
@@ -274,6 +286,12 @@ Ext.define('Helpdesk.controller.Reports', {
                 reportsGraphic = graphicPanel.down('graphicclient');
             }
 
+            for (var i = 0; i < jsonObj.length; i++) {
+                var date = new Date(jsonObj[i].date);
+                var dateFormat = date.toLocaleDateString(translations.FORMAT_DATE);
+                //jsonObj[i].date = dateFormat;
+            }
+
             var data = jsonObj[0];
             var fields;
             fields = Object.keys(data);
@@ -301,9 +319,7 @@ Ext.define('Helpdesk.controller.Reports', {
                         height: 80,
                         cls: 'tooltip_graphic',
                         renderer: function(storeItem, item) {
-                           // console.log(date);
-                           // console.log(this.yField);
-                           // this.setTitle(storeItem.get('date') + '<br />' + fields[i - 1] + '<br />' + storeItem.get('fields[i]'));
+                            this.setTitle(storeItem.get('date'));
                         }
                     },
                     markerConfig: {
@@ -370,38 +386,50 @@ Ext.define('Helpdesk.controller.Reports', {
      */
     gridConsolidatedPerMonth: function(result, type) {
         var jsonObj = $.parseJSON('[' + result + ']');
-
         var graphicPanel;
         var panel;
         var grid;
 
+        var json = jsonObj[0];
+
+        var date = new Date(json.dateOpenFrom);
+        var dateOpenFromFormatted = Ext.util.Format.date(date,translations.DATE_SIMPLIFIED);
+
+        var date = new Date(json.dateOpenTo);
+        var dateOpenToFormatted = Ext.util.Format.date(date,translations.DATE_SIMPLIFIED);
+
         if (type === 'category') {
             graphicPanel = this.getGraphicCategoryPanel();
             panel = graphicPanel.items.get('panelConsolidatedPerMonth');
-            grid = panel.down('#containerGrid').down('#gridConsolidatedPerMonth');
+            grid = panel.down('#containerGrid').down('gridconsolidatedpermonth');
+            grid.getView().getHeaderAtIndex(0).setText(translations.CATEGORY);
+            grid.getView().getHeaderAtIndex(1).setText(translations.OPEN + ' (' + dateOpenFromFormatted + ')');
+            grid.getView().getHeaderAtIndex(4).setText(translations.OPEN + ' (' + dateOpenToFormatted + ')');
         } else if (type === 'client') {
             graphicPanel = this.getGraphicClientPanel();
             panel = graphicPanel.items.get('panelConsolidatedPerMonthClient');
-            grid = panel.down('#containerGridClient').down('#gridConsolidatedPerMonthClient');
+            grid = panel.down('#containerGridClient').down('gridconsolidatedpermonth');
+            grid.getView().getHeaderAtIndex(0).setText(translations.CLIENT);
+            grid.getView().getHeaderAtIndex(1).setText(translations.OPEN + ' (' + dateOpenFromFormatted + ')');
+            grid.getView().getHeaderAtIndex(4).setText(translations.OPEN + ' (' + dateOpenToFormatted + ')');
+        } else if (type === 'user') {
+            graphicPanel = this.getGraphicUserPanel();
+            panel = graphicPanel.items.get('panelConsolidatedPerMonthUser');
+            grid = panel.down('#containerGridUser').down('#gridConsolidatedPerMonthUser');
         }
         grid.getStore().removeAll();
-
-        Ext.define('DynamicModel', {
-            extend: 'Ext.data.Model',
-            fields: ['name', 'closed', 'created', 'openFrom', 'openTo']
-        });
 
         var name;
         var closed = 0;
         var created = 0;
         var openFrom = 0;
         var openTo = 0;
-        name = translations.TOTAL;
+
         for (var i = 0; i < jsonObj.length; i++) {
-            if (type === 'category') {
+            if (type !== 'client') {
                 jsonObj[i].name = translations[jsonObj[i].name];
             }
-            var record = Ext.ModelManager.create(jsonObj[i], 'DynamicModel');
+            var record = Ext.ModelManager.create(jsonObj[i], 'Helpdesk.model.ConsolidatedPerMonthContainer');
             grid.getStore().add(record);
             // calculando a soma dos tickets para após o loop completo, criar o objeto com os valores totais de tickets nas categorias.
             closed += parseInt(record.data.closed);
@@ -409,17 +437,19 @@ Ext.define('Helpdesk.controller.Reports', {
             openFrom += parseInt(record.data.openFrom);
             openTo += parseInt(record.data.openTo);
         }
+        if (type !== 'user') {
+            // criando o objeto com os valores totais dos tickets.
+            name = translations.TOTAL;
+            var total;
+            total = Ext.ModelManager.create(total, 'Helpdesk.model.ConsolidatedPerMonthContainer');
+            total.data.name = name;
+            total.data.closed = closed;
+            total.data.created = created;
+            total.data.openFrom = openFrom;
+            total.data.openTo = openTo;
 
-        // criando o objeto com os valores totais dos tickets.
-        var total;
-        total = Ext.ModelManager.create(total, 'DynamicModel');
-        total.data.name = name;
-        total.data.closed = closed;
-        total.data.created = created;
-        total.data.openFrom = openFrom;
-        total.data.openTo = openTo;
-
-        grid.getStore().add(total);
+            grid.getStore().add(total);
+        }
         grid.setLoading(false);
     },
     /**
@@ -434,12 +464,36 @@ Ext.define('Helpdesk.controller.Reports', {
         reportsStore.getHighlightCurrentCategory(this.callbackHighlightCurrentCategory, this);
         reportsStore.getHighlightCurrentClient(this.callbackHighlightCurrentClient, this);
     },
+    /**
+     * @author andresulivam
+     * 
+     * Callback da função do get json para o painel de destaques atuais da tela de relatórios por categoria
+     * 
+     * @param {type} result
+     * @returns {undefined}
+     */
     callbackHighlightCurrentCategory: function(result) {
         this.formatHighlightCurrentByScreen(result, 'category');
     },
+    /**
+     * @author andresulivam
+     * 
+     * Callback da função do get json para o painel de destaques atuais da tela de relatórios por cliente
+     * 
+     * @param {type} result
+     * @returns {undefined}
+     */
     callbackHighlightCurrentClient: function(result) {
         this.formatHighlightCurrentByScreen(result, 'client');
     },
+    /**
+     * @author andresulivam
+     * 
+     * Formata o painel de destaques atuais baseado na tela enviada por parâmentro (type) e o result (json).
+     * 
+     * @param {type} result
+     * @returns {undefined}
+     */
     formatHighlightCurrentByScreen: function(result, type) {
         var jsonObj = $.parseJSON('[' + result + ']');
         var panel;
@@ -567,6 +621,16 @@ Ext.define('Helpdesk.controller.Reports', {
     /**
      * @author andresulivam
      * 
+     * Formatar tela de relatórios por usuário. Formata gráfico e datagrid.
+     * @returns {undefined}
+     */
+    generateReportsUser: function() {
+        this.getGraphicUser();
+        this.getGridConsolidatedPerMonthUser();
+    },
+    /**
+     * @author andresulivam
+     * 
      * Requisição ao servidor para o Json para o gráfico de categorias na tela de relatórios de categoria.
      * @returns {undefined}
      */
@@ -575,8 +639,58 @@ Ext.define('Helpdesk.controller.Reports', {
         var panel = graphicUserPanel.down('#formPanelUser');
         var cmbBox = panel.down('usercombobox');
 
-        console.log(cmbBox);
-//      reportsStore.getGraphicCategory(this.callbackGraphicCategory, Helpdesk.Globals.user, this, tickets, dateFieldFrom.value, dateFieldTo.value, unit);
+        var panelGraphic = graphicUserPanel.items.get('panelEvolutionTicketsByUser');
+        var hboxUser = panelGraphic.down('formgraphicuser').down('#hboxUser');
+
+        var idUser = cmbBox.getValue();
+        var dateFieldFrom = hboxUser.down('#dateFieldFromUser');
+        var dateFieldTo = hboxUser.down('#dateFieldToUser');
+        var unit = hboxUser.down('#cmbUnitUser').value;
+
+        var reportsGraphicUser = graphicUserPanel.down('graphicuser');
+        var reportsStore = reportsGraphicUser.getStore();
+
+        reportsStore.getGraphicUser(this.callbackGraphicUser, Helpdesk.Globals.user, this, idUser, dateFieldFrom.value, dateFieldTo.value, unit);
+    },
+    /**
+     * @author andresulivam
+     * 
+     * Callback do json para preencher o gráfico de evolução de tickets por usuário.
+     * 
+     * @param {type} result
+     * @returns {undefined}
+     */
+    callbackGraphicUser: function(result) {
+        var jsonObj = $.parseJSON('[' + result + ']');
+        var graphicUserPanel = this.getGraphicUserPanel();
+        var panel = graphicUserPanel.down('#formPanelUser');
+        var cmbBox = panel.down('usercombobox');
+
+        var lbl = graphicUserPanel.down('#lblEvolutionTicketsByUser');
+        var panelGraphic = graphicUserPanel.down('#panelEvolutionTicketsByUser');
+        var panelConsolidated = graphicUserPanel.down('#panelConsolidatedPerMonthUser');
+
+        var reportsGraphicUser = graphicUserPanel.down('graphicuser');
+
+        var data = jsonObj[0];
+        var fields = Object.keys(data);
+
+        Ext.define('DynamicModel', {
+            extend: 'Ext.data.Model',
+            fields: fields
+        });
+
+        reportsGraphicUser.getStore().loadData([], false);
+
+        for (var j = 0; j < jsonObj.length; j++) {
+            var record = Ext.ModelManager.create(jsonObj[j], 'DynamicModel');
+            reportsGraphicUser.getStore().add(record);
+        }
+        lbl.setText(translations.EVOLUTION_TICKETS_BY_USER + ' ' + cmbBox.rawValue);
+        lbl.setVisible(true);
+        panelGraphic.setVisible(true);
+        panelConsolidated.setVisible(true);
+
     },
     /**
      * @author andresulivam
@@ -620,7 +734,7 @@ Ext.define('Helpdesk.controller.Reports', {
         var graphicClientPanel = this.getGraphicClientPanel();
         var panel = graphicClientPanel.items.get('panelConsolidatedPerMonthClient');
         var cmbBoxMonth = panel.down('formconsolidatedpermonth').down('combobox');
-        var grid = panel.down('gridconsolidatedpermonthclient');
+        var grid = panel.down('gridconsolidatedpermonth');
         var period = cmbBoxMonth.getValue();
         grid.setLoading();
 
@@ -632,12 +746,46 @@ Ext.define('Helpdesk.controller.Reports', {
     /**
      * @author andresulivam
      * 
+     * Requisição ao servidor para o json com os dados para o datagrid de relatório de usuário.
+     * 
+     * @returns {undefined}
+     */
+    getGridConsolidatedPerMonthUser: function() {
+        var graphicUserPanel = this.getGraphicUserPanel();
+        var panelUser = graphicUserPanel.items.get('panelConsolidatedPerMonthUser');
+        var cmbBoxMonth = panelUser.down('formconsolidatedpermonth').down('combobox');
+        var grid = panelUser.down('gridconsolidatedpermonthuser');
+        var period = cmbBoxMonth.getValue();
+
+        var panel = graphicUserPanel.down('#formPanelUser');
+        var cmbBox = panel.down('usercombobox');
+        var idUser = cmbBox.getValue();
+
+        grid.setLoading();
+
+        if (period === null) {
+            period = "";
+        }
+        this.getReportsStore().getGridConsolidatedPerMonthUser(this.callbackGridConsolidatedPerMonthUser, period, idUser, this);
+    },
+    /**
+     * @author andresulivam
+     * 
      * Callback da requisição do servidor do Json para preencher o datagrid de consolidados por mês na tela de relatórios de clientes.
      * @param {type} result
      * @returns {undefined}
      */
     callbackGridConsolidatedPerMonthClient: function(result) {
         this.gridConsolidatedPerMonth(result, 'client');
+    },
+    /**
+     * @author andresulivam
+     * 
+     * Callback da requisição do servidor do Json para preencher o datagrid de consolidados por mês na tela de relatório de usuário.
+     * @param {type} result
+     * @returns {undefined}
+     */
+    callbackGridConsolidatedPerMonthUser: function(result) {
+        this.gridConsolidatedPerMonth(result, 'user');
     }
-
 });

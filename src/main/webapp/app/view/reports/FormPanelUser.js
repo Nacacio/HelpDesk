@@ -7,7 +7,7 @@ Ext.define('Helpdesk.view.reports.FormPanelUser', {
     extend: 'Ext.form.Panel',
     alias: 'widget.formpaneluser',
     border: 0,
-    padding: 2,
+    padding: '0 0 0 20',
     requires: [
         'Helpdesk.view.user.UserComboBox'],
     layout: {

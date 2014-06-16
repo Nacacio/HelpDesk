@@ -52,41 +52,44 @@ public class ReportsService {
 
     /**
      * @author andresulivam
-     * 
+     *
      * Gera o JSON para preencher o gráfico de categorias ou de clientes.
-     * 
+     *
      * @param username
+     * @param idUser
      * @param tickets
      * @param dateFrom
      * @param dateTo
      * @param unit
-     * @param isClient
+     * @param type
      * @param response
      * @return
-     * @throws UnsupportedEncodingException 
+     * @throws UnsupportedEncodingException
      */
-    public String getGraphic(String username, String tickets, Date dateFrom, Date dateTo, String unit, boolean isClient, HttpServletResponse response) throws UnsupportedEncodingException {
+    public String getGraphic(String username, long idUser, String tickets, Date dateFrom, Date dateTo, String unit, String type, HttpServletResponse response) throws UnsupportedEncodingException {
         String resultado = "";
-        if (isClient) {
+        if (type.equals("client")) {
             resultado = getGraphicClient(username, tickets, dateFrom, dateTo, unit);
-        } else {
+        } else if (type.equals("category")) {
             resultado = getGraphicCategory(username, tickets, dateFrom, dateTo, unit);
+        } else if (type.equals("user")) {
+            resultado = getGraphicUser(idUser, dateFrom, dateTo, unit);
         }
         return resultado;
     }
 
     /**
      * @author andresulivam
-     * 
+     *
      * Gera o JSON para o gráfico de evolução de tickets por categoria.
-     * 
+     *
      * @param username
      * @param tickets
      * @param dateFrom
      * @param dateTo
      * @param unit
      * @return
-     * @throws UnsupportedEncodingException 
+     * @throws UnsupportedEncodingException
      */
     public String getGraphicCategory(String username, String tickets, Date dateFrom, Date dateTo, String unit) throws UnsupportedEncodingException {
 
@@ -111,7 +114,7 @@ public class ReportsService {
 
         listCategory = (List) categoryService.findAll();
 
-        for (long i = dateFrom.getTime(); i < (dateTo.getTime() + 86400000); i += 86400000) {
+        for (long i = (dateFrom.getTime() + 86400000); i < (dateTo.getTime() + 86400000); i += 86400000) {
 
             if (listGraphicContainer == null) {
                 listGraphicContainer = new ArrayList<GraphicContainer>();
@@ -161,16 +164,16 @@ public class ReportsService {
 
     /**
      * @author andresulivam
-     * 
+     *
      * Gera o JSON para o gráfico de evolução de tickets por cliente.
-     * 
+     *
      * @param username
      * @param tickets
      * @param dateFrom
      * @param dateTo
      * @param unit
      * @return
-     * @throws UnsupportedEncodingException 
+     * @throws UnsupportedEncodingException
      */
     public String getGraphicClient(String username, String tickets, Date dateFrom, Date dateTo, String unit) throws UnsupportedEncodingException {
 
@@ -195,7 +198,7 @@ public class ReportsService {
 
         listClient = (List) clientService.findAll();
 
-        for (long i = dateFrom.getTime(); i < (dateTo.getTime() + 86400000); i += 86400000) {
+        for (long i = (dateFrom.getTime() + 86400000); i < (dateTo.getTime() + 86400000); i += 86400000) {
 
             if (listGraphicContainer == null) {
                 listGraphicContainer = new ArrayList<GraphicContainer>();
@@ -245,13 +248,13 @@ public class ReportsService {
 
     /**
      * @author andresulivam
-     * 
+     *
      * Converte a listGraphicContainer em JSON.
-     * 
+     *
      * @param listGraphicContainer
      * @param unit
      * @param type
-     * @return 
+     * @return
      */
     public String getJsonGraphic(List<GraphicContainer> listGraphicContainer, String unit, String type) {
         String resultado = "";
@@ -279,6 +282,8 @@ public class ReportsService {
                     }
                     resultado += "\"" + clientTemp.getClient().getName() + "\":" + clientTemp.getQuantidade() + "";
                 }
+            } else if (type.equals("user")) {
+                resultado += "\"created\":" + temp.getCreated() + ",\"closed\":" + temp.getClosed() + "";
             }
             resultado += "}";
         }
@@ -287,12 +292,12 @@ public class ReportsService {
 
     /**
      * @author andresulivam
-     * 
+     *
      * Cria JSON de evolução de tickets por categoria pela periodicidade.
-     * 
+     *
      * @param listGraphicCategoryContainer
      * @param unit
-     * @return 
+     * @return
      */
     public String getJsonGraphicCategoryByUnit(List<GraphicContainer> listGraphicCategoryContainer, String unit) {
         String resultado = "";
@@ -334,11 +339,11 @@ public class ReportsService {
 
     /**
      * @author andresulivam
-     * 
+     *
      * Recupera o dia da semana do parâmetro enviado.
-     * 
+     *
      * @param cal
-     * @return 
+     * @return
      */
     public String getWeekDay(Calendar cal) {
         return new DateFormatSymbols().getWeekdays()[cal.get(Calendar.DAY_OF_WEEK)];
@@ -346,11 +351,11 @@ public class ReportsService {
 
     /**
      * @author andresulivam
-     * 
+     *
      * Recupera nome do mês baseado no parâmetro enviado.
-     * 
+     *
      * @param month
-     * @return 
+     * @return
      */
     public String getMonth(int month) {
         Calendar cal = new GregorianCalendar();
@@ -360,10 +365,11 @@ public class ReportsService {
 
     /**
      * @author andresulivam
-     * 
-     * Gera JSON com os campos para o combobox de consolidados por mês nas telas de relatórios.
+     *
+     * Gera JSON com os campos para o combobox de consolidados por mês nas telas
+     * de relatórios.
      * @param response
-     * @return 
+     * @return
      */
     public String getFieldsConsolidatedPerMonth(HttpServletResponse response) {
 
@@ -408,10 +414,10 @@ public class ReportsService {
 
     /**
      * @author andresulivam
-     * 
+     *
      * Inverte todas as posições da lista.
      * @param list
-     * @return 
+     * @return
      */
     public List<MonthContainer> inverseList(List<MonthContainer> list) {
         List<MonthContainer> listResult = new ArrayList<MonthContainer>();
@@ -423,10 +429,10 @@ public class ReportsService {
 
     /**
      * @author andresulivam
-     * 
+     *
      * Formata a list enviada por parâmetro em JSON
      * @param list
-     * @return 
+     * @return
      */
     public String getJsonConsolidatedPerMonth(List<MonthContainer> list) {
         String resultado = "";
@@ -442,14 +448,16 @@ public class ReportsService {
 
     /**
      * @author andresulivam
-     * 
-     * Gera JSON para o datagrid de consolidados por mês no relatório de categoria.
+     *
+     * Gera JSON para o datagrid de consolidados por mês no relatório de
+     * categoria.
      * @param period
      * @param type
+     * @param idUser
      * @param response
-     * @return 
+     * @return
      */
-    public String getGridConsolidatedPerMonth(String period, String type, HttpServletResponse response) {
+    public String getGridConsolidatedPerMonth(String period, String type, long idUser, HttpServletResponse response) {
         String resultado = "";
 
         List<Category> listCategory;
@@ -493,41 +501,20 @@ public class ReportsService {
         if (type.equals("category")) {
             listCategory = (List) categoryService.findAll();
             for (Category temp : listCategory) {
-                openFrom = (ticketService.findIsOpenUntilDate(from.getTime()));
-                for (int j = 0; j < openFrom.size(); j++) {
-                    if (!openFrom.get(j).getCategory().getId().equals(temp.getId())) {
-                        openFrom.remove(j);
-                        j--;
-                    }
-                }
-                openTo = (ticketService.findIsOpenUntilDate(to.getTime()));
-                for (int j = 0; j < openTo.size(); j++) {
-                    if (!openTo.get(j).getCategory().getId().equals(temp.getId())) {
-                        openTo.remove(j);
-                        j--;
-                    }
-                }
-                created = (ticketService.findBetweenStartDate(from.getTime(), to.getTime()));
-                for (int j = 0; j < created.size(); j++) {
-                    if (!created.get(j).getCategory().getId().equals(temp.getId())) {
-                        created.remove(j);
-                        j--;
-                    }
-                }
-                closed = (ticketService.findBetweenEndDate(from.getTime(), to.getTime()));
-                for (int j = 0; j < closed.size(); j++) {
-                    if (!closed.get(j).getCategory().getId().equals(temp.getId())) {
-                        closed.remove(j);
-                        j--;
-                    }
-                }
+                
+                openFrom = (ticketService.findIsOpenUntilDateAndCategory(from.getTime(),temp.getId()));
+                openTo = (ticketService.findIsOpenUntilDateAndCategory(to.getTime(),temp.getId()));
+                created = (ticketService.findBetweenStartDateAndCategory(from.getTime(), to.getTime(),temp.getId()));
+                closed = (ticketService.findBetweenEndDateAndCategory(from.getTime(), to.getTime(),temp.getId()));
 
                 consolidatedTemp = new ConsolidatedPerMonthContainer();
                 consolidatedTemp.setClosed(closed.size());
                 consolidatedTemp.setCreated(created.size());
                 consolidatedTemp.setDate(Integer.toString(date.get(0)) + "-" + Integer.toString(date.get(1)) + "-" + Integer.toString(date.get(3)));
                 consolidatedTemp.setOpenFrom(openFrom.size());
+                consolidatedTemp.setDateOpenFrom(from.getTime());
                 consolidatedTemp.setOpenTo(openTo.size());
+                consolidatedTemp.setDateOpenTo(to.getTime());
                 consolidatedTemp.setName(temp.getName());
 
                 listConsolidated.add(consolidatedTemp);
@@ -536,45 +523,57 @@ public class ReportsService {
             listClient = (List) clientService.findAll();
 
             for (Client temp : listClient) {
-                openFrom = (ticketService.findIsOpenUntilDate(from.getTime()));
-                for (int j = 0; j < openFrom.size(); j++) {
-                    if (!openFrom.get(j).getClient().getId().equals(temp.getId())) {
-                        openFrom.remove(j);
-                        j--;
-                    }
-                }
-                openTo = (ticketService.findIsOpenUntilDate(to.getTime()));
-                for (int j = 0; j < openTo.size(); j++) {
-                    if (!openTo.get(j).getClient().getId().equals(temp.getId())) {
-                        openTo.remove(j);
-                        j--;
-                    }
-                }
-                created = (ticketService.findBetweenStartDate(from.getTime(), to.getTime()));
-                for (int j = 0; j < created.size(); j++) {
-                    if (!created.get(j).getClient().getId().equals(temp.getId())) {
-                        created.remove(j);
-                        j--;
-                    }
-                }
-                closed = (ticketService.findBetweenEndDate(from.getTime(), to.getTime()));
-                for (int j = 0; j < closed.size(); j++) {
-                    if (!closed.get(j).getClient().getId().equals(temp.getId())) {
-                        closed.remove(j);
-                        j--;
-                    }
-                }
+                openFrom = (ticketService.findIsOpenUntilDateAndClient(from.getTime(), temp.getId()));
+                openTo = (ticketService.findIsOpenUntilDateAndClient(to.getTime(), temp.getId()));
+                created = (ticketService.findBetweenStartDateAndClient(from.getTime(), to.getTime(), temp.getId()));
+                closed = (ticketService.findBetweenEndDateAndClient(from.getTime(), to.getTime(), temp.getId()));
 
                 consolidatedTemp = new ConsolidatedPerMonthContainer();
                 consolidatedTemp.setClosed(closed.size());
                 consolidatedTemp.setCreated(created.size());
                 consolidatedTemp.setDate(Integer.toString(date.get(0)) + "-" + Integer.toString(date.get(1)) + "-" + Integer.toString(date.get(3)));
                 consolidatedTemp.setOpenFrom(openFrom.size());
+                consolidatedTemp.setDateOpenFrom(from.getTime());
                 consolidatedTemp.setOpenTo(openTo.size());
+                consolidatedTemp.setDateOpenTo(to.getTime());
                 consolidatedTemp.setName(temp.getName());
 
                 listConsolidated.add(consolidatedTemp);
             }
+        } else if (type.equals("user")) {
+            User user = userService.findById(idUser);
+            
+            openFrom = (ticketService.findIsOpenUntilDateAndUser(from.getTime(), user.getId()));   
+            consolidatedTemp = new ConsolidatedPerMonthContainer();
+            consolidatedTemp.setName("OPEN_FROM");
+            consolidatedTemp.setValue(openFrom.size());
+            consolidatedTemp.setDateOpenFrom(from.getTime());
+            consolidatedTemp.setDateOpenTo(to.getTime());
+            listConsolidated.add(consolidatedTemp);
+
+            created = (ticketService.findBetweenStartDateAndUser(from.getTime(), to.getTime(), user.getId()));
+            consolidatedTemp = new ConsolidatedPerMonthContainer();
+            consolidatedTemp.setName("CREATED");
+            consolidatedTemp.setValue(created.size());
+            consolidatedTemp.setDateOpenFrom(from.getTime());
+            consolidatedTemp.setDateOpenTo(to.getTime());
+            listConsolidated.add(consolidatedTemp);
+
+            closed = (ticketService.findBetweenEndDateAndUser(from.getTime(), to.getTime(), user.getId()));
+            consolidatedTemp = new ConsolidatedPerMonthContainer();
+            consolidatedTemp.setName("CLOSED");
+            consolidatedTemp.setValue(closed.size());
+            consolidatedTemp.setDateOpenFrom(from.getTime());
+            consolidatedTemp.setDateOpenTo(to.getTime());
+            listConsolidated.add(consolidatedTemp);
+
+            openTo = (ticketService.findIsOpenUntilDateAndUser(to.getTime(), user.getId()));
+            consolidatedTemp = new ConsolidatedPerMonthContainer();
+            consolidatedTemp.setName("OPEN_TO");
+            consolidatedTemp.setValue(openTo.size());
+            consolidatedTemp.setDateOpenFrom(from.getTime());
+            consolidatedTemp.setDateOpenTo(to.getTime());
+            listConsolidated.add(consolidatedTemp);
         }
 
         resultado = getJsonGridConsolidatedPerMonth(listConsolidated);
@@ -583,27 +582,30 @@ public class ReportsService {
 
     /**
      * @author andresulivam
-     * 
+     *
      * Converte list no JSON para consolidados por mês na tela de categoria.
      * @param list
-     * @return 
+     * @return
      */
     public String getJsonGridConsolidatedPerMonth(List<ConsolidatedPerMonthContainer> list) {
         String resultado = "";
-
+        Format formatter = new SimpleDateFormat("MM-dd");
         for (int i = 0; i < list.size(); i++) {
             if (i != 0) {
                 resultado += ",";
             }
             resultado += "{\"name\":\"" + list.get(i).getName()
-                    + "\",\"closed\":\"" + list.get(i).getClosed()
-                    + "\",\"created\":\"" + list.get(i).getCreated()
                     + "\",\"openFrom\":\"" + list.get(i).getOpenFrom()
-                    + "\",\"openTo\":\"" + list.get(i).getOpenTo() + "\"}";
+                    + "\",\"dateOpenFrom\":\"" + formatter.format(list.get(i).getDateOpenFrom())
+                    + "\",\"created\":\"" + list.get(i).getCreated() 
+                    + "\",\"closed\":\"" + list.get(i).getClosed()
+                    + "\",\"openTo\":\"" + list.get(i).getOpenTo()
+                    + "\",\"dateOpenTo\":\"" + formatter.format(list.get(i).getDateOpenTo())
+                    + "\",\"value\":\"" + list.get(i).getValue() + "\"}";
         }
         return resultado;
     }
-    
+
     /**
      * @author andresulivam
      *
@@ -699,6 +701,56 @@ public class ReportsService {
             cont = 0;
         }
         resultado = getJsonHighlightCurrent(list);
+        return resultado;
+    }
+
+    public String getGraphicUser(long idUser, Date dateFrom, Date dateTo, String unit) throws UnsupportedEncodingException {
+
+        User user = userService.findById(idUser);
+        String resultado = "";
+        List<GraphicContainer> listGraphicContainer = null;
+        GraphicContainer graphicContainer = null;
+        Date currentDay;
+        Format formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String currentDayString;
+        List<Ticket> ticketsCreated;
+        List<Ticket> ticketsClosed;
+        int quantTickets = 0;
+
+        ticketsCreated = ticketService.findBetweenStartDate(dateFrom, dateTo);
+        ticketsClosed = ticketService.findBetweenEndDate(dateFrom, dateTo);
+
+        for (long i = (dateFrom.getTime() + 86400000); i < (dateTo.getTime() + 86400000); i += 86400000) {
+            if (listGraphicContainer == null) {
+                listGraphicContainer = new ArrayList<GraphicContainer>();
+            }
+            graphicContainer = new GraphicContainer();
+            currentDay = new Date(i);
+            currentDayString = formatter.format(currentDay);
+            graphicContainer.setDate(currentDay);
+            graphicContainer.setDateString(currentDayString);
+
+            for (Ticket temp : ticketsCreated) {
+                if (temp.getUser().getId().equals(user.getId())) {
+                    if (temp.getStartDate().getTime() == currentDay.getTime()) {
+                        quantTickets++;
+                    }
+                }
+            }
+            graphicContainer.setCreated(quantTickets);
+            quantTickets = 0;
+            for (Ticket temp : ticketsClosed) {
+                if (temp.getUser().getId().equals(user.getId()) && temp.getEndDate().getTime() == currentDay.getTime()) {
+                    quantTickets++;
+                }
+            }
+            graphicContainer.setClosed(quantTickets);
+            quantTickets = 0;
+            listGraphicContainer.add(graphicContainer);
+        }
+
+        resultado = getJsonGraphic(listGraphicContainer, unit, "user");
+
         return resultado;
     }
 

@@ -6,6 +6,8 @@
 
 package com.br.helpdesk.model;
 
+import java.util.Date;
+
 /**
  *
  * @author Sulivam
@@ -18,6 +20,9 @@ public class ConsolidatedPerMonthContainer {
     private int openTo;
     private int created;
     private int closed;
+    private int value;
+    private Date dateOpenFrom;
+    private Date dateOpenTo;
 
     public String getDate() {
         return date;
@@ -66,6 +71,31 @@ public class ConsolidatedPerMonthContainer {
     public void setClosed(int closed) {
         this.closed = closed;
     }
+
+    public int getValue() {
+        return value;
+    }
+
+    public void setValue(int value) {
+        this.value = value;
+    }
+
+    public Date getDateOpenFrom() {
+        return dateOpenFrom;
+    }
+
+    public void setDateOpenFrom(Date dateOpenFrom) {
+        this.dateOpenFrom = dateOpenFrom;
+    }
+
+    public Date getDateOpenTo() {
+        return dateOpenTo;
+    }
+
+    public void setDateOpenTo(Date dateOpenTo) {
+        this.dateOpenTo = dateOpenTo;
+    }
+    
     
     
 }

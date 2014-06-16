@@ -460,7 +460,6 @@
 .grid-style-header td > div:hover{
     cursor:pointer;
     text-decoration: underline;
-
 }
 .custom-grid .x-grid-row-over .x-grid-cell { 
     background-color: #ff6; 

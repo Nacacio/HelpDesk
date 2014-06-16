@@ -43,7 +43,7 @@ Ext.define('Helpdesk.view.reports.GraphicCategory', {
         {
             id: 'axeCategory',
             type: 'Time',
-            dateFormat: 'M d',
+            dateFormat: translations.DATE_FORMAT,
             minorTickSteps: 1,
             position: 'bottom',
             fields: ['date'],

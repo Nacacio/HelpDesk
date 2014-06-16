@@ -20,7 +20,6 @@ Ext.define('Helpdesk.view.reports.GridConsolidatedPerMonth', {
     columns: {
         items: [
             {
-                id: 'name',
                 width: 155,
                 header: translations.CATEGORY,
                 dataIndex: 'name'

@@ -60,6 +60,9 @@ translations = {
     DESCRIPTION: 'Descrição',
     DAY: 'Dia',
     DOUBT: 'Dúvida',
+    DATE: 'Dia',
+    DATE_FORMAT: 'M d',
+    DATE_SIMPLIFIED: 'd/m',
     //############################################## [ E ] ##############################################//
 
     EDIT: 'Editar',
@@ -73,11 +76,12 @@ translations = {
     EXPORT_DATA: 'Exportar Dados',
     EVOLUTION_TICKETS_BY_CATEGORY: 'Evolução dos tickets por categoria',
     EVOLUTION_TICKETS_BY_CLIENT: 'Evolução dos tickets pelo cliente',
-    EVOLUTION_TICKETS_BY_USER: 'Evolução dos tickets por usuário',
+    EVOLUTION_TICKETS_BY_USER: 'Evolução dos tickets pelo usuário',
     //############################################## [ F ] ##############################################//
 
     FIRST_TIME_REQUESTING_SERVICE: 'Solicitando Atendimento pela primeira vez?',
     FROM: 'de',
+    FORMAT_DATE: 'pt-BR',
     //############################################## [ G ] ##############################################//
 
     GROUP: 'Grupo',

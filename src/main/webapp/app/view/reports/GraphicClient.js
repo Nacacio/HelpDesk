@@ -41,11 +41,17 @@ Ext.define('Helpdesk.view.reports.GraphicClient', {
             title: translations.QUANTITY_OF_CREATED_TICKETS,
             minorTickSteps: 1,
 	    grid: true    
-        }, {
+        }, 
+        {
             id: 'axeCategory',
-            type: 'Category',
+            type: 'Time',
+            dateFormat: translations.DATE_FORMAT,
+            minorTickSteps: 1,
             position: 'bottom',
-            fields: ['date']
-//	    grid: true    
-        }]
+            fields: ['date'],
+            label   : {
+             rotation:{degrees:290}
+            }
+        }
+    ]
 });
