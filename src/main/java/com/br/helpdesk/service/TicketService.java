@@ -88,6 +88,10 @@ public class TicketService {
         return IteratorUtils.toList(repository.findBetweenEndDate(firstDate, lastDate).iterator());
     }
 
+    public List<Ticket> findIsOpenUntilDateAndCategorySomeAlreadyClosed(Date lastDate, long categoryId) {
+        return IteratorUtils.toList(repository.findIsOpenUntilDateAndCategorySomeAlreadyClosed(lastDate, categoryId).iterator());
+    }
+
     public List<Ticket> findIsOpenUntilDateAndCategory(Date lastDate, long categoryId) {
         return IteratorUtils.toList(repository.findIsOpenUntilDateAndCategory(lastDate, categoryId).iterator());
     }
@@ -98,6 +102,10 @@ public class TicketService {
 
     public List<Ticket> findBetweenEndDateAndCategory(Date firstDate, Date lastDate, long categoryId) {
         return IteratorUtils.toList(repository.findBetweenEndDateAndCategory(firstDate, lastDate, categoryId).iterator());
+    }
+
+    public List<Ticket> findIsOpenUntilDateAndClientSomeAlreadyClosed(Date lastDate, long clientId) {
+        return IteratorUtils.toList(repository.findIsOpenUntilDateAndClientSomeAlreadyClosed(lastDate, clientId).iterator());
     }
 
     public List<Ticket> findIsOpenUntilDateAndClient(Date lastDate, long clientId) {

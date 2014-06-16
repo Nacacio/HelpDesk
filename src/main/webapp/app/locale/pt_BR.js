@@ -150,7 +150,9 @@ translations = {
     OPENED_TICKETS: 'Tickets Abertos',
     OBSERVATIONS: 'Observações',
     ON_GOING: 'Em andamento',
-    OPEN: 'Em aberto',    
+    OPEN: 'Em aberto', 
+    OPEN_FROM: 'Em aberto',
+    OPEN_TO: 'Em aberto',
     //############################################## [ P ] ##############################################//
 
     PASSWORD: 'Senha',

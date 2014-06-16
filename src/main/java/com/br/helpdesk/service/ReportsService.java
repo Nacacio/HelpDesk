@@ -465,6 +465,7 @@ public class ReportsService {
         List<Integer> date = new ArrayList<Integer>();
         Calendar dateAtual = new GregorianCalendar();
         dateAtual.setTime(new Date());
+        Date dateTemp;
         List<ConsolidatedPerMonthContainer> listConsolidated = new ArrayList<ConsolidatedPerMonthContainer>();
         ConsolidatedPerMonthContainer consolidatedTemp;
 
@@ -501,11 +502,11 @@ public class ReportsService {
         if (type.equals("category")) {
             listCategory = (List) categoryService.findAll();
             for (Category temp : listCategory) {
-                
-                openFrom = (ticketService.findIsOpenUntilDateAndCategory(from.getTime(),temp.getId()));
-                openTo = (ticketService.findIsOpenUntilDateAndCategory(to.getTime(),temp.getId()));
-                created = (ticketService.findBetweenStartDateAndCategory(from.getTime(), to.getTime(),temp.getId()));
-                closed = (ticketService.findBetweenEndDateAndCategory(from.getTime(), to.getTime(),temp.getId()));
+
+                openFrom = (ticketService.findIsOpenUntilDateAndCategorySomeAlreadyClosed(from.getTime(), temp.getId()));
+                created = (ticketService.findBetweenStartDateAndCategory(from.getTime(), to.getTime(), temp.getId()));
+                closed = (ticketService.findBetweenEndDateAndCategory(from.getTime(), to.getTime(), temp.getId()));
+                openTo = (ticketService.findIsOpenUntilDateAndCategory(to.getTime(), temp.getId()));
 
                 consolidatedTemp = new ConsolidatedPerMonthContainer();
                 consolidatedTemp.setClosed(closed.size());
@@ -523,10 +524,10 @@ public class ReportsService {
             listClient = (List) clientService.findAll();
 
             for (Client temp : listClient) {
-                openFrom = (ticketService.findIsOpenUntilDateAndClient(from.getTime(), temp.getId()));
-                openTo = (ticketService.findIsOpenUntilDateAndClient(to.getTime(), temp.getId()));
+                openFrom = (ticketService.findIsOpenUntilDateAndClientSomeAlreadyClosed(from.getTime(), temp.getId()));
                 created = (ticketService.findBetweenStartDateAndClient(from.getTime(), to.getTime(), temp.getId()));
                 closed = (ticketService.findBetweenEndDateAndClient(from.getTime(), to.getTime(), temp.getId()));
+                openTo = (ticketService.findIsOpenUntilDateAndClient(to.getTime(), temp.getId()));
 
                 consolidatedTemp = new ConsolidatedPerMonthContainer();
                 consolidatedTemp.setClosed(closed.size());
@@ -542,8 +543,8 @@ public class ReportsService {
             }
         } else if (type.equals("user")) {
             User user = userService.findById(idUser);
-            
-            openFrom = (ticketService.findIsOpenUntilDateAndUser(from.getTime(), user.getId()));   
+
+            openFrom = (ticketService.findIsOpenUntilDateAndUser(from.getTime(), user.getId()));
             consolidatedTemp = new ConsolidatedPerMonthContainer();
             consolidatedTemp.setName("OPEN_FROM");
             consolidatedTemp.setValue(openFrom.size());
@@ -597,7 +598,7 @@ public class ReportsService {
             resultado += "{\"name\":\"" + list.get(i).getName()
                     + "\",\"openFrom\":\"" + list.get(i).getOpenFrom()
                     + "\",\"dateOpenFrom\":\"" + formatter.format(list.get(i).getDateOpenFrom())
-                    + "\",\"created\":\"" + list.get(i).getCreated() 
+                    + "\",\"created\":\"" + list.get(i).getCreated()
                     + "\",\"closed\":\"" + list.get(i).getClosed()
                     + "\",\"openTo\":\"" + list.get(i).getOpenTo()
                     + "\",\"dateOpenTo\":\"" + formatter.format(list.get(i).getDateOpenTo())
