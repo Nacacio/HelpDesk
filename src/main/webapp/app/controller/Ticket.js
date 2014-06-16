@@ -89,6 +89,10 @@ Ext.define('Helpdesk.controller.Ticket', {
         {
             ref:'ediTicketView',
             selector:'editticket'
+        },
+        {
+            ref:'ticketView',
+            selector:'ticket'
         }
         
     ],
@@ -372,7 +376,6 @@ Ext.define('Helpdesk.controller.Ticket', {
      */
     getAllTickets: function(){
         this.loadStoreBasic('all');
-        this.downloadTeste();
     },
     
     /**
@@ -462,13 +465,58 @@ Ext.define('Helpdesk.controller.Ticket', {
      * Envia para o JAVA, 
      * e quando retornar realiza o upload dos arquivos se existir
      */
+//    saveNewTicket: function(button, e, options) {
+//        var scope = this;
+//        var fieldset = button.up();
+//        var panel = fieldset.up();
+//        var win = panel.up();
+//        win.setLoading(true);
+//        var form = win.down('form');
+//        var record = form.getRecord();
+//        var values = form.getValues();
+//        
+//        
+//        record.set(values);
+//        record.data.startDate = new Date();
+//        record.data.endDate = null;
+//        record.data.user = Helpdesk.Globals.userLogged;
+//        record.data.isOpen = true;   
+//        
+//        
+//        if(Helpdesk.Globals.userLogged.id !== 1){
+//            record.data.responsavel = null;
+//            record.data.priority = null;
+//            record.data.estimateTime = null;
+//            record.data.client = Helpdesk.Globals.userLogged.client;           
+//        }
+//        this.getTicketPanel().getStore().add(record);
+//        if (this.getTicketPanel().getStore().getModifiedRecords().length > 0) {
+//            this.getTicketPanel().getStore().sync({
+//                callback: function(records,operation,success) {
+//                    form.getForm().reset();
+//                    var multiupload = win.down('multiupload');
+//                    multiupload.ticketId = records.operations[0].records[0].data.id;
+//                    multiupload.submitValues();
+//                    scope.getTicketCardContainer().getLayout().setActiveItem(Helpdesk.Globals.ticket_datagrid);
+//                    scope.setSideMenuButtonText();
+//                    win.setLoading(false); 
+//                }
+//            });          
+//        } else {
+//            Ext.Msg.alert(translations.INFORMATION, translations.NOTHING_TO_SAVE);
+//        }
+//    },
     saveNewTicket: function(button, e, options) {
+        var ticketView = this.getTicketView();
+        //upload arquivos, caso seja success, salva o novo ticket
+        var multiupload = ticketView.down('multiupload');
+        this.submitValues(multiupload);
+    },
+    
+    saveTicket: function(){
         var scope = this;
-        var fieldset = button.up();
-        var panel = fieldset.up();
-        var win = panel.up();
-        win.setLoading(true);
-        var form = win.down('form');
+        var ticketView = scope.getTicketView();      
+        var form = ticketView.down('form');
         var record = form.getRecord();
         var values = form.getValues();
         
@@ -490,20 +538,18 @@ Ext.define('Helpdesk.controller.Ticket', {
         if (this.getTicketPanel().getStore().getModifiedRecords().length > 0) {
             this.getTicketPanel().getStore().sync({
                 callback: function(records,operation,success) {
-                    form.getForm().reset();
-                    var multiupload = win.down('multiupload');
-                    multiupload.ticketId = records.operations[0].records[0].data.id;
-                    multiupload.submitValues();
+                    form.getForm().reset();                    
                     scope.getTicketCardContainer().getLayout().setActiveItem(Helpdesk.Globals.ticket_datagrid);
                     scope.setSideMenuButtonText();
-                    win.setLoading(false); 
+                    ticketView.setLoading(false);
                 }
             });          
         } else {
             Ext.Msg.alert(translations.INFORMATION, translations.NOTHING_TO_SAVE);
+            ticketView.setLoading(false);
         }
+         
     },
-    
     /**
      * Função para criar um novo Client durante o cadastro de Tikcet
      */
@@ -657,16 +703,12 @@ Ext.define('Helpdesk.controller.Ticket', {
         
     },
     getFilesFromRecord:function(ticketView,record){
-        var ticketFileField = ticketView.down('panel#tktFiles');
-       
+        var scope = this;
         if(ticketView !== null && record !== null){   
-            var idFile = record.data.id;
+            var ticketId = record.data.id;
             Ext.Ajax.request({
-                url: 'ticket/fileslist',
-                method: 'POST',
-                params: {
-                    idFile : idFile
-                },
+                url: 'ticket/'+ticketId+'/files',
+                method: 'GET',
                 success: function (response, opts) {
                     if(response.responseText !== ''){
                         var responseJSON = Ext.decode(response.responseText);
@@ -684,16 +726,32 @@ Ext.define('Helpdesk.controller.Ticket', {
                                 var fileIdTicket = file.fileTicketId;
                                 var fileIdAnswer = file.fileTicketAnswerId;
                                 var fileName = file.fileName;
+                                var fileId = file.fileId;
+                                var insertAnexo = false;
                                 if(idAnswer === 0){
                                     if(fileIdAnswer === '' && fileIdTicket == idTicket){
-                                        console.log('ANEXO FROM TICKET DESCRIPTION');  
-                                        console.log(fileContainer);
+                                        insertAnexo = true;
                                     }
                                 }
                                 else{
                                     if(fileIdAnswer == idAnswer){
-                                        console.log('ANEXO FROM TICKET RESPOSTA');
+                                        insertAnexo = true;
                                     }
+                                }
+                                if(insertAnexo){
+                                    var linkButton = {
+                                        xtype : 'button',
+                                        text : fileName,
+                                        fileId: fileId,
+                                        cls: 'btn-linkbutton-custom',
+                                        iconCls: 'clip',
+                                        listeners : {
+                                            click : function(button, e, eOpts){
+                                                scope.downloadFile(button.fileId);
+                                            }
+                                        }
+                                    }
+                                    fileContainer.insert(linkButton);
                                 }
                             }
                         }
@@ -732,13 +790,62 @@ Ext.define('Helpdesk.controller.Ticket', {
         
     },
     
-    downloadTeste:function(){
-        var fileId = 4;
+    downloadFile:function(fileId){
         Ext.core.DomHelper.append(document.body, {
             tag : 'iframe',
             id : 'downloadIframe',
             style : 'display:none;',
-            src : 'ticket/files?id='+fileId
+            src : 'ticket/files/'+fileId
         });
+    },
+    submitValues: function(multiupload) {
+        var scope = this;
+        var ticketView = scope.getTicketView();
+        if (multiupload.filesListArchive.length > 0) {
+            var time = new Date().getTime();
+            var userLogadoText = Ext.DomHelper.append(Ext.getBody(),'<input type="text" name="username" value="'+Helpdesk.Globals.user+'">');
+            //Criação do form para upload de arquivos
+            var formId = 'fileupload-form-' + time;
+            var formEl = Ext.DomHelper.append(Ext.getBody(), '<form id="' + formId + '" method="POST" action="ticket/files" enctype="multipart/form-data" class="x-hide-display"></form>');
+            formEl.appendChild(userLogadoText);
+            Ext.each(multiupload.filesListArchive, function(fileField) {
+                formEl.appendChild(fileField);
+            });
+            
+            
+            var form = $("#"+formId);
+            form.ajaxForm({
+                beforeSend: function() {
+                    
+                },
+                uploadProgress: function(event, position, total, percentComplete) {                    
+                    ticketView.setLoading('Uploading Files ... '+percentComplete+'%');
+                },
+                success: function() {
+                                      
+                },
+                complete: function(xhr) {                    
+                    var responseJSON = Ext.decode(xhr.responseText);
+                    if(responseJSON.success){                        
+                        ticketView.setLoading('Saving Ticket ...');
+                        scope.saveTicket();
+                    }
+                    else{
+                        ticketView.setLoading(false);
+                        console.info("ERRO UPLOAD FILE");
+                    }
+                }
+            });
+            form.submit();
+            //Clear Fields
+            multiupload.filesListArchive.length = 0;
+            multiupload.fileslist.length = 0;
+            multiupload.doLayout();            
+        }
+        else{
+            ticketView.setLoading('Saving Ticket ...');
+            scope.saveTicket();
+        }
+
     }
 });

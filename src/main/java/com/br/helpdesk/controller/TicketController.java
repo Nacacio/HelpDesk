@@ -6,9 +6,16 @@ import com.br.helpdesk.model.User;
 import com.br.helpdesk.service.TicketFileService;
 import com.br.helpdesk.service.TicketService;
 import com.br.helpdesk.service.UserService;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.security.AccessController;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
@@ -34,6 +41,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+
 
 @Controller
 @RequestMapping("/ticket")
@@ -198,35 +206,41 @@ public class TicketController {
         return ticketService.save(ticket);
     }
     
-    @RequestMapping(value = {"", "/{id}"}, method = {RequestMethod.POST,RequestMethod.PUT})
+    @RequestMapping(value = {"", "/{id}"}, method = {RequestMethod.POST,RequestMethod.PUT}, params={"user"})
     @ResponseBody
-    public Ticket save(@RequestBody Ticket ticket) {
+    public Ticket save(@RequestBody Ticket ticket,@RequestParam(value = "user") String username) throws IOException {
 //        if(ticket.getId() == null){
 //            EmailUtil eu = new EmailUtil();
 //            eu.novoTicket(ticket.getTitle(), ticket.getCategory().getName(), ticket.getDescription(), ticket.getPassosParaReproducao());
 //        }
-        return ticketService.save(ticket);
+        List<File> filesToSave = getFilesFromUser(username);
+        ticket = ticketService.save(ticket);
+        TicketFile ticketFile = null;
+        for (File file : filesToSave){
+            //file.renameTo(file.getName().replace(username, username));
+            ticketFile = new TicketFile();
+            ticketFile.setName(file.getName());
+            ticketFile.setByteArquivo(getBytesFromFile(file));
+            ticketFile.setTicket(ticket);
+            fileService.save(ticketFile);
+            file.delete();
+        }
+        return ticket;
     }
     
     /**
      * upload
      */
-    @RequestMapping(value = "/{ticketId}/files", method = RequestMethod.POST)
+    @RequestMapping(value = "/files", method = RequestMethod.POST)
     @ResponseBody
-    public String uploadFile(HttpServletRequest request,HttpServletResponse response,@PathVariable(value="ticketId")Long ticketId ) throws Exception {
-        Ticket ticket = ticketService.findById(ticketId);
-        
-        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+    public String uploadFile(HttpServletRequest request,HttpServletResponse response) throws Exception {
+        String username = request.getParameter("username");
+        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;        
         Collection<MultipartFile> filesCollection = multipartRequest.getFileMap().values();
-        TicketFile file;
         try{
             for (MultipartFile multipartFile : filesCollection) {
-                file = new TicketFile();
-                file.setName(multipartFile.getOriginalFilename());
-                file.setByteArquivo(multipartFile.getBytes());
-                file.setTicket(ticket);
-                file.setContentType(multipartFile.getContentType());
-                fileService.save(file);
+                String fileName = "##"+username+"##"+multipartFile.getOriginalFilename();
+                createFile(fileName, multipartFile.getBytes());
             }
         }
         catch (IOException e){
@@ -234,52 +248,54 @@ public class TicketController {
         }
         return "{success: true}";
     }
-//    
-//    @RequestMapping(value = {"/uploadfiles"},method = {RequestMethod.POST})
-//    @ResponseBody
-//    public String uploadImages(MultipartHttpServletRequest request, HttpServletResponse response) throws IOException {
-//        Long ticketId = Long.parseLong(request.getParameter("ticketId"));
-//        Ticket ticket = ticketService.findById(ticketId);
-//        Collection<MultipartFile> filesCollection = request.getFileMap().values();
-//        TicketFile file;
-//        try{
-//            for (MultipartFile multipartFile : filesCollection) {
-//                file = new TicketFile();
-//                file.setName(multipartFile.getOriginalFilename());
-//                file.setByteArquivo(multipartFile.getBytes());
-//                file.setTicket(ticket);
-//                fileService.save(file);
-//            }
-//        }
-//        catch (IOException e){
-//            return "{success: false}";
-//        }
-//        
-//        return "{success: true}";
-//    }
-    
+    public List<File> getFilesFromUser(String username) throws FileNotFoundException, IOException {
+        File folder = new File(System.getProperty("java.io.tmpdir"));
+        final String sufixnamefile = "##"+username+"##";
+        List<File> filesToSave = new ArrayList<File>();
+        
+        
+        FilenameFilter fileFilter = new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.toLowerCase().contains(sufixnamefile);
+            }
+        };
+        
+        File filesFromUser[] = folder.listFiles(fileFilter);
+        for (File tempFile : filesFromUser) {
+            String fileName = tempFile.getName().replace(sufixnamefile, ""); 
+            File file = createFile(fileName,getBytesFromFile(tempFile));
+            tempFile.delete();
+            filesToSave.add(file);
+        }
 
-//    @RequestMapping(value = "/downloadfiles", method = RequestMethod.GET)
-//    @ResponseBody
-//    public void downloadFile(HttpServletRequest request,HttpServletResponse response) throws Exception {
-//        TicketFile ticketFile = fileService.findById(2L);
-//        
-//        response.setHeader("Content-Disposition", "attachment; filename=\"" +ticketFile.getName()+"\"");
-//        response.setHeader("Content-Type","application/octet-stream");
-//        response.getOutputStream().write(ticketFile.getByteArquivo());
-//        response.flushBuffer();
-//        //return fileService.createFile(idFile, request.getServletContext());
-//    }
+        return filesToSave;
+    }
     
+    public byte[] getBytesFromFile(File file){
+        FileInputStream fileInputStream=null;
+ 
+        byte[] bFile = new byte[(int) file.length()];
+ 
+        try {
+            //convert file into array of bytes
+	    fileInputStream = new FileInputStream(file);
+	    fileInputStream.read(bFile);
+	    fileInputStream.close();
+ 	    return bFile;
+        }catch(Exception e){
+        	e.printStackTrace();
+        }
+        return null;        
+    }
+
      /**
      * download
      */
-    @RequestMapping(value = "/files", method = RequestMethod.GET)
+    @RequestMapping(value = "/files/{fileId}", method = RequestMethod.GET)
     @ResponseBody
-    public void downloadFile(HttpServletRequest request,HttpServletResponse response) throws Exception {
-        Long id = ServletRequestUtils.getRequiredLongParameter(request, "id");
- 
-        TicketFile ticketFile = fileService.findById(id);
+    public void downloadFile(HttpServletRequest request,HttpServletResponse response,@PathVariable(value="fileId")Long fileId ) throws Exception {        
+        TicketFile ticketFile = fileService.findById(fileId);
          
         response.setContentType(ticketFile.getContentType());
         response.setContentLength(ticketFile.getByteArquivo().length);
@@ -288,10 +304,10 @@ public class TicketController {
         FileCopyUtils.copy(ticketFile.getByteArquivo(), response.getOutputStream());
     }
     
-    @RequestMapping(value = "/fileslist", method = RequestMethod.POST, params={"idFile"})
+    @RequestMapping(value = "/{ticketId}/files", method = RequestMethod.GET)
     @ResponseBody
-    public String getFilesListFromTicket(HttpServletRequest request,HttpServletResponse response,@RequestParam(value = "idFile") Long idFile) throws Exception {
-        List<TicketFile> listFiles = fileService.findByTicket(idFile);
+    public String getFilesListFromTicket(HttpServletRequest request,HttpServletResponse response,@PathVariable(value="ticketId")Long ticketId ) throws Exception {
+        List<TicketFile> listFiles = fileService.findByTicket(ticketId);
         String returnJson = fileService.getListFilesJSON(listFiles);
         return returnJson;
     }
@@ -305,6 +321,17 @@ public class TicketController {
             page = (limit / pageSize) - 1;
         }
         return new PageRequest(page, pageSize);
+    }
+    
+    public File createFile(String fileName,byte[] bytes) throws FileNotFoundException, IOException{ 
+        String tempPath = System.getProperty("java.io.tmpdir");
+        String path = tempPath + File.separator + fileName;
+        File file = new File(path);
+        FileOutputStream fos = new FileOutputStream(file);
+        fos.write(bytes);
+        fos.flush();
+        fos.close();        
+        return file;
     }
     
     @ExceptionHandler(EntityNotFoundException.class)

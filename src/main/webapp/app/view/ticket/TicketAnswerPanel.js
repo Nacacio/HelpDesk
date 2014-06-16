@@ -42,7 +42,11 @@ Ext.define('Helpdesk.view.ticket.TicketAnswerPanel', {
         },
         {
             xtype: 'container',
-            itemId: 'anexo'            
+            itemId: 'anexo',  
+            margin: '10 0 0 0',
+            layout: {
+                type: 'vbox'
+            }
         }
     ]
 });

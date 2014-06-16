@@ -49,66 +49,23 @@ public class TicketFileService{
         return repository.findByTicket(idTicket);
     }
     
-    public String createFile(Long idFile,ServletContext contexto) throws FileNotFoundException, IOException{
-        TicketFile ticketFile = findById(idFile);
-        File file = getFile(ticketFile.getName(),contexto);
-        FileOutputStream fos = new FileOutputStream(file);
-        fos.write(ticketFile.getByteArquivo());
-        fos.flush();
-        fos.close();
+    public File createTempDirectory() throws IOException
+    {
+        final File temp;
         
-        return returnJSON(file.getName(),"",contexto);
-    }
-    private String returnJSON(String nomeArquivo,String erro,ServletContext contexto){
-        String retorno ="{path:'"+getPathTomCat(contexto)+"' , " +
-                "nomeArquivo:'"+nomeArquivo+"' , " +
-                "erro:'"+erro+"'}";        
-        return retorno;
-    }
-
-    private File getFile(String fileName,ServletContext contexto){
-        File tempDir = getPastaArquivosTemp(contexto);
-        if(!tempDir.exists())
-            tempDir.mkdir();
+        temp = File.createTempFile("ArquivosTemp", Long.toString(System.nanoTime()));
         
-        File file = new File(tempDir, fileName);
-        
-        if(file.exists()){
-            file.delete();
+        if(!(temp.delete()))
+        {
+            throw new IOException("Could not delete temp file: " + temp.getAbsolutePath());
         }
-        return file;
-    }
-    
-    private String getPathTomCat(ServletContext contexto){
-        String path = "";
-        int indexInicio= 0;
-        try{
-            String fileSeparator = System.getProperty("file.separator");
-            File f = getPastaArquivosTemp(contexto).getAbsoluteFile();
-            indexInicio=f.getParent().lastIndexOf(fileSeparator);
-            path = f.getAbsolutePath().substring(indexInicio);
-            if(!fileSeparator.equals("/")){
-                while(path.indexOf(fileSeparator) > -1)
-                    path =  path.replace(fileSeparator, "/");
-            }
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }       
         
-        return path;
+        if(!(temp.mkdir()))
+        {
+            throw new IOException("Could not create temp directory: " + temp.getAbsolutePath());
+        }
         
-    }
-    
-    private File getPastaArquivosTemp(ServletContext contexto){        
-        File diretorio = null;
-        try{
-            diretorio = new File(contexto.getRealPath("ArquivosTemp"));
-        }
-        catch(Exception npe){
-            diretorio = new File("ArquivosTemp/");
-        }
-        return diretorio;
+        return (temp);
     }
     
     public String getListFilesJSON(List<TicketFile> ticketFileList){

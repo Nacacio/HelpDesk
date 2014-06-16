@@ -584,3 +584,18 @@
     font-size: 14px;
     font-weight: normal;
 }
+
+.btn-linkbutton-custom{
+    text-decoration: underline !important;
+    cursor : pointer !important;
+    border: 0 !important;
+    background: transparent !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.btn-linkbutton-custom .x-btn-inner{
+    color: blue !important;
+    font-family: Verdana !important;
+    font-size:10pt !important; 
+}
