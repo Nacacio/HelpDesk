@@ -68,6 +68,26 @@ public interface TicketRepository extends CrudRepository<Ticket, Long> {
     )
     public List<Ticket> findIsOpenUntilDate(@Param("lastDate") Date lastDate);
 
+    /**
+     * Retorna a lista de tickets que foram abertos antes da data enviada por parâmetro. 
+     * <br> Mesmo que o ticket já tenha sido fechado, ele entrará na resultado se a data de fechamento do mesmo 
+     * <br> for maior que a data enviada por parâmetro.
+     * @param lastDate
+     * @param categoryId
+     * @return 
+     */
+    @Query(
+            "Select t FROM Ticket t WHERE ((t.endDate is null) or ((t.endDate is not null) and (t.endDate >= :lastDate))) and (t.startDate <= :lastDate) and t.category.id = :categoryId"
+    )
+    public List<Ticket> findIsOpenUntilDateAndCategorySomeAlreadyClosed(@Param("lastDate") Date lastDate, @Param("categoryId") long categoryId);
+    
+     /**
+     * Retorna a lista de tickets que foram abertos antes da data enviada por parâmetro.  
+     * <br> Só retorna tickets que ainda estão em aberto.
+     * @param lastDate
+     * @param categoryId
+     * @return 
+     */
     @Query(
             "Select t FROM Ticket t WHERE (t.endDate is null) and (t.startDate <= :lastDate) and t.category.id = :categoryId"
     )
@@ -83,6 +103,26 @@ public interface TicketRepository extends CrudRepository<Ticket, Long> {
     )
     public List<Ticket> findBetweenEndDateAndCategory(@Param("firstDate") Date firstDate, @Param("lastDate") Date lastDate, @Param("categoryId") long categoryId);
 
+    /**
+     * Retorna a lista de tickets que foi aberta antes da data enviada por parâmetro. 
+     * <br> Mesmo que o ticket já tenha sido fechado, ele entrará na resultado se a data de fechamento do mesmo 
+     * <br> for maior que a data enviada por parâmetro.
+     * @param lastDate
+     * @param clientId
+     * @return 
+     */
+    @Query(
+            "Select t FROM Ticket t WHERE ((t.endDate is null) or ((t.endDate is not null) and (t.endDate >= :lastDate))) and (t.startDate <= :lastDate) and t.client.id = :clientId"
+    )
+    public List<Ticket> findIsOpenUntilDateAndClientSomeAlreadyClosed(@Param("lastDate") Date lastDate, @Param("clientId") long clientId);
+    
+    /**
+     * Retorna a lista de tickets que foi aberta antes da data enviada por parâmetro. 
+     * <br> Só retorna tickets que ainda estão em aberto.
+     * @param lastDate
+     * @param clientId
+     * @return 
+     */
     @Query(
             "Select t FROM Ticket t WHERE (t.endDate is null) and (t.startDate <= :lastDate) and t.client.id = :clientId"
     )

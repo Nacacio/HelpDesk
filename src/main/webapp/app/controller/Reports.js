@@ -140,7 +140,7 @@ Ext.define('Helpdesk.controller.Reports', {
      */
     formatFormsGraphicCategory: function() {
         this.getGraphicCategory();
-        this.getGridConsolidatedPerMonth();
+        this.getGridConsolidatedPerMonth(true);
     },
     /**
      * @author andresulivam
@@ -153,7 +153,7 @@ Ext.define('Helpdesk.controller.Reports', {
         var lbl = graphicUserPanel.down('#lblEvolutionTicketsByUser');
         if (lbl.hidden !== true) {
             this.getGraphicUser();
-            this.getGridConsolidatedPerMonthUser();
+            this.getGridConsolidatedPerMonthUser(true);
         }
     },
     /**
@@ -164,7 +164,7 @@ Ext.define('Helpdesk.controller.Reports', {
      */
     formatFormsGraphicClient: function() {
         this.getGraphicClient();
-        this.getGridConsolidatedPerMonthClient();
+        this.getGridConsolidatedPerMonthClient(true);
     },
     /**
      * @author andresulivam
@@ -353,7 +353,7 @@ Ext.define('Helpdesk.controller.Reports', {
      * Requisição ao servidor para o Json para preencher o datagrid de consolidados por mês na tela de relatórios de categoria.
      * @returns {undefined}
      */
-    getGridConsolidatedPerMonth: function() {
+    getGridConsolidatedPerMonth: function(inicial) {
         var graphicCategoryPanel = this.getGraphicCategoryPanel();
         var panel = graphicCategoryPanel.items.get('panelConsolidatedPerMonth');
         var cmbBoxMonth = panel.down('formconsolidatedpermonth').down('combobox');
@@ -361,7 +361,8 @@ Ext.define('Helpdesk.controller.Reports', {
         grid.setLoading();
         var period = cmbBoxMonth.getValue();
 
-        if (period === null) {
+        if (period === null || inicial === true) {
+            cmbBoxMonth.select(cmbBoxMonth.getStore().getAt(0));
             period = "";
         }
         this.getReportsStore().getGridConsolidatedPerMonth(this.callbackGridConsolidatedPerMonth, period, this);
@@ -393,10 +394,10 @@ Ext.define('Helpdesk.controller.Reports', {
         var json = jsonObj[0];
 
         var date = new Date(json.dateOpenFrom);
-        var dateOpenFromFormatted = Ext.util.Format.date(date,translations.DATE_SIMPLIFIED);
+        var dateOpenFromFormatted = Ext.util.Format.date(date, translations.DATE_SIMPLIFIED);
 
         var date = new Date(json.dateOpenTo);
-        var dateOpenToFormatted = Ext.util.Format.date(date,translations.DATE_SIMPLIFIED);
+        var dateOpenToFormatted = Ext.util.Format.date(date, translations.DATE_SIMPLIFIED);
 
         if (type === 'category') {
             graphicPanel = this.getGraphicCategoryPanel();
@@ -426,8 +427,22 @@ Ext.define('Helpdesk.controller.Reports', {
         var openTo = 0;
 
         for (var i = 0; i < jsonObj.length; i++) {
-            if (type !== 'client') {
+            if (type === 'category') {
                 jsonObj[i].name = translations[jsonObj[i].name];
+            } else if (type === 'user') {
+                var date = '';
+                var dateFormatted = '';
+                if (jsonObj[i].name === 'OPEN_FROM') {
+                    date = new Date(jsonObj[i].dateOpenFrom);
+                    dateFormatted = Ext.util.Format.date(date, translations.DATE_SIMPLIFIED);
+                    jsonObj[i].name = translations[jsonObj[i].name] + ' (' + dateFormatted + ')';
+                } else if (jsonObj[i].name === 'OPEN_TO') {
+                    date = new Date(jsonObj[i].dateOpenTo);
+                    dateFormatted = Ext.util.Format.date(date, translations.DATE_SIMPLIFIED);
+                    jsonObj[i].name = translations[jsonObj[i].name] + ' (' + dateFormatted + ')';
+                } else {
+                    jsonObj[i].name = translations[jsonObj[i].name];
+                }
             }
             var record = Ext.ModelManager.create(jsonObj[i], 'Helpdesk.model.ConsolidatedPerMonthContainer');
             grid.getStore().add(record);
@@ -730,7 +745,7 @@ Ext.define('Helpdesk.controller.Reports', {
      * Requisição ao servidor para o Json para preencher o datagrid de consolidados por mês na tela de relatórios de clientes.
      * @returns {undefined}
      */
-    getGridConsolidatedPerMonthClient: function() {
+    getGridConsolidatedPerMonthClient: function(inicial) {
         var graphicClientPanel = this.getGraphicClientPanel();
         var panel = graphicClientPanel.items.get('panelConsolidatedPerMonthClient');
         var cmbBoxMonth = panel.down('formconsolidatedpermonth').down('combobox');
@@ -738,7 +753,8 @@ Ext.define('Helpdesk.controller.Reports', {
         var period = cmbBoxMonth.getValue();
         grid.setLoading();
 
-        if (period === null) {
+        if (period === null || inicial === true) {
+            cmbBoxMonth.select(cmbBoxMonth.getStore().getAt(0));
             period = "";
         }
         this.getReportsStore().getGridConsolidatedPerMonthClient(this.callbackGridConsolidatedPerMonthClient, period, this);
@@ -750,7 +766,7 @@ Ext.define('Helpdesk.controller.Reports', {
      * 
      * @returns {undefined}
      */
-    getGridConsolidatedPerMonthUser: function() {
+    getGridConsolidatedPerMonthUser: function(inicial) {
         var graphicUserPanel = this.getGraphicUserPanel();
         var panelUser = graphicUserPanel.items.get('panelConsolidatedPerMonthUser');
         var cmbBoxMonth = panelUser.down('formconsolidatedpermonth').down('combobox');
@@ -763,7 +779,8 @@ Ext.define('Helpdesk.controller.Reports', {
 
         grid.setLoading();
 
-        if (period === null) {
+        if (period === null || inicial === true) {
+            cmbBoxMonth.select(cmbBoxMonth.getStore().getAt(0));
             period = "";
         }
         this.getReportsStore().getGridConsolidatedPerMonthUser(this.callbackGridConsolidatedPerMonthUser, period, idUser, this);
