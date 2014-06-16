@@ -17,8 +17,16 @@ public class GraphicContainer {
     
     private Date date;
     private String dateString;
+    
+    // graphic category
     private List<CategoryContainer> listCategory;
+    
+    //graphic client
     private List<ClientContainer> listClient;
+    
+    // graphic user
+    private int created;
+    private int closed;
 
     public Date getDate() {
         return date;
@@ -50,6 +58,22 @@ public class GraphicContainer {
 
     public void setListClient(List<ClientContainer> listClient) {
         this.listClient = listClient;
+    }
+
+    public int getCreated() {
+        return created;
+    }
+
+    public void setCreated(int created) {
+        this.created = created;
+    }
+
+    public int getClosed() {
+        return closed;
+    }
+
+    public void setClosed(int closed) {
+        this.closed = closed;
     }
 
     

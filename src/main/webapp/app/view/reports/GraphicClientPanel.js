@@ -11,7 +11,7 @@ Ext.define('Helpdesk.view.reports.GraphicClientPanel', {
     requires: ['Helpdesk.view.reports.GraphicClient',
         'Helpdesk.view.reports.FormGraphicClient',
         'Helpdesk.view.reports.FormConsolidatedPerMonth',
-        'Helpdesk.view.reports.GridConsolidatedPerMonthClient'],
+        'Helpdesk.view.reports.GridConsolidatedPerMonth'],
     renderTo: Ext.getBody(),
     layout: {
         type: 'vbox',
@@ -52,8 +52,7 @@ Ext.define('Helpdesk.view.reports.GraphicClientPanel', {
                     width: 785,
                     items: [
                         {
-                            xtype: 'gridconsolidatedpermonthclient',
-                            id: 'gridConsolidatedPerMonthClient',
+                            xtype: 'gridconsolidatedpermonth',
                             region: 'center'
                         }
                     ]

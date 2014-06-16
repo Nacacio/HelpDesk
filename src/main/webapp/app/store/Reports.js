@@ -41,7 +41,7 @@ Ext.define('Helpdesk.store.Reports', {
             url: 'reports/getfieldsconsolidatedpermonth/',
             success: Ext.bind(callbackfunction, scope)});
     },
-    getGridConsolidatedPerMonth: function(callbackfunction,period,scope) {
+    getGridConsolidatedPerMonth: function(callbackfunction, period, scope) {
         $.ajax({
             type: 'GET',
             url: 'reports/getgridconsolidatedpermonth',
@@ -62,7 +62,7 @@ Ext.define('Helpdesk.store.Reports', {
             url: 'reports/getgraphicclient/' + user,
             success: Ext.bind(callbackfunction, scope)});
     },
-    getGridConsolidatedPerMonthClient: function(callbackfunction,period,scope) {
+    getGridConsolidatedPerMonthClient: function(callbackfunction, period, scope) {
         $.ajax({
             type: 'GET',
             url: 'reports/getgridconsolidatedpermonthclient',
@@ -71,16 +71,38 @@ Ext.define('Helpdesk.store.Reports', {
             },
             success: Ext.bind(callbackfunction, scope)});
     },
-    getHighlightCurrentCategory: function(callbackfunction,scope) {
+    getHighlightCurrentCategory: function(callbackfunction, scope) {
         $.ajax({
             type: 'GET',
             url: 'reports/gethighlightcurrentcategory',
             success: Ext.bind(callbackfunction, scope)});
     },
-    getHighlightCurrentClient: function(callbackfunction,scope) {
+    getHighlightCurrentClient: function(callbackfunction, scope) {
         $.ajax({
             type: 'GET',
             url: 'reports/gethighlightcurrentclient',
+            success: Ext.bind(callbackfunction, scope)});
+    },
+    getGraphicUser: function(callbackfunction, user, scope, idUser, dateFrom, dateTo, unit) {
+        $.ajax({
+            type: 'GET',
+            data: {
+                idUser: idUser,
+                dateFrom: dateFrom,
+                dateTo: dateTo,
+                unit: unit
+            },
+            url: 'reports/getgraphicuser/' + user,
+            success: Ext.bind(callbackfunction, scope)});
+    },
+    getGridConsolidatedPerMonthUser: function(callbackfunction, period, idUser, scope) {
+        $.ajax({
+            type: 'GET',
+            url: 'reports/getgridconsolidatedpermonthuser',
+            data: {
+                period: period,
+                idUser: idUser
+            },
             success: Ext.bind(callbackfunction, scope)});
     }
 });

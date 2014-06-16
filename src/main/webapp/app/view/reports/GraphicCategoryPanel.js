@@ -51,7 +51,6 @@ Ext.define('Helpdesk.view.reports.GraphicCategoryPanel', {
                     items: [
                         {
                             xtype: 'gridconsolidatedpermonth',
-                            id: 'gridConsolidatedPerMonth',
                             region: 'center'
                         }
                     ]

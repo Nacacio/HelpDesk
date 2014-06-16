@@ -2,7 +2,6 @@ package com.br.helpdesk.model;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -234,15 +233,4 @@ public class Ticket {
     public void setPriorityName(String priorityName) {
         this.priorityName = priorityName;
     }
-
-    public String getStepsTicket() {
-        return stepsTicket;
-    }
-
-    public void setStepsTicket(String stepsTicket) {
-        this.stepsTicket = stepsTicket;
-    }
-    
-    
-    
 }

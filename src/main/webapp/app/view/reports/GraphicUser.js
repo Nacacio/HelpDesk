@@ -38,10 +38,13 @@ Ext.define('Helpdesk.view.reports.GraphicUser', {
             grid: true
         }, {
             id: 'axeCategory',
-            type: 'Category',
+            type: 'Time',
+            dateFormat: translations.DATE_FORMAT,
             position: 'bottom',
-            fields: ['date','valueOpen','valueClosed']
-//            grid: true
+            fields: ['date'],
+            label: {
+                rotation: {degrees: 290}
+            }
         }],
     series: [{
             type: 'line',
@@ -52,12 +55,23 @@ Ext.define('Helpdesk.view.reports.GraphicUser', {
             axis: 'left',
             title: translations.OPEN,
             xField: 'date',
-            yField: 'valueOpen',
+            yField: 'created',
             markerCfg: {
                 type: 'cross',
                 size: 4,
                 radius: 4,
                 'stroke-width': 0
+            },
+            tips: {
+                trackMouse: true,
+                width: 100,
+                height: 40,
+                cls: 'tooltip_graphic',
+                renderer: function(storeItem, item) {
+                    var date = new Date(storeItem.get('date'));
+                    var dateFormat = date.toLocaleDateString(translations.FORMAT_DATE);
+                    this.setTitle('<b>'+translations.CREATED+'</b> <br />'+translations.DATE + ': ' + dateFormat + '<br />' + storeItem.get('created')+' '+ translations.TICKETS);
+                 }
             }
         }, {
             type: 'line',
@@ -66,15 +80,25 @@ Ext.define('Helpdesk.view.reports.GraphicUser', {
                 radius: 7
             },
             axis: 'left',
-            fill: true,
             title: translations.CLOSED,
             xField: 'date',
-            yField: 'valueClosed',
+            yField: 'closed',
             markerCfg: {
                 type: 'circle',
                 size: 4,
                 radius: 4,
                 'stroke-width': 0
+            },
+            tips: {
+                trackMouse: true,
+                width: 100,
+                height: 40,
+                cls: 'tooltip_graphic',
+                renderer: function(storeItem, item) {
+                    var date = new Date(storeItem.get('date'));
+                    var dateFormat = date.toLocaleDateString(translations.FORMAT_DATE);
+                    this.setTitle('<b>'+translations.CLOSED+'</b> <br />'+translations.DATE + ': ' + dateFormat + '<br />' + storeItem.get('closed')+' '+ translations.TICKETS);
+                }
             }
         }]
 });
