@@ -13,6 +13,7 @@ import java.io.IOException;
  * @author Andre
  */
 public class EmailTest {
+
     public static void main(String [] args) throws IOException, Exception{
         EmailUtil emailUtil = new EmailUtil();
         /**
@@ -21,7 +22,7 @@ public class EmailTest {
          * OBSERVAÇÕES
          * PASSO-A-PASSO
          */
-        emailUtil.novoTicket("Ticket #00123# - Teste","BUG","Inicio das observações \n\n\n\nFim das observações","Inicio do Passo a Passo \n\n\n\nFim do Passo a Passo");
+        emailUtil.sendEmail("Ticket #00123# - Teste","BUG","Inicio das observações \n\n\n\nFim das observações","Inicio do Passo a Passo \n\n\n\nFim do Passo a Passo");
         
         //emailUtil.getEmailsNaoLidos();
     }

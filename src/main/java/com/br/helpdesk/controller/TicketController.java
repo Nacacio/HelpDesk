@@ -1,5 +1,6 @@
 package com.br.helpdesk.controller;
 
+import com.br.helpdesk.email.EmailUtil;
 import com.br.helpdesk.model.TicketFile;
 import com.br.helpdesk.model.Ticket;
 import com.br.helpdesk.model.User;
@@ -219,10 +220,6 @@ public class TicketController {
     @RequestMapping(value = {"", "/{id}"}, method = {RequestMethod.POST,RequestMethod.PUT}, params={"user"})
     @ResponseBody
     public Ticket save(@RequestBody Ticket ticket,@RequestParam(value = "user") String username) throws IOException {
-//        if(ticket.getId() == null){
-//            EmailUtil eu = new EmailUtil();
-//            eu.novoTicket(ticket.getTitle(), ticket.getCategory().getName(), ticket.getDescription(), ticket.getPassosParaReproducao());
-//        }
         List<File> filesToSave = getFilesFromUser(username);
         ticket = ticketService.save(ticket);
         TicketFile ticketFile = null;
@@ -234,7 +231,11 @@ public class TicketController {
             ticketFile.setTicket(ticket);
             fileService.save(ticketFile);
             file.delete();
-        }
+        }        
+
+        EmailUtil eu = new EmailUtil();
+        eu.sendEmail(ticket.getTitle(), ticket.getCategory().getName(), ticket.getDescription(), ticket.getStepsTicket());
+
         return ticket;
     }
     

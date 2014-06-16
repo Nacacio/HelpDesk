@@ -516,12 +516,12 @@ Ext.define('Helpdesk.controller.Reports', {
         var container;
         var text;
         var value;
-        var label;
         var containerTemp;
         if (type === 'client') {
             panel = this.getGraphicClientPanel();
             highlightCurrent = panel.down('#panelHighLightCurrentClient');
             container = highlightCurrent.down('#containerHighlightCurrentClient');
+            container.removeAll();
             for (var i = 0; i < jsonObj.length; i++) {
                 value = jsonObj[i].value;
                 text = jsonObj[i].text.split(":");
@@ -564,6 +564,7 @@ Ext.define('Helpdesk.controller.Reports', {
             panel = this.getGraphicCategoryPanel();
             highlightCurrent = panel.down('#panelHighLightCurrent');
             container = highlightCurrent.down('#containerHighlightCurrent');
+            container.removeAll();
             for (var i = 0; i < jsonObj.length; i++) {
                 value = jsonObj[i].value + ' ';
                 text = jsonObj[i].text.split(":");

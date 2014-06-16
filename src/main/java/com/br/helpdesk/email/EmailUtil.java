@@ -32,14 +32,14 @@ import javax.mail.search.FlagTerm;
 public class EmailUtil {
     public static String IMAPS = "imaps";
     public static String IMAP_GMAIL = "imap.gmail.com";
-    public static String USER = "EMAIL";//Alterar AQUI
-    public static String PASSWORD = "PASSWORD";//Alterar AQUI
+    public static String USER = "andresulivam@gmail.com";//Alterar AQUI
+    public static String PASSWORD = "26240241";//Alterar AQUI
     public static String FOLDER = "Inbox";
     public static String SMTP_GMAIL = "smtp.gmail.com";
     public static String PORT_GMAIL = "465";
     
-    public static String SEND_FROM = "SEND_FROM";//Alterar AQUI
-    public static String SEND_TO = "SEND_TO";//Alterar AQUI
+    public static String SEND_FROM = "andresulivam@gmail.com";//Alterar AQUI
+    public static String SEND_TO = "andresulivam@gmail.com";//Alterar AQUI
     
     
     public static Properties PROPERTIES;
@@ -95,13 +95,13 @@ public class EmailUtil {
        }        
     }
     
-    public void novoTicket(String title, String categoria, String observacoes, String passos){        
+    public void sendEmail(String title, String categoria, String observacoes, String passos){        
         Session session = Session.getDefaultInstance(PROPERTIES,new javax.mail.Authenticator() {
+                                @Override
 				protected PasswordAuthentication getPasswordAuthentication() {
 					return new PasswordAuthentication(USER,PASSWORD);
 				}
-			});
- 
+			}); 
         try {
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(SEND_FROM));
