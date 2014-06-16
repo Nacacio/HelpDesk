@@ -188,10 +188,12 @@ Ext.define('Helpdesk.view.ticket.TicketDetails',{
                             text:translations.SAVE,
                             id:'btnSaveAnswTkt',
                             width:90,
-                            baseCls:'btn-save-changes'
+                            baseCls:'btn-save-changes',
+                            hidden: true
                         },
                         {
                             xtype:'form',
+                            itemId:'spacer',
                             baseCls:'bordless',
                             width:580   
                         },

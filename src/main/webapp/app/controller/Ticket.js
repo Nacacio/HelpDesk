@@ -87,10 +87,6 @@ Ext.define('Helpdesk.controller.Ticket', {
             selector: '#ticketEditContainer'
         },
         {
-            ref:'ediTicketView',
-            selector:'editticket'
-        },
-        {
             ref:'ticketView',
             selector:'ticket'
         }
@@ -128,25 +124,6 @@ Ext.define('Helpdesk.controller.Ticket', {
             }
         });
     },
-    
-    /**
-     * Seta a visibildiade do botão de edição do ticket de acordo com a permissão do usuário
-     */
-    setVisibilityEditTicket:function(){
-        var form = this.getEdiTicketView();
-        var store = new Helpdesk.store.Users();
-        store.proxy.url = 'user/'+Helpdesk.Globals.user;
-        store.load({
-            callback:function(){
-                if(store.data.items[0].data.userGroup.id === 1){
-                    form.down('button#editTicket').show();
-                }
-                store.proxy.url = 'user';
-            }
-        });
-    },
-    
-    
     /**
      * Salva as alterações do ticket
      * 
@@ -154,32 +131,41 @@ Ext.define('Helpdesk.controller.Ticket', {
     onSaveTicketChanges:function(button){
         var myScope = this;
         var form = button.up('form#ticketMainView');        
-        var record = button.up('form#ticketMainView').getRecord() ;           
+        var record = button.up('form#ticketMainView').getRecord() ;
         
-        record.data.priority = this.getRecordFromComboBox(form.down('combobox#priorityTicket').getStore(),form.down('combobox#priorityTicket').getValue());
+        if(form.down('combobox#priorityTicket').getValue()===null || form.down('combobox#priorityTicket').getValue()===''){
+            var priorityIndex = Ext.StoreMgr.lookup(form.down('combobox#priorityTicket').getStore()).findExact('name',translations.NO_PRIORITY);
+            var priorityRecord = Ext.StoreMgr.lookup(form.down('combobox#priorityTicket').getStore()).getAt(priorityIndex);            
+            form.down('combobox#priorityTicket').setValue(priorityRecord);
+            record.data.priority = this.getRecordFromComboBox(form.down('combobox#priorityTicket').getStore(),form.down('combobox#priorityTicket').getValue());
+        }else{
+            record.data.priority = this.getRecordFromComboBox(form.down('combobox#priorityTicket').getStore(),form.down('combobox#priorityTicket').getValue());
+        }
+        
         record.data.category = this.getRecordFromComboBox(form.down('combobox#categoryTicket').getStore(),form.down('combobox#categoryTicket').getValue());
+        //Se nenhuma categoria tiver sido marcada, o ticket recebe "Sem categoria"
+        if(typeof record.data.category === 'undefined'){
+            record.data.category = form.down('combobox#categoryTicket').getStore().data.items[4].data;            
+        }
         record.data.responsavel = this.getRecordFromComboBox(form.down('combobox#responsibleTicket').getStore(),form.down('combobox#responsibleTicket').getValue());
         record.data.stepsTicket = form.down('textarea#stepsTicket').getValue();
-        record.data.endDate = form.down('datefield#estimateTime').getValue(); //Ext.Date.format(form.down('datefield#estimateTime').getValue(),'d/m/Y');
-        record.data.startDate = form.down('datefield#estimateTime').getValue();
-        
-        record.dirty = true;
-        
+        record.data.estimateTime = form.down('datefield#estimateTime').getValue(); //Ext.Date.format(form.down('datefield#estimateTime').getValue(),'d/m/Y');
+                
+        record.dirty = true;        
         var store = this.getTicketsStore(); 
         store.add(record);
         if (store.getModifiedRecords().length > 0) {
             store.sync({
                 callback:function(){                    
-                    myScope.getTicketEditContainer().getLayout().setActiveItem(Helpdesk.Globals.ticket_details_view);
+                    myScope.getTicketEditContainer().getLayout().setActiveItem(Helpdesk.Globals.ticket_details_view);                    
+                    myScope.setValuesFromView(form.up(),record);
                 }
             });
-        }else{
-            console.log('Nothing to save.');
+        }else{            
             Ext.Msg.alert(translations.INFORMATION,translations.NOTHING_TO_SAVE);
         }
         
     },  
-    
     //Retorna o record selecionado no combobox
     getRecordFromComboBox:function(store,idSelected){        
         if(store!==null && idSelected!== null){
@@ -595,7 +581,7 @@ Ext.define('Helpdesk.controller.Ticket', {
         this.getFilesFromRecord(ticketView,record);
     },
     
-    /**
+  /**
      * @author Ricardo
      * 
      * Insere os valores na view de cadastro de ticket
@@ -613,11 +599,35 @@ Ext.define('Helpdesk.controller.Ticket', {
                 ticketView.down('text#tktStatus').setText(translations.TICKET_TITLE_CLOSED);
             
             ticketView.down('text#tktBy').setText(record.data.userName);
-            ticketView.down('text#tktAt').setText(record.data.startDate);
+            
+            //formata data Inicial do ticket
+            var dateTemp = new Date(record.data.startDate);
+            dateTemp = Ext.Date.format(dateTemp ,'d/m/Y');         
+            ticketView.down('text#tktAt').setText(dateTemp);
+            
             ticketView.down('text#tktCategory').setText(record.data.categoryName);
-            ticketView.down('text#tktEstimatedTime').setText(record.data.estimateTime);
-            ticketView.down('text#tktPriority').setText(record.data.priorityName);
-            ticketView.down('text#tktResponsible').setText(record.data.responsavelName);
+            if(record.data.estimateTime!==null){
+                record.data.estimateTime = new Date(record.data.estimateTime);
+                record.data.estimateTime = Ext.Date.format(record.data.estimateTime ,'d/m/Y');
+                ticketView.down('text#tktEstimatedTime').setText(record.data.estimateTime);
+            }else{
+                ticketView.down('text#tktEstimatedTime').setText(translations.NO_DEADLINE_DEFINED);
+            }            
+            
+            
+            if(record.data.priorityName!==null && record.data.priorityName!==''){
+                ticketView.down('text#tktPriority').setText(record.data.priorityName);
+            }else{
+                ticketView.down('text#tktPriority').setText(translations.NO_PRIORITY);
+            }
+            
+            
+            if(record.data.responsavelName!==null && record.data.responsavelName!==''){
+                ticketView.down('text#tktResponsible').setText(record.data.responsavelName);
+            }else{
+                ticketView.down('text#tktResponsible').setText(translations.NO_RESPONSIBLE);
+            }
+            
             ticketView.down('text#tktSteps').setText(record.data.stepsTicket);          
             
             //Insere a descrição do ticket            
@@ -629,27 +639,52 @@ Ext.define('Helpdesk.controller.Ticket', {
             answerStore.load({
                 callback:function(){ 
                     var resposta =  Ext.create('Helpdesk.view.ticket.TicketAnswerPanel',{
-                        title:record.data.userName
+                        title:record.data.userName,
+                        html:record.data.description
                     });
-                    resposta.down('label#corpo').text = record.data.description;
-                    resposta.down('hiddenfield#id').text = record.data.id;
-                    resposta.down('hiddenfield#idAnswer').text  = 0;
                     ticketView.down('panel#tktAnswers').items.add(resposta);  
-                    
                     
                     for(i=0;i<answerStore.getCount();i++){          
                         resposta =  Ext.create('Helpdesk.view.ticket.TicketAnswerPanel',{
                             title:answerStore.data.items[i].data.user.name,
-                        });     
-                        resposta.down('label#corpo').text = answerStore.data.items[i].data.description;
-                        resposta.down('hiddenfield#idAnswer').text = answerStore.data.items[i].data.id;
-                        resposta.down('hiddenfield#id').text = record.data.id;
+                            html:answerStore.data.items[i].data.description
+                        });                        
                         ticketView.down('panel#tktAnswers').items.add(resposta);                       
                     }
                     ticketView.down('panel#tktAnswers').doLayout();  
                 }
             });
         }        
+        //Seta a visibilidade dos botões de fechar ou abrir tickets de acordo com o ticket corrente
+        
+        if(record.data.isOpen === true){            
+            ticketView.down('label#lblTicketOpen').setVisible(true);
+            ticketView.down('button#btnCloseTkt').setVisible(true);
+            ticketView.down('label#lblTicketClosed').setVisible(false);
+            ticketView.down('button#btnOpenTkt').setVisible(false);
+            ticketView.down('form#spacer').width = 460;
+            //Seta visibilidade do botão salvar
+            ticketView.down('button#btnSaveAnswTkt').setVisible(true);
+            //Seta a visibilidade do botão de edição do ticket
+            if(Helpdesk.Globals.userLogged.userGroup.id === 1){
+                ticketView.down('button#editTicket').show();
+            }
+        }
+        else{            
+            ticketView.down('label#lblTicketOpen').setVisible(false);
+            ticketView.down('button#btnCloseTkt').setVisible(false);            
+            ticketView.down('label#lblTicketClosed').setVisible(true);            
+            ticketView.down('button#btnOpenTkt').setVisible(true);
+            ticketView.down('form#spacer').width = 552;
+            //Seta visibilidade do botão salvar
+            ticketView.down('button#btnSaveAnswTkt').setVisible(false);           
+            //Seta a visibilidade do botão de edição do ticket
+            ticketView.down('button#editTicket').hide();
+            
+            
+            
+            
+        }
     },
     
     /*
@@ -668,18 +703,21 @@ Ext.define('Helpdesk.controller.Ticket', {
         var categoryRecord = Ext.StoreMgr.lookup(categoryStore).getAt(categoryIndex);
         categoryCombo.setValue(categoryRecord);
         
-        //set responsavel combobox
+        //set responsavel combobox        
         var responsavelText = ticketView.down('#tktResponsible').text;
         var responsavelCombo = ticketView.down('#responsibleTicket');
         var responsavelStore = responsavelCombo.store;
-        if(responsavelText ==='' && Helpdesk.Globals.userGroup === '1'){
-            responsavelText = Helpdesk.Globals.userLogged.name;
+        var resposibleTemp;
+        if((responsavelText ==='' || responsavelText!==translations.NO_DEADLINE_DEFINED) && Helpdesk.Globals.userGroup === '1'){            
+            resposibleTemp = new Helpdesk.model.User();
+            resposibleTemp.data.name = translations.NO_RESPONSIBLE;
+            responsavelCombo.setValue(resposibleTemp);
         }
-        var responsavelIndex = Ext.StoreMgr.lookup(responsavelStore).findExact('name',responsavelText);
-        var responsavelRecord = Ext.StoreMgr.lookup(responsavelStore).getAt(responsavelIndex);
-        responsavelCombo.setValue(responsavelRecord);
-        
-        
+        else{
+            var responsavelIndex = Ext.StoreMgr.lookup(responsavelStore).findExact('name',responsavelText);
+            var responsavelRecord = Ext.StoreMgr.lookup(responsavelStore).getAt(responsavelIndex);
+            responsavelCombo.setValue(responsavelRecord);
+        }
         
         //set priority combobox
         var priorityText = ticketView.down('#tktPriority').text;
@@ -690,11 +728,12 @@ Ext.define('Helpdesk.controller.Ticket', {
         priorityCombo.setValue(priorityRecord);
         
         //set prazo datefield       
-        var estimatedText = ticketView.down('#tktEstimatedTime').text;
-        if(estimatedText !== ''){
-            var estimatedDate = new Date(estimatedText);
+        var estimatedText = ticketView.down('#tktEstimatedTime').text;        
+        if(estimatedText !== '' && estimatedText!==translations.NO_DEADLINE_DEFINED){
+            //var estimatedDate = new Date(estimatedText);
             var estimatedDateField = ticketView.down('#estimateTime');
-            estimatedDateField.setValue(estimatedDate);
+            //estimatedDateField.setValue(estimatedDate);
+            estimatedDateField.setValue(estimatedText);
         }
         
         //set steps textarea

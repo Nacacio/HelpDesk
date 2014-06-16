@@ -145,6 +145,9 @@ translations = {
     NO_RESPONSIBLE: 'Sem responsável',
     NEWS: 'Novidades',
     NO_CATEGORY: 'Sem categoria',
+    NO_PRIORITY:'Sem Prioridade',
+    NO_DEADLINE_DEFINED:'Sem prazo estimado',
+
     //############################################## [ O ] ##############################################//
 
     OPENED: 'Aberto',
