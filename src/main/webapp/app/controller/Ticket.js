@@ -56,9 +56,10 @@ Ext.define('Helpdesk.controller.Ticket', {
             'editticket':{
                 afterrender:this.setVisibilityEditTicket
             }, 
-            'ticketdetails button#btnCloseTkt':{
-                click:this.closeTicket
+            'ticketdetails button':{
+                click:this.setStatusTicket
             }
+
         });
     },
     refs: [
@@ -85,6 +86,10 @@ Ext.define('Helpdesk.controller.Ticket', {
         {
             ref: 'ticketEditContainer',
             selector: '#ticketEditContainer'
+        },
+        {
+            ref:'ticketDetailsView',
+            selector:'ticketdetails'
         },
         {
             ref:'ticketView',
@@ -124,6 +129,32 @@ Ext.define('Helpdesk.controller.Ticket', {
             }
         });
     },
+        //Fecha ou abre o ticket
+    setStatusTicket:function(button){        
+        if(button.id === 'btnCloseTkt' || button.id === 'btnOpenTkt'){        
+            
+            var scope = this;
+            var record = button.up('form#ticketMainView').getRecord();
+            record.dirty = true;
+            var store = this.getTicketsStore();
+            
+            if(button.id === 'btnCloseTkt'){
+                store.proxy.url = 'ticket/close-ticket';
+            }else if(button.id === 'btnOpenTkt'){
+                store.proxy.url = 'ticket/open-ticket';
+            }
+            store.add(record);
+            store.sync({            
+                callback:function(){
+                    store.proxy.url = 'ticket';
+                    scope.getTicketCardContainer().getLayout().setActiveItem(Helpdesk.Globals.ticket_datagrid);
+                    scope.setSideMenuButtonText();
+                    scope.atualizaGrid();
+                }
+            });
+        }
+    },
+
     /**
      * Salva as alterações do ticket
      * 
@@ -226,6 +257,7 @@ Ext.define('Helpdesk.controller.Ticket', {
         var grid = field.up('container#maincontainer').down('#ticketgrid');
         var form = this.getTicketSideMenu();         
         if(newValue!== null){           
+            field.up('container#maincontainer').down('#ticketgrid').setLoading(true);
             store.removeAll();            
             var storeTemp = new Helpdesk.store.Tickets(); 
             storeTemp.proxy.url = this.getProxy();
@@ -233,7 +265,8 @@ Ext.define('Helpdesk.controller.Ticket', {
                 params:{
                     user: Helpdesk.Globals.user
                 },
-                callback:function(){                    
+                callback:function(){  
+                    field.up('container#maincontainer').down('#ticketgrid').setLoading(false);
                     for(var i=0;i<storeTemp.getCount();i++){            
                         if(storeTemp.data.items[i].data.client.name.toLowerCase().indexOf(newValue.toLowerCase()) > -1){                
                             store.add(storeTemp.data.items[i].data);                        
@@ -320,6 +353,29 @@ Ext.define('Helpdesk.controller.Ticket', {
         
     },    
     
+    
+    //Atualiza o grid após ação de crud
+    atualizaGrid:function(){
+        var button;        
+        var sideMenu = this.getTicketSideMenu();
+        
+        if(sideMenu.down('button#buttonTodos').pressed === true){
+            button = sideMenu.down('button#buttonTodos');
+        }else if(sideMenu.down('button#buttonEmAndamento').pressed === true){
+            button = sideMenu.down('button#buttonEmAndamento');
+        }else if(sideMenu.down('button#buttonFechado').pressed === true){
+            button = sideMenu.down('button#buttonFechado');
+        }else if(sideMenu.down('button#buttonMeusTickets').pressed === true){
+            button = sideMenu.down('button#buttonMeusTickets');
+        }else if(sideMenu.down('button#buttonSemResponsavel').pressed === true){
+            button = sideMenu.down('button#buttonSemResponsavel');
+        }
+        if(button!== null){
+            this.onTicketMenuClick(button);
+        }
+        
+    },
+
     initDashView:function(){
         this.getCardPanel().getLayout().setActiveItem(Helpdesk.Globals.ticketview);        
         this.setSideMenuButtonText();
@@ -513,7 +569,17 @@ Ext.define('Helpdesk.controller.Ticket', {
         record.data.user = Helpdesk.Globals.userLogged;
         record.data.isOpen = true;   
         
+        if(form.down('combobox#responsibleTicket').rawValue===''){
+            record.data.responsavel = null;
+            record.data.responsavelName = null;
+        }
         
+        if(form.down('combobox#priorityCmb').rawValue===''){
+            record.data.priority = null;
+            record.data.priorityName = null;
+        }
+        
+
         if(Helpdesk.Globals.userLogged.id !== 1){
             record.data.responsavel = null;
             record.data.priority = null;

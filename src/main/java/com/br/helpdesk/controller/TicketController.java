@@ -206,6 +206,16 @@ public class TicketController {
         return ticketService.save(ticket);
     }
     
+    @RequestMapping(value = {"open-ticket/{id}"}, method = {RequestMethod.PUT})
+    @ResponseBody
+    public Ticket openTicket(@RequestBody Ticket ticket) {
+        ticket.setIsOpen(true);
+        ticket.setEndDate(null);
+        return ticketService.save(ticket);
+    }
+    
+
+    
     @RequestMapping(value = {"", "/{id}"}, method = {RequestMethod.POST,RequestMethod.PUT}, params={"user"})
     @ResponseBody
     public Ticket save(@RequestBody Ticket ticket,@RequestParam(value = "user") String username) throws IOException {

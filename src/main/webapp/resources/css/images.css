@@ -126,3 +126,9 @@
 .clip {
     background-image:url('../img/icone_clip.png') !important;
 }
+.ticket-aberto{
+    background-image:url('../img/ticket-aberto.png') !important    
+}
+.ticket-fechado{
+    background-image:url('../img/ticket-fechado.png') !important    
+}

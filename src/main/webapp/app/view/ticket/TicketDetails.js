@@ -148,21 +148,7 @@ Ext.define('Helpdesk.view.ticket.TicketDetails',{
                     items:[
                         
                     ]
-                },
-                {
-                 xtype:'panel',
-                    padding:'20 0 0 0',
-                    itemId:'tktFiles',
-                    width:800,
-                    border: 0,
-                    defaults: {
-                        // applied to each contained panel
-                        bodyStyle: 'padding:15px'            
-                    },
-                    items:[
-                        
-                    ]
-                },    
+                },       
                 {
                     xtype:'text',
                     text:translations.TICKET_NEW_ANSWER,
@@ -188,23 +174,41 @@ Ext.define('Helpdesk.view.ticket.TicketDetails',{
                             text:translations.SAVE,
                             id:'btnSaveAnswTkt',
                             width:90,
-                            baseCls:'btn-save-changes',
-                            hidden: true
+                            baseCls:'btn-save-changes'
                         },
                         {
                             xtype:'form',
-                            itemId:'spacer',
                             baseCls:'bordless',
-                            width:580   
+                            width:460   
                         },
+                        {
+                            xtype:'label',
+                            text:translations.TICKET_OPENED,
+                            itemId:'lblTicketOpen',
+                            baseCls:'font15',
+                            padding:'10 20 0 14'
+                        },                        
                         {
                             xtype:'button',                            
                             text:translations.CLOSE_TICKET,                            
                             id:'btnCloseTkt',
                             width:130,                            
-                            baseCls:'btn-grey'
-                            
-                        }
+                            baseCls:'btn-grey'                           
+                        },
+                        {
+                            xtype:'label',
+                            text: translations.TICKET_CLOSED,
+                            itemId:'lblTicketClosed',
+                            baseCls:'font15',
+                            padding:'10 20 0 2'
+                        },                        
+                        {
+                            xtype:'button',                            
+                            text:translations.OPEN_TICKET,               
+                            id:'btnOpenTkt',
+                            width:130,                            
+                            baseCls:'btn-grey'                           
+                        }     
                     ]
                 }               
             ]

@@ -499,9 +499,9 @@
  }
  
  .btn-grey:hover {
-     background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #1e62d0), color-stop(1, #3d94f6) );
+     background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #c8c8c8), color-stop(1, #b2b2b2) );
      background:-moz-linear-gradient( center top, #1e62d0 5%, #3d94f6 100% );
-     filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#1e62d0', endColorstr='#3d94f6');
+     filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#c8c8c8', endColorstr='#b2b2b2');
      background-color:#dfdfdf !important;;
      cursor: pointer;
   }
@@ -597,4 +597,8 @@
     color: blue !important;
     font-family: Verdana !important;
     font-size:10pt !important; 
+}
+
+.font15{
+    font-size: 15px;
 }

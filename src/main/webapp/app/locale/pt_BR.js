@@ -157,6 +157,8 @@ translations = {
     OPEN: 'Em aberto', 
     OPEN_FROM: 'Em aberto',
     OPEN_TO: 'Em aberto',
+    OPEN_TICKET:'Abrir ticket',
+
     //############################################## [ P ] ##############################################//
 
     PASSWORD: 'Senha',
@@ -182,6 +184,9 @@ translations = {
     REPORTS_BY_ENTERPRISE: 'Relatórios de tickets por empresa',
     REPORTS_EXPORT_DATA: 'Exportar dados de tickets para Excel (xls)',
     REGISTERED_CLIENTS: 'clientes registrados',
+    REQUIRED_ITENS_TICKETS: 'Todos os campos obrigatórios devem ser preenchidos',
+
+
     //############################################## [ S ] ##############################################//
 
     SAVE: 'Salvar',
@@ -244,6 +249,10 @@ translations = {
     TO: 'a',
     TOTAL: 'Total',
     TICKETS_OPEN_OF_CLIENT: 'tickets abertos do cliente',
+    TICKET_CLOSED:'Ticket fechado',
+    TICKET_OPENED:'Ticket aberto',
+
+    
     //############################################## [ U ] ##############################################//
 
     UPDATED_WITH_SUCCESS: 'atualizado(a) com sucesso',

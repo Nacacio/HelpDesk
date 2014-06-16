@@ -66,7 +66,13 @@ Ext.define('Helpdesk.view.ticket.TicketGrid', {
         store: 'Tickets',   
         dock: 'bottom',
         displayInfo: true,
-        margin: '0 0 30 0'
+        margin: '0 0 30 0',
+        listeners: {
+            afterrender : function() {
+                this.child('#refresh').hide();
+            }
+        }
+
     }]
 });
 

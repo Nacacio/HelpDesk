@@ -228,6 +228,7 @@ Ext.define('Helpdesk.view.ticket.NewTicket', {
                             fieldLabel: '',
                             width: 252,
                             cls: 'new-ticket-item',
+                            itemId:'priorityCmb',
                             padding: '0 7 0 0',
                             listeners: {
                                 select: function(combo, records, eOpts) {
