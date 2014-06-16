@@ -52,8 +52,10 @@ public class EmailReceiveTest {
            // Connecting to the server
            // Set the store depending on the parameter flag value
            Store store = session.getStore("imaps");            
-           // Set the server depending on the parameter flag value           
-           store.connect("imap.gmail.com","nacacio@gmail.com","Andre341204");            
+           // Set the server depending on the parameter flag value  
+           
+           //VALORES DO SERVIDOR 
+           store.connect("imap.gmail.com","USERSERVIDOR","SENHASERVIDOR");            
            System.out.println("done!");
             
            // Get the Inbox folder

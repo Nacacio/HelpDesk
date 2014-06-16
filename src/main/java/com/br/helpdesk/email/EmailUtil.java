@@ -32,14 +32,14 @@ import javax.mail.search.FlagTerm;
 public class EmailUtil {
     public static String IMAPS = "imaps";
     public static String IMAP_GMAIL = "imap.gmail.com";
-    public static String USER = "nacacio@gmail.com";//Alterar AQUI
-    public static String PASSWORD = "Andre341204";//Alterar AQUI
+    public static String USER = "EMAIL";//Alterar AQUI
+    public static String PASSWORD = "PASSWORD";//Alterar AQUI
     public static String FOLDER = "Inbox";
     public static String SMTP_GMAIL = "smtp.gmail.com";
     public static String PORT_GMAIL = "465";
     
-    public static String SEND_FROM = "nacacio@gmail.com";//Alterar AQUI
-    public static String SEND_TO = "nacacio@gmail.com";//Alterar AQUI
+    public static String SEND_FROM = "SEND_FROM";//Alterar AQUI
+    public static String SEND_TO = "SEND_TO";//Alterar AQUI
     
     
     public static Properties PROPERTIES;
