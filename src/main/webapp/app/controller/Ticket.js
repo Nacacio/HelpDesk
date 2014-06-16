@@ -53,9 +53,6 @@ Ext.define('Helpdesk.controller.Ticket', {
             'editticket button#btnSaveEditTicket':{
                 click:this.onSaveTicketChanges
             },
-            'editticket':{
-                afterrender:this.setVisibilityEditTicket
-            }, 
             'ticketdetails button':{
                 click:this.setStatusTicket
             }
@@ -359,16 +356,16 @@ Ext.define('Helpdesk.controller.Ticket', {
         var button;        
         var sideMenu = this.getTicketSideMenu();
         
-        if(sideMenu.down('button#buttonTodos').pressed === true){
-            button = sideMenu.down('button#buttonTodos');
-        }else if(sideMenu.down('button#buttonEmAndamento').pressed === true){
-            button = sideMenu.down('button#buttonEmAndamento');
-        }else if(sideMenu.down('button#buttonFechado').pressed === true){
-            button = sideMenu.down('button#buttonFechado');
-        }else if(sideMenu.down('button#buttonMeusTickets').pressed === true){
-            button = sideMenu.down('button#buttonMeusTickets');
-        }else if(sideMenu.down('button#buttonSemResponsavel').pressed === true){
-            button = sideMenu.down('button#buttonSemResponsavel');
+        if(sideMenu.down('button#buttonAll').pressed === true){
+            button = sideMenu.down('button#buttonAll');
+        }else if(sideMenu.down('button#buttonOpened').pressed === true){
+            button = sideMenu.down('button#buttonOpened');
+        }else if(sideMenu.down('button#buttonClosed').pressed === true){
+            button = sideMenu.down('button#buttonClosed');
+        }else if(sideMenu.down('button#buttonMyTickets').pressed === true){
+            button = sideMenu.down('button#buttonMyTickets');
+        }else if(sideMenu.down('button#buttonWithoutResponsible').pressed === true){
+            button = sideMenu.down('button#buttonWithoutResponsible');
         }
         if(button!== null){
             this.onTicketMenuClick(button);
@@ -500,54 +497,6 @@ Ext.define('Helpdesk.controller.Ticket', {
         this.getTicketCardContainer().getLayout().setActiveItem(Helpdesk.Globals.ticket_new);
     },
     
-    /*
-     * Salva um novo ticket,
-     * 
-     * Busca as informações do Record no form,
-     * Envia para o JAVA, 
-     * e quando retornar realiza o upload dos arquivos se existir
-     */
-//    saveNewTicket: function(button, e, options) {
-//        var scope = this;
-//        var fieldset = button.up();
-//        var panel = fieldset.up();
-//        var win = panel.up();
-//        win.setLoading(true);
-//        var form = win.down('form');
-//        var record = form.getRecord();
-//        var values = form.getValues();
-//        
-//        
-//        record.set(values);
-//        record.data.startDate = new Date();
-//        record.data.endDate = null;
-//        record.data.user = Helpdesk.Globals.userLogged;
-//        record.data.isOpen = true;   
-//        
-//        
-//        if(Helpdesk.Globals.userLogged.id !== 1){
-//            record.data.responsavel = null;
-//            record.data.priority = null;
-//            record.data.estimateTime = null;
-//            record.data.client = Helpdesk.Globals.userLogged.client;           
-//        }
-//        this.getTicketPanel().getStore().add(record);
-//        if (this.getTicketPanel().getStore().getModifiedRecords().length > 0) {
-//            this.getTicketPanel().getStore().sync({
-//                callback: function(records,operation,success) {
-//                    form.getForm().reset();
-//                    var multiupload = win.down('multiupload');
-//                    multiupload.ticketId = records.operations[0].records[0].data.id;
-//                    multiupload.submitValues();
-//                    scope.getTicketCardContainer().getLayout().setActiveItem(Helpdesk.Globals.ticket_datagrid);
-//                    scope.setSideMenuButtonText();
-//                    win.setLoading(false); 
-//                }
-//            });          
-//        } else {
-//            Ext.Msg.alert(translations.INFORMATION, translations.NOTHING_TO_SAVE);
-//        }
-//    },
     saveNewTicket: function(button, e, options) {
         var ticketView = this.getTicketView();
         //upload arquivos, caso seja success, salva o novo ticket
@@ -586,19 +535,42 @@ Ext.define('Helpdesk.controller.Ticket', {
             record.data.estimateTime = null;
             record.data.client = Helpdesk.Globals.userLogged.client;           
         }
-        this.getTicketPanel().getStore().add(record);
-        if (this.getTicketPanel().getStore().getModifiedRecords().length > 0) {
-            this.getTicketPanel().getStore().sync({
-                callback: function(records,operation,success) {
-                    form.getForm().reset();                    
-                    scope.getTicketCardContainer().getLayout().setActiveItem(Helpdesk.Globals.ticket_datagrid);
-                    scope.setSideMenuButtonText();
-                    ticketView.setLoading(false);
+        
+        var check = false;
+            if(record.data.user.userGroup.id === 1){
+                if(form.down('combobox#clientName').rawValue!=='' && 
+                   form.down('combobox#categoryTicket').rawValue!=='' &&
+                   form.down('textarea#stepReproduceError').value!=='' && 
+                   form.down('textfield#subject').value!=='' && 
+                   form.down('textarea#description').value!==''){
+                    check = true;
                 }
-            });          
-        } else {
-            Ext.Msg.alert(translations.INFORMATION, translations.NOTHING_TO_SAVE);
-            ticketView.setLoading(false);
+            }else if(record.data.user.userGroup.id === 2){
+                if(form.down('combobox#categoryTicket').rawValue!=='' && 
+                   form.down('textarea#stepReproduceError').value!=='' && 
+                   form.down('textfield#subject').value!=='' && 
+                   form.down('textarea#description').value!==''){
+                    check = true;
+                }
+            }
+            if(check){         
+            this.getTicketPanel().getStore().add(record);
+            if (this.getTicketPanel().getStore().getModifiedRecords().length > 0) {
+                this.getTicketPanel().getStore().sync({
+                    callback: function(records,operation,success) {
+                        form.getForm().reset();                    
+                        scope.getTicketCardContainer().getLayout().setActiveItem(Helpdesk.Globals.ticket_datagrid);
+                        scope.setSideMenuButtonText();
+                        ticketView.setLoading(false);
+                    }
+                });          
+            } else {
+                Ext.Msg.alert(translations.INFORMATION, translations.NOTHING_TO_SAVE);
+                ticketView.setLoading(false);
+            }
+        }else{
+            win.setLoading(false);
+            Ext.Msg.alert(translations.INFORMATION, translations.REQUIRED_ITENS_TICKETS);
         }
          
     },
