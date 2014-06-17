@@ -165,6 +165,7 @@ Ext.define('Helpdesk.view.ticket.TicketDetails',{
                 {
                     xtype:'panel',
                     baseCls:'bordless',
+                    width: 800,
                     layout:{
                         type:'hbox'
                     },
@@ -177,9 +178,8 @@ Ext.define('Helpdesk.view.ticket.TicketDetails',{
                             baseCls:'btn-save-changes'
                         },
                         {
-                            xtype:'form',
-                            baseCls:'bordless',
-                            width:460   
+                            xtype:'container',
+                            flex:1
                         },
                         {
                             xtype:'label',

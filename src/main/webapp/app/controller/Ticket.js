@@ -706,7 +706,6 @@ Ext.define('Helpdesk.controller.Ticket', {
             ticketView.down('button#btnCloseTkt').setVisible(true);
             ticketView.down('label#lblTicketClosed').setVisible(false);
             ticketView.down('button#btnOpenTkt').setVisible(false);
-            //ticketView.down('form#spacer').width = 460;
             //Seta visibilidade do botão salvar
             ticketView.down('button#btnSaveAnswTkt').setVisible(true);
             //Seta a visibilidade do botão de edição do ticket
@@ -719,7 +718,6 @@ Ext.define('Helpdesk.controller.Ticket', {
             ticketView.down('button#btnCloseTkt').setVisible(false);            
             ticketView.down('label#lblTicketClosed').setVisible(true);            
             ticketView.down('button#btnOpenTkt').setVisible(true);
-            //ticketView.down('form#spacer').width = 552;
             //Seta visibilidade do botão salvar
             ticketView.down('button#btnSaveAnswTkt').setVisible(false);           
             //Seta a visibilidade do botão de edição do ticket
