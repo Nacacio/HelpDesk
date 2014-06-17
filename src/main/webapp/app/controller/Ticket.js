@@ -615,8 +615,7 @@ Ext.define('Helpdesk.controller.Ticket', {
     ticketClicked:function(grid, record, item, index, e, eOpts){
         var ticketView = this.getTicketCardContainer().getLayout().setActiveItem(Helpdesk.Globals.ticket_details);        
         ticketView.down('form#ticketMainView').loadRecord(Ext.create('Helpdesk.model.Ticket'));      
-        this.setValuesFromView(ticketView,record);     
-        this.getFilesFromRecord(ticketView,record);
+        this.setValuesFromView(ticketView,record);   
     },
     
   /**
@@ -625,7 +624,7 @@ Ext.define('Helpdesk.controller.Ticket', {
      * Insere os valores na view de cadastro de ticket
      */
     setValuesFromView:function(ticketView,record){
-        
+        var scope = this;
         if(ticketView !== null && record !== null){
             
             ticketView.down('form#ticketMainView').loadRecord(record);           
@@ -677,19 +676,24 @@ Ext.define('Helpdesk.controller.Ticket', {
             answerStore.load({
                 callback:function(){ 
                     var resposta =  Ext.create('Helpdesk.view.ticket.TicketAnswerPanel',{
-                        title:record.data.userName,
-                        html:record.data.description
+                        title:record.data.userName
                     });
-                    ticketView.down('panel#tktAnswers').items.add(resposta);  
+                    resposta.down('label#corpo').text = record.data.description;
+                    resposta.down('hiddenfield#id').text = record.data.id;
+                    resposta.down('hiddenfield#idAnswer').text  = 0;
                     
+                    ticketView.down('panel#tktAnswers').items.add(resposta);
                     for(i=0;i<answerStore.getCount();i++){          
                         resposta =  Ext.create('Helpdesk.view.ticket.TicketAnswerPanel',{
-                            title:answerStore.data.items[i].data.user.name,
-                            html:answerStore.data.items[i].data.description
-                        });                        
+                            title:answerStore.data.items[i].data.user.name
+                        });              
+                        resposta.down('label#corpo').text = answerStore.data.items[i].data.description;
+                        resposta.down('hiddenfield#id').text = record.data.id;
+                        resposta.down('hiddenfield#idAnswer').text  = answerStore.data.items[i].data.id;
                         ticketView.down('panel#tktAnswers').items.add(resposta);                       
                     }
-                    ticketView.down('panel#tktAnswers').doLayout();  
+                    ticketView.down('panel#tktAnswers').doLayout(); 
+                    scope.getFilesFromRecord(ticketView,record);
                 }
             });
         }        
@@ -700,7 +704,7 @@ Ext.define('Helpdesk.controller.Ticket', {
             ticketView.down('button#btnCloseTkt').setVisible(true);
             ticketView.down('label#lblTicketClosed').setVisible(false);
             ticketView.down('button#btnOpenTkt').setVisible(false);
-            ticketView.down('form#spacer').width = 460;
+            //ticketView.down('form#spacer').width = 460;
             //Seta visibilidade do botão salvar
             ticketView.down('button#btnSaveAnswTkt').setVisible(true);
             //Seta a visibilidade do botão de edição do ticket
@@ -713,7 +717,7 @@ Ext.define('Helpdesk.controller.Ticket', {
             ticketView.down('button#btnCloseTkt').setVisible(false);            
             ticketView.down('label#lblTicketClosed').setVisible(true);            
             ticketView.down('button#btnOpenTkt').setVisible(true);
-            ticketView.down('form#spacer').width = 552;
+            //ticketView.down('form#spacer').width = 552;
             //Seta visibilidade do botão salvar
             ticketView.down('button#btnSaveAnswTkt').setVisible(false);           
             //Seta a visibilidade do botão de edição do ticket
@@ -789,8 +793,6 @@ Ext.define('Helpdesk.controller.Ticket', {
                 success: function (response, opts) {
                     if(response.responseText !== ''){
                         var responseJSON = Ext.decode(response.responseText);
-                        //console.log(responseJSON);
-                       
                         var answersList = ticketView.down('panel#tktAnswers').items.items;
                         
                         for (var i = 0; i < answersList.length; i++){
