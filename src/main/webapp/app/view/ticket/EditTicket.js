@@ -164,7 +164,9 @@ Ext.define('Helpdesk.view.ticket.EditTicket', {
                             text: translations.EDIT,
                             iconCls:'edit_ticket',
                             cls: 'btn-ticket-details-edit',
-                            itemId: 'editTicket'
+                            itemId: 'editTicket',
+                            hidden:true
+                            
                         }
                     ]
                 }

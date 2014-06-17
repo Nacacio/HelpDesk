@@ -136,7 +136,7 @@ Ext.define('Helpdesk.view.ticket.NewTicket', {
                 type: 'vbox',
                 align: 'stretch'
             },
-            itemId: 'groupStepError',
+            itemId: 'groupStepsTicket',
             items: [
                 {
                     xtype: 'label',
@@ -148,8 +148,8 @@ Ext.define('Helpdesk.view.ticket.NewTicket', {
                     height: 88,
                     maxWidth: 773,
                     cls: 'new-ticket-item',
-                    itemId: 'stepReproduceError',
-                    name: 'passosParaReproducao'
+                    itemId: 'stepsTicket',
+                    name: 'stepsTicket'
                 }
             ]
 

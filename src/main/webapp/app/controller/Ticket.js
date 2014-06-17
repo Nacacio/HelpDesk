@@ -158,9 +158,10 @@ Ext.define('Helpdesk.controller.Ticket', {
      */
     onSaveTicketChanges:function(button){
         var myScope = this;
+        var mainView = this.getTicketView();
         var form = button.up('form#ticketMainView');        
         var record = button.up('form#ticketMainView').getRecord() ;
-        
+        mainView.setLoading('Salvando...');
         if(form.down('combobox#priorityTicket').getValue()===null || form.down('combobox#priorityTicket').getValue()===''){
             var priorityIndex = Ext.StoreMgr.lookup(form.down('combobox#priorityTicket').getStore()).findExact('name',translations.NO_PRIORITY);
             var priorityRecord = Ext.StoreMgr.lookup(form.down('combobox#priorityTicket').getStore()).getAt(priorityIndex);            
@@ -187,9 +188,11 @@ Ext.define('Helpdesk.controller.Ticket', {
                 callback:function(){                    
                     myScope.getTicketEditContainer().getLayout().setActiveItem(Helpdesk.Globals.ticket_details_view);                    
                     myScope.setValuesFromView(form.up(),record);
+                    mainView.setLoading(false);
                 }
             });
-        }else{            
+        }else{  
+            mainView.setLoading(false);
             Ext.Msg.alert(translations.INFORMATION,translations.NOTHING_TO_SAVE);
         }
         
@@ -540,14 +543,14 @@ Ext.define('Helpdesk.controller.Ticket', {
             if(record.data.user.userGroup.id === 1){
                 if(form.down('combobox#clientName').rawValue!=='' && 
                    form.down('combobox#categoryTicket').rawValue!=='' &&
-                   form.down('textarea#stepReproduceError').value!=='' && 
+                   form.down('textarea#stepsTicket').value!=='' && 
                    form.down('textfield#subject').value!=='' && 
                    form.down('textarea#description').value!==''){
                     check = true;
                 }
             }else if(record.data.user.userGroup.id === 2){
                 if(form.down('combobox#categoryTicket').rawValue!=='' && 
-                   form.down('textarea#stepReproduceError').value!=='' && 
+                   form.down('textarea#stepsTicket').value!=='' && 
                    form.down('textfield#subject').value!=='' && 
                    form.down('textarea#description').value!==''){
                     check = true;
@@ -569,7 +572,7 @@ Ext.define('Helpdesk.controller.Ticket', {
                 ticketView.setLoading(false);
             }
         }else{
-            win.setLoading(false);
+            ticketView.setLoading(false);
             Ext.Msg.alert(translations.INFORMATION, translations.REQUIRED_ITENS_TICKETS);
         }
          
@@ -664,7 +667,6 @@ Ext.define('Helpdesk.controller.Ticket', {
             }else{
                 ticketView.down('text#tktResponsible').setText(translations.NO_RESPONSIBLE);
             }
-            
             ticketView.down('text#tktSteps').setText(record.data.stepsTicket);          
             
             //Insere a descrição do ticket            
@@ -750,7 +752,7 @@ Ext.define('Helpdesk.controller.Ticket', {
         var responsavelCombo = ticketView.down('#responsibleTicket');
         var responsavelStore = responsavelCombo.store;
         var resposibleTemp;
-        if((responsavelText ==='' || responsavelText!==translations.NO_DEADLINE_DEFINED) && Helpdesk.Globals.userGroup === '1'){            
+        if(responsavelText ===''){            
             resposibleTemp = new Helpdesk.model.User();
             resposibleTemp.data.name = translations.NO_RESPONSIBLE;
             responsavelCombo.setValue(resposibleTemp);
