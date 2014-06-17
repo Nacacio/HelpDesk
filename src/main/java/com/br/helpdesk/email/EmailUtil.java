@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.br.helpdesk.email;
 
+import com.br.helpdesk.model.ConfigEmail;
+import com.br.helpdesk.service.ConfigEmailService;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.regex.Matcher;
@@ -24,200 +25,232 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.search.FlagTerm;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 /**
  *
  * @author Andre
  */
 public class EmailUtil {
-    public static String IMAPS = "imaps";
-    public static String IMAP_GMAIL = "imap.gmail.com";
-    public static String USER = "andresulivam@gmail.com";//Alterar AQUI
-    public static String PASSWORD = "26240241";//Alterar AQUI
-    public static String FOLDER = "Inbox";
-    public static String SMTP_GMAIL = "smtp.gmail.com";
-    public static String PORT_GMAIL = "465";
-    
+//    public static String IMAPS = "imaps";
+//    public static String IMAP_GMAIL = "imap.gmail.com";
+//    public static String USER = "andresulivam@gmail.com";//Alterar AQUI
+//    public static String PASSWORD = "26240241";//Alterar AQUI
+//    public static String FOLDER = "Inbox";
+//    public static String SMTP_GMAIL = "smtp.gmail.com";
+//    public static String PORT_GMAIL = "465";
+
     public static String SEND_FROM = "andresulivam@gmail.com";//Alterar AQUI
-    public static String SEND_TO = "andresulivam@gmail.com";//Alterar AQUI
-    
-    
+    public static String SEND_TO = "andresulivam@gmail.com";//Alterar AQUI    
+
     public static Properties PROPERTIES;
-    
-    public EmailUtil(){        
-        PROPERTIES = new Properties();
-        PROPERTIES.put("mail.smtp.host", SMTP_GMAIL);
-        PROPERTIES.put("mail.smtp.socketFactory.port", PORT_GMAIL);
-        PROPERTIES.put("mail.smtp.socketFactory.class","javax.net.ssl.SSLSocketFactory");
-        PROPERTIES.put("mail.smtp.auth", "true");
-        PROPERTIES.put("mail.smtp.port", PORT_GMAIL);
+
+    @Autowired
+    private ConfigEmailService configEmailService;
+
+    private ConfigEmail configEmail;
+
+    public EmailUtil() {
+        configEmail = configEmailService.findById(1L);
+        if (configEmail != null) {
+            PROPERTIES = new Properties();
+            PROPERTIES.put("mail.smtp.host", configEmail.getSmtp());
+            PROPERTIES.put("mail.smtp.socketFactory.port", configEmail.getPort());
+            PROPERTIES.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+            PROPERTIES.put("mail.smtp.auth", "true");
+            PROPERTIES.put("mail.smtp.port", configEmail.getPort());
+        }
+
     }
-    
+
     public void getEmailsNaoLidos() throws IOException, Exception {
-       // Create all the needed properties - empty!
-       Properties connectionProperties = new Properties();
-       // Create the session
-       Session session = Session.getDefaultInstance(connectionProperties,null);
-       try {
-           Store store = session.getStore(IMAPS);            
-           // Set the server depending on the parameter flag value           
-           store.connect(IMAP_GMAIL,USER,PASSWORD);            
-            
-           // Get the Inbox folder
-           Folder inbox = store.getFolder(FOLDER);  
-           
+        // Create all the needed properties - empty!
+        Properties connectionProperties = new Properties();
+        // Create the session
+        Session session = Session.getDefaultInstance(connectionProperties, null);
+        try {
+            Store store = session.getStore(configEmail.getImaps());
+            // Set the server depending on the parameter flag value           
+            store.connect(configEmail.getImap(), configEmail.getUser(), configEmail.getPassword());
+
+            // Get the Inbox folder
+            Folder inbox = store.getFolder(configEmail.getFolder());
+
            //READ_ONLY - Apenas le
-           //READ_WRITE- Le e marca como lido
-           inbox.open(Folder.READ_ONLY);            
-           
-           // Get messages not seen
-           FlagTerm ft = new FlagTerm(new Flags(Flags.Flag.SEEN), false);
-           Message messages[] = inbox.search(ft);
-                        
-           // Display the messages
-           for(Message message:messages) {  
-               System.out.println("\n-------- E M A I L --------");
-               System.out.println("\nTitle: " + message.getSubject());
-               getIdTicketFromTitle(message.getSubject());
-               System.out.println("\n-- C O N T E N T --");
-               if(message.getContent() instanceof MimeMultipart){
-                   System.out.println("\n"+ ((MimeMultipart)message.getContent()).getBodyPart(0).getContent());
-               }
-               else{
-                    System.out.println("\n"+message.getContent());
-               }
-               System.out.println("-------------------");
-               System.out.println("\n---------------------------");
-           }
-            
-       } catch (MessagingException e) {
-           throw new RuntimeException(e);
-       }        
+            //READ_WRITE- Le e marca como lido
+            inbox.open(Folder.READ_ONLY);
+
+            // Get messages not seen
+            FlagTerm ft = new FlagTerm(new Flags(Flags.Flag.SEEN), false);
+            Message messages[] = inbox.search(ft);
+
+            // Display the messages
+            for (Message message : messages) {
+                System.out.println("\n-------- E M A I L --------");
+                System.out.println("\nTitle: " + message.getSubject());
+                getIdTicketFromTitle(message.getSubject());
+                System.out.println("\n-- C O N T E N T --");
+                if (message.getContent() instanceof MimeMultipart) {
+                    System.out.println("\n" + ((MimeMultipart) message.getContent()).getBodyPart(0).getContent());
+                } else {
+                    System.out.println("\n" + message.getContent());
+                }
+                System.out.println("-------------------");
+                System.out.println("\n---------------------------");
+            }
+
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
     }
-    
-    public void sendEmail(String title, String categoria, String observacoes, String passos){        
-        Session session = Session.getDefaultInstance(PROPERTIES,new javax.mail.Authenticator() {
-                                @Override
-				protected PasswordAuthentication getPasswordAuthentication() {
-					return new PasswordAuthentication(USER,PASSWORD);
-				}
-			}); 
+
+    public void sendEmail(String title, String categoria, String observacoes, String passos) {
+        Session session = Session.getDefaultInstance(PROPERTIES, new javax.mail.Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(configEmail.getUser(), configEmail.getPassword());
+            }
+        });
         try {
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(SEND_FROM));
-            message.setRecipients(Message.RecipientType.TO,InternetAddress.parse(SEND_TO));
-            message.setSubject(title);            
-            message.setContent(contentNovoTicket(title,categoria,observacoes,passos), "text/html; charset=utf-8");
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(SEND_TO));
+            message.setSubject(title);
+            message.setContent(contentNovoTicket(title, categoria, observacoes, passos), "text/html; charset=utf-8");
             Transport.send(message);
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
-    }        
-    
-    private String contentNovoTicket(String assunto,String categoria,String observacoes,String passos){ 
-        String html = "<!DOCTYPE html>"+
-        "<html>"+
-        "<head>"+
-        "<meta charset='UTF-8\'>"+
-        "<style>"+
-                "h2{color:blue;font-size: 16px;font-weight: bold;}"+
-                "pre{color:black;font-size: 15px;font-weight: normal;}"+
-        "</style>"+
-        "</head>"+
-        "<body>"+
-                "<table>"+
-                        "<tr>"+
-                                "<th><h2>ASSUNTO:&nbsp;</h2></th>"+
-                                "<th><pre>"+ assunto +"</pre></th>"+
-                        "</tr>"+
-                "</table>"+
-                "<table>"+
-                        "<tr>"+
-                                "<th><h2>CATEGORIA:&nbsp;</h2></th>"+
-                                "<th><pre>"+ categoria +"</pre></th>"+
-                        "</tr>"+
-                "</table>"+
-                "<br>"+
-                "<HR>"+
-                "<br>"+
-                "<h2>PASSOS PARA REPRODUZIR:</h2>"+
-                "<pre>"+ passos +"</pre>"+
-                "<br>"+
-                "<HR>"+
-                "<br>"+
-                "<h2>OBSERVAÇÕES:</h2>"+
-                "<pre>"+ observacoes +"</pre>"+
-                "<br>"+
-                "<HR>"+
-                "<br>"+
-                "<h4>"+
-                "Cymo Tecnologia em Gestão"+
-                "</h4>"+
-                "<pre>"+
-                "Atenção: esta é uma mensagem automática. Para responder ou consultar o histórico deste atendimento, acesse:"+
-                "<pre>"+
-        "</body>"+
-        "</html>";
+    }
+
+    public void sendEmailNewTicket(String title, String categoria, String observacoes, String passos) {
+        Session session = Session.getDefaultInstance(PROPERTIES, new javax.mail.Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(configEmail.getUser(), configEmail.getPassword());
+            }
+        });
+        try {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(SEND_FROM));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(SEND_TO));
+            message.setSubject(title);
+            message.setContent(contentNovoTicket(title, categoria, observacoes, passos), "text/html; charset=utf-8");
+            Transport.send(message);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private String contentNovoTicket(String assunto, String categoria, String observacoes, String passos) {
+        String html = "<!DOCTYPE html>"
+                + "<html>"
+                + "<head>"
+                + "<meta charset='UTF-8\'>"
+                + "<style>"
+                + "h2{color:blue;font-size: 16px;font-weight: bold;}"
+                + "pre{color:black;font-size: 15px;font-weight: normal;}"
+                + "</style>"
+                + "</head>"
+                + "<body>"
+                + "<table>"
+                + "<tr>"
+                + "<th><h2>ASSUNTO:&nbsp;</h2></th>"
+                + "<th><pre>" + assunto + "</pre></th>"
+                + "</tr>"
+                + "</table>"
+                + "<table>"
+                + "<tr>"
+                + "<th><h2>CATEGORIA:&nbsp;</h2></th>"
+                + "<th><pre>" + categoria + "</pre></th>"
+                + "</tr>"
+                + "</table>"
+                + "<br>"
+                + "<HR>"
+                + "<br>"
+                + "<h2>PASSOS PARA REPRODUZIR:</h2>"
+                + "<pre>" + passos + "</pre>"
+                + "<br>"
+                + "<HR>"
+                + "<br>"
+                + "<h2>OBSERVAÇÕES:</h2>"
+                + "<pre>" + observacoes + "</pre>"
+                + "<br>"
+                + "<HR>"
+                + "<br>"
+                + "<h4>"
+                + "Cymo Tecnologia em Gestão"
+                + "</h4>"
+                + "<pre>"
+                + "Atenção: esta é uma mensagem automática. Para responder ou consultar o histórico deste atendimento, acesse:"
+                + "<pre>"
+                + "</body>"
+                + "</html>";
         return html;
     }
-    
-        /**
+
+    /**
      * Return the primary text content of the message.
      */
     private String getText(Part p) throws
-                MessagingException, IOException {
+            MessagingException, IOException {
         boolean textIsHtml = false;
         if (p.isMimeType("text/*")) {
-            String s = (String)p.getContent();
+            String s = (String) p.getContent();
             textIsHtml = p.isMimeType("text/html");
             return s;
         }
 
         if (p.isMimeType("multipart/alternative")) {
             // prefer html text over plain text
-            Multipart mp = (Multipart)p.getContent();
+            Multipart mp = (Multipart) p.getContent();
             String text = null;
             for (int i = 0; i < mp.getCount(); i++) {
                 Part bp = mp.getBodyPart(i);
                 if (bp.isMimeType("text/plain")) {
-                    if (text == null)
+                    if (text == null) {
                         text = getText(bp);
+                    }
                     continue;
                 } else if (bp.isMimeType("text/html")) {
                     String s = getText(bp);
-                    if (s != null)
+                    if (s != null) {
                         return s;
+                    }
                 } else {
                     return getText(bp);
                 }
             }
             return text;
         } else if (p.isMimeType("multipart/*")) {
-            Multipart mp = (Multipart)p.getContent();
+            Multipart mp = (Multipart) p.getContent();
             for (int i = 0; i < mp.getCount(); i++) {
                 String s = getText(mp.getBodyPart(i));
-                if (s != null)
+                if (s != null) {
                     return s;
+                }
             }
         }
 
         return null;
     }
-    
+
     /**
-     * Retorna o ID do ticket de acordo com a String no padrão ..... #09123# .....
+     * Retorna o ID do ticket de acordo com a String no padrão ..... #09123#
+     * .....
+     *
      * @param titulo
-     * @return 
+     * @return
      */
-    private int getIdTicketFromTitle(String titulo){
+    private int getIdTicketFromTitle(String titulo) {
         int id = 0;
         Pattern pattern = Pattern.compile("#(.*?)#");
         Matcher matcher = pattern.matcher(titulo);
-        if (matcher.find())
-        {
+        if (matcher.find()) {
             String idString = matcher.group(1);
             id = Integer.parseInt(idString);
-        }      
-        return id;               
+        }
+        return id;
     }
 }

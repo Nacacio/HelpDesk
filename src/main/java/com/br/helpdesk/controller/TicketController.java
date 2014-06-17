@@ -221,6 +221,10 @@ public class TicketController {
     @ResponseBody
     public Ticket save(@RequestBody Ticket ticket,@RequestParam(value = "user") String username) throws IOException {
         List<File> filesToSave = getFilesFromUser(username);
+        boolean newTicket = false;
+        if(ticket.getId()==null || ticket.getId()==0){
+            newTicket = true;
+        }
         ticket = ticketService.save(ticket);
         TicketFile ticketFile = null;
         for (File file : filesToSave){
@@ -232,9 +236,14 @@ public class TicketController {
             fileService.save(ticketFile);
             file.delete();
         }        
-
+        
+        if(newTicket){
+            
+        } else {
+            
+        }
         EmailUtil eu = new EmailUtil();
-        eu.sendEmail(ticket.getTitle(), ticket.getCategory().getName(), ticket.getDescription(), ticket.getStepsTicket());
+        //eu.sendEmail(ticket.getTitle(), ticket.getCategory().getName(), ticket.getDescription(), ticket.getStepsTicket());
 
         return ticket;
     }
