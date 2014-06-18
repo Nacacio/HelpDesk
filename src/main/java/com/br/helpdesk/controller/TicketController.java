@@ -4,6 +4,7 @@ import com.br.helpdesk.email.EmailUtil;
 import com.br.helpdesk.model.TicketFile;
 import com.br.helpdesk.model.Ticket;
 import com.br.helpdesk.model.User;
+import com.br.helpdesk.service.EmailService;
 import com.br.helpdesk.service.TicketFileService;
 import com.br.helpdesk.service.TicketService;
 import com.br.helpdesk.service.UserService;
@@ -65,6 +66,13 @@ public class TicketController {
     
     public void setUserService(UserService service){
         this.userService = service;
+    }
+    
+    @Autowired
+    private EmailService emailService;
+    
+    public void setEmailService(EmailService service){
+        this.emailService = service;
     }
     
     @Autowired
@@ -235,16 +243,8 @@ public class TicketController {
             ticketFile.setTicket(ticket);
             fileService.save(ticketFile);
             file.delete();
-        }        
-        
-        /*if(newTicket){
-            
-        } else {
-            
-        }
-        EmailUtil eu = new EmailUtil();*/
-        //eu.sendEmail(ticket.getTitle(), ticket.getCategory().getName(), ticket.getDescription(), ticket.getStepsTicket());
-
+        }       
+        emailService.sendEmail(ticket.getTitle(), ticket.getCategory().getName(), ticket.getDescription(), ticket.getStepsTicket(),EmailService.EMAIL_NEW_TICKET);
         return ticket;
     }
     
