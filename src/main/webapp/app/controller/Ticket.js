@@ -181,8 +181,11 @@ Ext.define('Helpdesk.controller.Ticket', {
         record.data.estimateTime = form.down('datefield#estimateTime').getValue(); //Ext.Date.format(form.down('datefield#estimateTime').getValue(),'d/m/Y');
                 
         record.dirty = true;        
-        var store = this.getTicketsStore(); 
-        store.add(record);
+        var store = this.getTicketsStore();
+        record.data.priority = null;
+        record.data.responsavel = null;
+        console.log(record);
+        store.add(record);        
         if (store.getModifiedRecords().length > 0) {
             store.sync({
                 callback:function(){                    
@@ -749,8 +752,8 @@ Ext.define('Helpdesk.controller.Ticket', {
         var responsavelText = ticketView.down('#tktResponsible').text;
         var responsavelCombo = ticketView.down('#responsibleTicket');
         var responsavelStore = responsavelCombo.store;
-        var resposibleTemp;
-        if(responsavelText ===''){            
+        var resposibleTemp;        
+        if(responsavelText ==='' || translations.NO_RESPONSIBLE){            
             resposibleTemp = new Helpdesk.model.User();
             resposibleTemp.data.name = translations.NO_RESPONSIBLE;
             responsavelCombo.setValue(resposibleTemp);
@@ -765,9 +768,17 @@ Ext.define('Helpdesk.controller.Ticket', {
         var priorityText = ticketView.down('#tktPriority').text;
         var priorityCombo = ticketView.down('#priorityTicket');
         var priorityStore = priorityCombo.store;
-        var priorityIndex = Ext.StoreMgr.lookup(priorityStore).findExact('name',priorityText);
-        var priorityRecord = Ext.StoreMgr.lookup(priorityStore).getAt(priorityIndex);
-        priorityCombo.setValue(priorityRecord);
+        var priorityTemp;        
+        if(priorityText ==='' || translations.NO_PRIORITY){            
+            priorityTemp = new Helpdesk.model.Priority();
+            priorityTemp.data.name = translations.NO_PRIORITY;
+            priorityCombo.setValue(priorityTemp);
+        }
+        else{
+            var priorityIndex = Ext.StoreMgr.lookup(priorityStore).findExact('name',priorityText);
+            var priorityRecord = Ext.StoreMgr.lookup(priorityStore).getAt(priorityIndex);
+            priorityCombo.setValue(priorityRecord);
+        }
         
         //set prazo datefield       
         var estimatedText = ticketView.down('#tktEstimatedTime').text;        

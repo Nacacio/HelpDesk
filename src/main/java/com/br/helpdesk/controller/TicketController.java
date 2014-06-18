@@ -237,12 +237,12 @@ public class TicketController {
             file.delete();
         }        
         
-        if(newTicket){
+        /*if(newTicket){
             
         } else {
             
         }
-        EmailUtil eu = new EmailUtil();
+        EmailUtil eu = new EmailUtil();*/
         //eu.sendEmail(ticket.getTitle(), ticket.getCategory().getName(), ticket.getDescription(), ticket.getStepsTicket());
 
         return ticket;
