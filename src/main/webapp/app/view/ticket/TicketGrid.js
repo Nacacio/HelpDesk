@@ -53,7 +53,7 @@ Ext.define('Helpdesk.view.ticket.TicketGrid', {
                 header: translations.RESPONSIBLE,
                 width: 170,
                 flex:0,
-                dataIndex: 'responsavelName'
+                dataIndex: 'responsibleName'
             }
         ], 
         defaults: {

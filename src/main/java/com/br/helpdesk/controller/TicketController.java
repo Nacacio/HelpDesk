@@ -4,7 +4,6 @@ import com.br.helpdesk.email.EmailUtil;
 import com.br.helpdesk.model.TicketFile;
 import com.br.helpdesk.model.Ticket;
 import com.br.helpdesk.model.User;
-import com.br.helpdesk.service.EmailService;
 import com.br.helpdesk.service.TicketFileService;
 import com.br.helpdesk.service.TicketService;
 import com.br.helpdesk.service.UserService;
@@ -44,169 +43,165 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-
 @Controller
 @RequestMapping("/ticket")
 public class TicketController {
-    
+
     @Autowired
     private TicketService ticketService;
-    
-    public void setService(TicketService service){
+
+    public void setService(TicketService service) {
         this.ticketService = service;
     }
-    
+
     @Autowired
-    public TicketController(TicketService service){
+    public TicketController(TicketService service) {
         this.ticketService = service;
     }
-    
+
     @Autowired
     private UserService userService;
-    
-    public void setUserService(UserService service){
+
+    public void setUserService(UserService service) {
         this.userService = service;
     }
-    
-    @Autowired
-    private EmailService emailService;
-    
-    public void setEmailService(EmailService service){
-        this.emailService = service;
-    }
-    
+
     @Autowired
     private TicketFileService fileService;
-    
-    public void setFileService(TicketFileService service){
+
+    public void setFileService(TicketFileService service) {
         this.fileService = service;
     }
-    
+
     @RequestMapping(method = RequestMethod.GET)
-    public @ResponseBody List<Ticket> getAllTickets() {
+    public @ResponseBody
+    List<Ticket> getAllTickets() {
         return ticketService.findAll();
     }
-    
-    @RequestMapping(value = "/all", method = RequestMethod.GET, params={"user"})
-    public @ResponseBody List<Ticket> getAllTicketsByUser(@RequestParam(value = "user") String username) {
+
+    @RequestMapping(value = "/all", method = RequestMethod.GET, params = {"user"})
+    public @ResponseBody
+    List<Ticket> getAllTicketsByUser(@RequestParam(value = "user") String username) {
         User user = this.userService.findByUserName(username);
-        if(user.getUserGroup().getId() == 1L){//SUPERUSER
+        if (user.getUserGroup().getId() == 1L) {//SUPERUSER
             return ticketService.findAll();
-        }
-        else{
+        } else {
             return ticketService.findByUser(user);
         }
     }
-    
-    @RequestMapping(value = "/all-paging", method = RequestMethod.GET, params={"user","start", "limit"})
-    public @ResponseBody List<Ticket> getAllTicketsByUserPaging(@RequestParam(value = "user") String username,  @RequestParam(value = "start") int start, @RequestParam(value = "limit")  int limit) {
+
+    @RequestMapping(value = "/all-paging", method = RequestMethod.GET, params = {"user", "start", "limit"})
+    public @ResponseBody
+    List<Ticket> getAllTicketsByUserPaging(@RequestParam(value = "user") String username, @RequestParam(value = "start") int start, @RequestParam(value = "limit") int limit) {
         User user = this.userService.findByUserName(username);
-        PageRequest pageRequest = getPageRequest(limit,start);
-        
-        if(user.getUserGroup().getId() == 1L){//SUPERUSER
+        PageRequest pageRequest = getPageRequest(limit, start);
+
+        if (user.getUserGroup().getId() == 1L) {//SUPERUSER
             return ticketService.findAll(pageRequest);
-        }
-        else{
-            return ticketService.findByUserWithPaging(user,pageRequest);
+        } else {
+            return ticketService.findByUserWithPaging(user, pageRequest);
         }
     }
-    
-    @RequestMapping(value = "/opened", method = RequestMethod.GET, params={"user"})
-    public @ResponseBody List<Ticket> getTicketsOpenedByUser(@RequestParam(value = "user") String username) {
+
+    @RequestMapping(value = "/opened", method = RequestMethod.GET, params = {"user"})
+    public @ResponseBody
+    List<Ticket> getTicketsOpenedByUser(@RequestParam(value = "user") String username) {
         User user = this.userService.findByUserName(username);
-        
-        if(user.getUserGroup().getId() == 1L){//SUPERUSER
+
+        if (user.getUserGroup().getId() == 1L) {//SUPERUSER
             return ticketService.findByIsOpen(true);
-        }
-        else{
-            return ticketService.findByIsOpenAndUser(true,user);
-        }
-    }
-    
-    @RequestMapping(value = "/opened-paging", method = RequestMethod.GET, params={"user","start","limit"})
-    public @ResponseBody List<Ticket> getTicketsOpenedByUserWithPaging(@RequestParam(value = "user") String username, @RequestParam(value = "start") int start, @RequestParam(value = "limit")  int limit) {
-        User user = this.userService.findByUserName(username);
-        PageRequest pageRequest = getPageRequest(limit,start);
-        
-        if(user.getUserGroup().getId() == 1L){//SUPERUSER
-            return ticketService.findByIsOpenWithPaging(true,pageRequest);
-        }
-        else{
-            return ticketService.findByIsOpenAndUser(true,user);
+        } else {
+            return ticketService.findByIsOpenAndUser(true, user);
         }
     }
-    
-    @RequestMapping(value = "/closed", method = RequestMethod.GET, params={"user"})
-    public @ResponseBody List<Ticket> getTicketsClosedByUser(@RequestParam(value = "user") String username) {
+
+    @RequestMapping(value = "/opened-paging", method = RequestMethod.GET, params = {"user", "start", "limit"})
+    public @ResponseBody
+    List<Ticket> getTicketsOpenedByUserWithPaging(@RequestParam(value = "user") String username, @RequestParam(value = "start") int start, @RequestParam(value = "limit") int limit) {
         User user = this.userService.findByUserName(username);
-        if(user.getUserGroup().getId() == 1L){//SUPERUSER
+        PageRequest pageRequest = getPageRequest(limit, start);
+
+        if (user.getUserGroup().getId() == 1L) {//SUPERUSER
+            return ticketService.findByIsOpenWithPaging(true, pageRequest);
+        } else {
+            return ticketService.findByIsOpenAndUser(true, user);
+        }
+    }
+
+    @RequestMapping(value = "/closed", method = RequestMethod.GET, params = {"user"})
+    public @ResponseBody
+    List<Ticket> getTicketsClosedByUser(@RequestParam(value = "user") String username) {
+        User user = this.userService.findByUserName(username);
+        if (user.getUserGroup().getId() == 1L) {//SUPERUSER
             return ticketService.findByIsOpen(false);
-        }
-        else{
-            return ticketService.findByIsOpenAndUser(false,user);
-        }
-    }
-    
-    @RequestMapping(value = "/closed-paging", method = RequestMethod.GET, params={"user","start","limit"})
-    public @ResponseBody List<Ticket> getTicketsClosedByUserWithPaging(@RequestParam(value = "user") String username, @RequestParam(value = "start") int start, @RequestParam(value = "limit")  int limit) {
-        User user = this.userService.findByUserName(username);
-        PageRequest pageRequest = getPageRequest(limit,start);
-        
-        if(user.getUserGroup().getId() == 1L){//SUPERUSER
-            return ticketService.findByIsOpenWithPaging(false,pageRequest);
-        }
-        else{
-            return ticketService.findByIsOpenAndUserWithPaging(false,user,pageRequest);
+        } else {
+            return ticketService.findByIsOpenAndUser(false, user);
         }
     }
-    
-    @RequestMapping(value = "/mytickets", method = RequestMethod.GET, params={"user"})
-    public @ResponseBody List<Ticket> getMyTickets(@RequestParam(value = "user") String username) {
+
+    @RequestMapping(value = "/closed-paging", method = RequestMethod.GET, params = {"user", "start", "limit"})
+    public @ResponseBody
+    List<Ticket> getTicketsClosedByUserWithPaging(@RequestParam(value = "user") String username, @RequestParam(value = "start") int start, @RequestParam(value = "limit") int limit) {
         User user = this.userService.findByUserName(username);
-        
-        return ticketService.findByResponsavel(user);
+        PageRequest pageRequest = getPageRequest(limit, start);
+
+        if (user.getUserGroup().getId() == 1L) {//SUPERUSER
+            return ticketService.findByIsOpenWithPaging(false, pageRequest);
+        } else {
+            return ticketService.findByIsOpenAndUserWithPaging(false, user, pageRequest);
+        }
     }
-    
-    @RequestMapping(value = "/mytickets-paging", method = RequestMethod.GET, params={"user","start", "limit"})
-    public @ResponseBody List<Ticket> getMyTicketsWithPaging(@RequestParam(value = "user") String username, @RequestParam(value = "start") int start, @RequestParam(value = "limit")  int limit) {
+
+    @RequestMapping(value = "/mytickets", method = RequestMethod.GET, params = {"user"})
+    public @ResponseBody
+    List<Ticket> getMyTickets(@RequestParam(value = "user") String username) {
         User user = this.userService.findByUserName(username);
-        PageRequest pageRequest = getPageRequest(limit,start);
-        return ticketService.findByResponsavelWithPaging(user,pageRequest);
+
+        return ticketService.findByResponsible(user);
     }
-    
-    @RequestMapping(value = "/withoutresponsible", method = RequestMethod.GET, params={"user"})
-    public @ResponseBody List<Ticket> getTicketsWithoutResponsible(@RequestParam(value = "user") String username) {
-        return ticketService.findByResponsavel(null);
-    }
-    
-    @RequestMapping(value = "/withoutresponsible-paging", method = RequestMethod.GET, params={"user","start","limit"})
-    public @ResponseBody List<Ticket> getTicketsWithoutResponsibleWithPaging(@RequestParam(value = "user") String username, @RequestParam(value = "start") int start, @RequestParam(value = "limit")  int limit) {
-        PageRequest pageRequest = getPageRequest(limit,start);
-        return ticketService.findByResponsavelWithPaging(null,pageRequest);
-    }
-    
-    
-    @RequestMapping(value = "/textmenu", method = RequestMethod.GET, params={"user"}, produces="application/json;charset=UTF-8")
-    public @ResponseBody String getTextMenu(@RequestParam(value = "user") String username, HttpServletResponse response) throws UnsupportedEncodingException {
+
+    @RequestMapping(value = "/mytickets-paging", method = RequestMethod.GET, params = {"user", "start", "limit"})
+    public @ResponseBody
+    List<Ticket> getMyTicketsWithPaging(@RequestParam(value = "user") String username, @RequestParam(value = "start") int start, @RequestParam(value = "limit") int limit) {
         User user = this.userService.findByUserName(username);
-        int todos,abertos,fechados,withoutresponsible,mytickets;
-        if(user.getUserGroup().getId() == 1L){//SUPERUSER
+        PageRequest pageRequest = getPageRequest(limit, start);
+        return ticketService.findByResponsibleWithPaging(user, pageRequest);
+    }
+
+    @RequestMapping(value = "/withoutresponsible", method = RequestMethod.GET, params = {"user"})
+    public @ResponseBody
+    List<Ticket> getTicketsWithoutResponsible(@RequestParam(value = "user") String username) {
+        return ticketService.findByResponsible(null);
+    }
+
+    @RequestMapping(value = "/withoutresponsible-paging", method = RequestMethod.GET, params = {"user", "start", "limit"})
+    public @ResponseBody
+    List<Ticket> getTicketsWithoutResponsibleWithPaging(@RequestParam(value = "user") String username, @RequestParam(value = "start") int start, @RequestParam(value = "limit") int limit) {
+        PageRequest pageRequest = getPageRequest(limit, start);
+        return ticketService.findByResponsibleWithPaging(null, pageRequest);
+    }
+
+    @RequestMapping(value = "/textmenu", method = RequestMethod.GET, params = {"user"}, produces = "application/json;charset=UTF-8")
+    public @ResponseBody
+    String getTextMenu(@RequestParam(value = "user") String username, HttpServletResponse response) throws UnsupportedEncodingException {
+        User user = this.userService.findByUserName(username);
+        int todos, abertos, fechados, withoutresponsible, mytickets;
+        if (user.getUserGroup().getId() == 1L) {//SUPERUSER
             todos = ticketService.findAll().size();
             abertos = ticketService.findByIsOpen(true).size();
             fechados = ticketService.findByIsOpen(false).size();
-            mytickets = ticketService.findByResponsavel(user).size();
-            withoutresponsible = ticketService.findByResponsavel(null).size();
-        }
-        else{
+            mytickets = ticketService.findByResponsible(user).size();
+            withoutresponsible = ticketService.findByResponsible(null).size();
+        } else {
             todos = ticketService.findByUser(user).size();
             abertos = ticketService.findByIsOpenAndUser(true, user).size();
             fechados = ticketService.findByIsOpenAndUser(false, user).size();
             mytickets = 0;
             withoutresponsible = 0;
         }
-        return "{\"todos\":'" +todos+"', \"abertos\": '"+abertos+"', \"fechados\": '"+fechados+"', \"mytickets\": '"+mytickets+"', \"withoutresponsible\": '"+withoutresponsible+"'}";
+        return "{\"todos\":'" + todos + "', \"abertos\": '" + abertos + "', \"fechados\": '" + fechados + "', \"mytickets\": '" + mytickets + "', \"withoutresponsible\": '" + withoutresponsible + "'}";
     }
-    
+
     @RequestMapping(value = {"close-ticket/{id}"}, method = {RequestMethod.PUT})
     @ResponseBody
     public Ticket closeTicket(@RequestBody Ticket ticket) {
@@ -214,7 +209,7 @@ public class TicketController {
         ticket.setEndDate(Calendar.getInstance().getTime());
         return ticketService.save(ticket);
     }
-    
+
     @RequestMapping(value = {"open-ticket/{id}"}, method = {RequestMethod.PUT})
     @ResponseBody
     public Ticket openTicket(@RequestBody Ticket ticket) {
@@ -222,20 +217,22 @@ public class TicketController {
         ticket.setEndDate(null);
         return ticketService.save(ticket);
     }
-    
 
-    
-    @RequestMapping(value = {"", "/{id}"}, method = {RequestMethod.POST,RequestMethod.PUT}, params={"user"})
+    @RequestMapping(value = {"", "/{id}"}, method = {RequestMethod.POST, RequestMethod.PUT}, params = {"user"})
     @ResponseBody
-    public Ticket save(@RequestBody Ticket ticket,@RequestParam(value = "user") String username) throws IOException {
+    public Ticket save(@RequestBody Ticket ticket, @RequestParam(value = "user") String username) throws IOException {
         List<File> filesToSave = getFilesFromUser(username);
-        boolean newTicket = false;
-        if(ticket.getId()==null || ticket.getId()==0){
-            newTicket = true;
+
+        List<String> emails = new ArrayList<String>();
+        Ticket olderTicket = null;
+
+        if (!(ticket.getId() == null)) {
+            olderTicket = ticketService.findById(ticket.getId());
         }
+
         ticket = ticketService.save(ticket);
         TicketFile ticketFile = null;
-        for (File file : filesToSave){
+        for (File file : filesToSave) {
             //file.renameTo(file.getName().replace(username, username));
             ticketFile = new TicketFile();
             ticketFile.setName(file.getName());
@@ -243,96 +240,115 @@ public class TicketController {
             ticketFile.setTicket(ticket);
             fileService.save(ticketFile);
             file.delete();
-        }       
-        emailService.sendEmail(ticket.getTitle(), ticket.getCategory().getName(), ticket.getDescription(), ticket.getStepsTicket(),EmailService.EMAIL_NEW_TICKET);
+        }
+
+        EmailUtil eu = new EmailUtil();
+
+        if (olderTicket == null) {
+            if (ticket.getResponsible() != null) {
+                List<User> admins = userService.findByUserAdmin();
+                for (User admin : admins) {
+                    emails.add(admin.getEmail());
+                }
+            }
+            eu.sendEmailNewTicket(ticket, emails);
+        } else {
+            if (ticket.getResponsible() != null) {
+                emails.add(ticket.getResponsible().getEmail());
+            }
+            if (olderTicket.getResponsible() != null) {
+                emails.add(olderTicket.getResponsible().getEmail());
+            }
+            eu.sendEmailEditTicket(olderTicket, ticket, emails);
+        }
+
         return ticket;
     }
-    
+
     /**
      * upload
      */
     @RequestMapping(value = "/files", method = RequestMethod.POST)
     @ResponseBody
-    public String uploadFile(HttpServletRequest request,HttpServletResponse response) throws Exception {
+    public String uploadFile(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String username = request.getParameter("username");
-        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;        
+        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
         Collection<MultipartFile> filesCollection = multipartRequest.getFileMap().values();
-        try{
+        try {
             for (MultipartFile multipartFile : filesCollection) {
-                String fileName = "##"+username+"##"+multipartFile.getOriginalFilename();
+                String fileName = "##" + username + "##" + multipartFile.getOriginalFilename();
                 createFile(fileName, multipartFile.getBytes());
             }
-        }
-        catch (IOException e){
+        } catch (IOException e) {
             return "{success: false}";
         }
         return "{success: true}";
     }
+
     public List<File> getFilesFromUser(String username) throws FileNotFoundException, IOException {
         File folder = new File(System.getProperty("java.io.tmpdir"));
-        final String sufixnamefile = "##"+username+"##";
+        final String sufixnamefile = "##" + username + "##";
         List<File> filesToSave = new ArrayList<File>();
-        
-        
+
         FilenameFilter fileFilter = new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
                 return name.toLowerCase().contains(sufixnamefile);
             }
         };
-        
+
         File filesFromUser[] = folder.listFiles(fileFilter);
         for (File tempFile : filesFromUser) {
-            String fileName = tempFile.getName().replace(sufixnamefile, ""); 
-            File file = createFile(fileName,getBytesFromFile(tempFile));
+            String fileName = tempFile.getName().replace(sufixnamefile, "");
+            File file = createFile(fileName, getBytesFromFile(tempFile));
             tempFile.delete();
             filesToSave.add(file);
         }
 
         return filesToSave;
     }
-    
-    public byte[] getBytesFromFile(File file){
-        FileInputStream fileInputStream=null;
- 
+
+    public byte[] getBytesFromFile(File file) {
+        FileInputStream fileInputStream = null;
+
         byte[] bFile = new byte[(int) file.length()];
- 
+
         try {
             //convert file into array of bytes
-	    fileInputStream = new FileInputStream(file);
-	    fileInputStream.read(bFile);
-	    fileInputStream.close();
- 	    return bFile;
-        }catch(Exception e){
-        	e.printStackTrace();
+            fileInputStream = new FileInputStream(file);
+            fileInputStream.read(bFile);
+            fileInputStream.close();
+            return bFile;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return null;        
+        return null;
     }
 
-     /**
+    /**
      * download
      */
     @RequestMapping(value = "/files/{fileId}", method = RequestMethod.GET)
     @ResponseBody
-    public void downloadFile(HttpServletRequest request,HttpServletResponse response,@PathVariable(value="fileId")Long fileId ) throws Exception {        
+    public void downloadFile(HttpServletRequest request, HttpServletResponse response, @PathVariable(value = "fileId") Long fileId) throws Exception {
         TicketFile ticketFile = fileService.findById(fileId);
-         
+
         response.setContentType(ticketFile.getContentType());
         response.setContentLength(ticketFile.getByteArquivo().length);
-        response.setHeader("Content-Disposition","attachment; filename=\"" + ticketFile.getName() +"\"");
- 
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + ticketFile.getName() + "\"");
+
         FileCopyUtils.copy(ticketFile.getByteArquivo(), response.getOutputStream());
     }
-    
+
     @RequestMapping(value = "/{ticketId}/files", method = RequestMethod.GET)
     @ResponseBody
-    public String getFilesListFromTicket(HttpServletRequest request,HttpServletResponse response,@PathVariable(value="ticketId")Long ticketId ) throws Exception {
+    public String getFilesListFromTicket(HttpServletRequest request, HttpServletResponse response, @PathVariable(value = "ticketId") Long ticketId) throws Exception {
         List<TicketFile> listFiles = fileService.findByTicket(ticketId);
         String returnJson = fileService.getListFilesJSON(listFiles);
         return returnJson;
     }
-    
-    public PageRequest getPageRequest(int limit,int start){
+
+    public PageRequest getPageRequest(int limit, int start) {
         int pageSize = limit - start;
         int page;
         if (start == 0) {
@@ -342,24 +358,25 @@ public class TicketController {
         }
         return new PageRequest(page, pageSize);
     }
-    
-    public File createFile(String fileName,byte[] bytes) throws FileNotFoundException, IOException{ 
+
+    public File createFile(String fileName, byte[] bytes) throws FileNotFoundException, IOException {
         String tempPath = System.getProperty("java.io.tmpdir");
         String path = tempPath + File.separator + fileName;
         File file = new File(path);
         FileOutputStream fos = new FileOutputStream(file);
         fos.write(bytes);
         fos.flush();
-        fos.close();        
+        fos.close();
         return file;
     }
-    
+
     @ExceptionHandler(EntityNotFoundException.class)
-    @ResponseStatus(value=HttpStatus.NOT_FOUND,reason = "Entidade não encontrada")
-    public void handleEntityNotFoundException(Exception ex){}
-    
+    @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Entidade não encontrada")
+    public void handleEntityNotFoundException(Exception ex) {
+    }
+
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public void handleDataIntegrityViolationException(DataIntegrityViolationException ex,HttpServletResponse response) throws IOException {
+    public void handleDataIntegrityViolationException(DataIntegrityViolationException ex, HttpServletResponse response) throws IOException {
         response.sendError(HttpServletResponse.SC_FORBIDDEN, ex.getMessage());
     }
 }

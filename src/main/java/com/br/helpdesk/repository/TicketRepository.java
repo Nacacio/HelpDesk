@@ -31,9 +31,9 @@ public interface TicketRepository extends CrudRepository<Ticket, Long> {
 
     List<Ticket> findByUser(User user, Pageable pageable);
 
-    List<Ticket> findByResponsavelAndIsOpen(User user, Boolean isOpen);
+    List<Ticket> findByResponsibleAndIsOpen(User user, Boolean isOpen);
 
-    List<Ticket> findByResponsavelAndIsOpen(User user, Boolean isOpen, Pageable pageable);
+    List<Ticket> findByResponsibleAndIsOpen(User user, Boolean isOpen, Pageable pageable);
 
     Page<Ticket> findAll(Pageable pageable);
 

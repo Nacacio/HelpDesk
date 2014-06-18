@@ -51,8 +51,8 @@ public class Ticket {
     private String stepsTicket;
 
     @ManyToOne
-    @JoinColumn(name="RESPONSAVEL_ID",nullable = true)
-    private User responsavel;
+    @JoinColumn(name="RESPONSIBLE_ID",nullable = true)
+    private User responsible;
     
     @ManyToOne
     @JoinColumn(name="CATEGORY_ID",nullable = false)
@@ -78,7 +78,7 @@ public class Ticket {
     @Transient
     private String userGroupName;
     @Transient
-    private String responsavelName;
+    private String responsibleName;
     @Transient
     private String categoryName;
     @Transient
@@ -134,8 +134,8 @@ public class Ticket {
     public void setStepsTicket(String stepsTicket) {
         this.stepsTicket = stepsTicket;
     }
-    public User getResponsavel() {
-        return responsavel;
+    public User getResponsible() {
+        return responsible;
     }
 
     public void setId(Long id) {
@@ -166,8 +166,8 @@ public class Ticket {
         this.title = title;
     }
 
-    public void setResponsavel(User responsavel) {
-        this.responsavel = responsavel;
+    public void setResponsible(User responsible) {
+        this.responsible = responsible;
     }
 
     public Priority getPriority() {
@@ -210,12 +210,12 @@ public class Ticket {
         this.userGroupName = userGroupName;
     }
 
-    public String getResponsavelName() {
-        return responsavelName;
+    public String getResponsibleName() {
+        return responsibleName;
     }
 
-    public void setResponsavelName(String responsavelName) {
-        this.responsavelName = responsavelName;
+    public void setResponsibleName(String responsibleName) {
+        this.responsibleName = responsibleName;
     }
 
     public String getCategoryName() {

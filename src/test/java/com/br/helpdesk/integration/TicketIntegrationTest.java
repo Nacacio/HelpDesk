@@ -289,7 +289,7 @@ public class TicketIntegrationTest {
         newTicket.setPriority(null);        
         newTicket.setEstimateTime(null);
         newTicket.setEndDate(null);
-        newTicket.setResponsavel(null);
+        newTicket.setResponsible(null);
         
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/ticket")
                 .content(TestUtil.convertObjectToJsonBytes(newTicket))

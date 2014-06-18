@@ -262,7 +262,7 @@ Ext.define('Helpdesk.view.ticket.NewTicket', {
                                     var form = this.up('form');
                                     var record = form.getRecord();
                                     var responsible = Helpdesk.util.Util.copy(records[0]);
-                                    record.set('responsavel', responsible);
+                                    record.set('responsible', responsible);
                                     form.updateRecord(record);
                                 }
                             }

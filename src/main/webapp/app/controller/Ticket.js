@@ -98,7 +98,7 @@ Ext.define('Helpdesk.controller.Ticket', {
         this.getCardPanel().getLayout().setActiveItem(Helpdesk.Globals.ticketview);
         this.getTicketEditContainer().getLayout().setActiveItem(Helpdesk.Globals.ticket_details_view);
         if(typeof this.getTicketPanel() !== 'undefined'){
-            this.getTicketsEmAndamento();            
+            this.getTicketsOpened();            
         }
         else{
             this.setSideMenuButtonText();
@@ -176,14 +176,14 @@ Ext.define('Helpdesk.controller.Ticket', {
         if(typeof record.data.category === 'undefined'){
             record.data.category = form.down('combobox#categoryTicket').getStore().data.items[4].data;            
         }
-        record.data.responsavel = this.getRecordFromComboBox(form.down('combobox#responsibleTicket').getStore(),form.down('combobox#responsibleTicket').getValue());
+        record.data.responsible = this.getRecordFromComboBox(form.down('combobox#responsibleTicket').getStore(),form.down('combobox#responsibleTicket').getValue());
         record.data.stepsTicket = form.down('textarea#stepsTicket').getValue();
         record.data.estimateTime = form.down('datefield#estimateTime').getValue(); //Ext.Date.format(form.down('datefield#estimateTime').getValue(),'d/m/Y');
                 
         record.dirty = true;        
         var store = this.getTicketsStore();
         record.data.priority = null;
-        record.data.responsavel = null;
+        record.data.responsible = null;
         console.log(record);
         store.add(record);        
         if (store.getModifiedRecords().length > 0) {
@@ -395,16 +395,16 @@ Ext.define('Helpdesk.controller.Ticket', {
                 this.getAllTickets();
             }
             else if(btn.itemId === 'buttonOpened'){
-                this.getTicketsEmAndamento();
+                this.getTicketsOpened();
             }
             else if(btn.itemId === 'buttonClosed'){
-                this.getTicketsFechado();     
+                this.getTicketsClosed();     
             }  
             else if(btn.itemId === 'buttonMyTickets'){
-                this.getMeusTickets();     
+                this.getMyTickets();     
             }  
             else if(btn.itemId === 'buttonWithoutResponsible'){
-                this.getTicketsSemResponsavel();     
+                this.getTicketsWithoutResponsible();     
             }  
         }
     },
@@ -426,20 +426,20 @@ Ext.define('Helpdesk.controller.Ticket', {
     /**
      * Busca todos os tickets ABERTOS
      */
-    getTicketsEmAndamento: function(){
+    getTicketsOpened: function(){
         this.loadStoreBasic('opened');
     },
     /**
      * Busca todos os tickets FECHADOS
      */
-    getTicketsFechado: function(){
+    getTicketsClosed: function(){
         this.loadStoreBasic('closed');
     },
     
     /**
      * Busca todos os tickets em que o usuario logado é o responsavel
      */
-    getMeusTickets: function(){
+    getMyTickets: function(){
         this.loadStoreBasic('mytickets');
     },
     
@@ -525,8 +525,8 @@ Ext.define('Helpdesk.controller.Ticket', {
         record.data.isOpen = true;   
         
         if(form.down('combobox#responsibleTicket').rawValue===''){
-            record.data.responsavel = null;
-            record.data.responsavelName = null;
+            record.data.responsible = null;
+            record.data.responsibleName = null;
         }
         
         if(form.down('combobox#priorityCmb').rawValue===''){
@@ -536,7 +536,7 @@ Ext.define('Helpdesk.controller.Ticket', {
         
 
         if(Helpdesk.Globals.userLogged.id !== 1){
-            record.data.responsavel = null;
+            record.data.responsible = null;
             record.data.priority = null;
             record.data.estimateTime = null;
             record.data.client = Helpdesk.Globals.userLogged.client;           
@@ -665,8 +665,8 @@ Ext.define('Helpdesk.controller.Ticket', {
             }
             
             
-            if(record.data.responsavelName!==null && record.data.responsavelName!==''){
-                ticketView.down('text#tktResponsible').setText(record.data.responsavelName);
+            if(record.data.responsibleName!==null && record.data.responsibleName!==''){
+                ticketView.down('text#tktResponsible').setText(record.data.responsibleName);
             }else{
                 ticketView.down('text#tktResponsible').setText(translations.NO_RESPONSIBLE);
             }
@@ -749,19 +749,19 @@ Ext.define('Helpdesk.controller.Ticket', {
         categoryCombo.setValue(categoryRecord);
         
         //set responsavel combobox        
-        var responsavelText = ticketView.down('#tktResponsible').text;
-        var responsavelCombo = ticketView.down('#responsibleTicket');
-        var responsavelStore = responsavelCombo.store;
+        var responsibleText = ticketView.down('#tktResponsible').text;
+        var responsibleCombo = ticketView.down('#responsibleTicket');
+        var responsibleStore = responsibleCombo.store;
         var resposibleTemp;        
-        if(responsavelText ==='' || translations.NO_RESPONSIBLE){            
+        if(responsibleText ==='' || translations.NO_RESPONSIBLE){            
             resposibleTemp = new Helpdesk.model.User();
             resposibleTemp.data.name = translations.NO_RESPONSIBLE;
-            responsavelCombo.setValue(resposibleTemp);
+            responsibleCombo.setValue(resposibleTemp);
         }
         else{
-            var responsavelIndex = Ext.StoreMgr.lookup(responsavelStore).findExact('name',responsavelText);
-            var responsavelRecord = Ext.StoreMgr.lookup(responsavelStore).getAt(responsavelIndex);
-            responsavelCombo.setValue(responsavelRecord);
+            var responsibleIndex = Ext.StoreMgr.lookup(responsibleStore).findExact('name',responsibleText);
+            var responsibleRecord = Ext.StoreMgr.lookup(responsibleStore).getAt(responsibleIndex);
+            responsibleCombo.setValue(responsibleRecord);
         }
         
         //set priority combobox

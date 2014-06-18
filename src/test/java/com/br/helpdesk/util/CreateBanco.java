@@ -138,7 +138,7 @@ public class CreateBanco {
             ticket.setIsOpen(Boolean.TRUE);
             ticket.setStepsTicket("Passos para reprodução ["+ i +"]");
             ticket.setPriority(priority);
-            ticket.setResponsavel(null);
+            ticket.setResponsible(null);
             ticket.setStartDate(new Date());
             ticket.setUser(user);
             ticket.setTitle("Title ["+ i +"]");

@@ -59,16 +59,16 @@ public class TicketService {
         return IteratorUtils.toList(repository.findByIsOpenAndUser(isOpen, user, pageable).iterator());
     }
 
-    public List<Ticket> findByResponsavel(User user) {
-        return IteratorUtils.toList(repository.findByResponsavelAndIsOpen(user, true).iterator());
+    public List<Ticket> findByResponsible(User user) {
+        return IteratorUtils.toList(repository.findByResponsibleAndIsOpen(user, true).iterator());
     }
 
     public Ticket findById(Long codigo) {
         return repository.findOne(codigo);
     }
 
-    public List<Ticket> findByResponsavelWithPaging(User user, Pageable pageable) {
-        return IteratorUtils.toList(repository.findByResponsavelAndIsOpen(user, true, pageable).iterator());
+    public List<Ticket> findByResponsibleWithPaging(User user, Pageable pageable) {
+        return IteratorUtils.toList(repository.findByResponsibleAndIsOpen(user, true, pageable).iterator());
     }
 
     public List<Ticket> findAll(Pageable pageable) {
