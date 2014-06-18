@@ -41,8 +41,6 @@ public class EmailService {
     public static int EMAIL_NEW_TICKET = 0;
     public static int EMAIL_NEW_ANSWER = 1;
     public static int EMAIL_CHANGES = 2;
-    //public static String SEND_FROM = "andresulivam@gmail.com";//Alterar AQUI
-    //public static String SEND_TO = "andresulivam@gmail.com";//Alterar AQUI    
 
     public static Properties PROPERTIES;
 
@@ -90,82 +88,6 @@ public class EmailService {
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
-    }
-
-//    public void sendEmail(String title, String categoria, String observacoes, String passos, int emailType) {
-//        Session session = getSession();
-//
-//        try {
-//            Message message = new MimeMessage(session);
-//            message.setFrom(new InternetAddress(SEND_FROM));
-//            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(SEND_TO));
-//            
-//            if(emailType == EMAIL_NEW_TICKET){
-//                message = emailNewTicket(message,title,categoria,observacoes,passos);
-//            }
-//            else if(emailType == EMAIL_NEW_ANSWER){
-//                
-//            }
-//            else if(emailType == EMAIL_CHANGES){
-//                
-//            }
-//            
-//            Transport.send(message);
-//        } catch (MessagingException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-    public Message emailNewTicket(Message message, String title, String categoria, String observacoes, String passos) throws MessagingException {
-        message.setSubject(title);
-        message.setContent(contentNovoTicket(title, categoria, observacoes, passos), "text/html; charset=utf-8");
-        return message;
-    }
-
-    private String contentNovoTicket(String assunto, String categoria, String observacoes, String passos) {
-        String html = "<!DOCTYPE html>"
-                + "<html>"
-                + "<head>"
-                + "<meta charset='UTF-8\'>"
-                + "<style>"
-                + "h2{color:blue;font-size: 16px;font-weight: bold;}"
-                + "pre{color:black;font-size: 15px;font-weight: normal;}"
-                + "</style>"
-                + "</head>"
-                + "<body>"
-                + "<table>"
-                + "<tr>"
-                + "<th><h2>ASSUNTO:&nbsp;</h2></th>"
-                + "<th><pre>" + assunto + "</pre></th>"
-                + "</tr>"
-                + "</table>"
-                + "<table>"
-                + "<tr>"
-                + "<th><h2>CATEGORIA:&nbsp;</h2></th>"
-                + "<th><pre>" + categoria + "</pre></th>"
-                + "</tr>"
-                + "</table>"
-                + "<br>"
-                + "<HR>"
-                + "<br>"
-                + "<h2>PASSOS PARA REPRODUZIR:</h2>"
-                + "<pre>" + passos + "</pre>"
-                + "<br>"
-                + "<HR>"
-                + "<br>"
-                + "<h2>OBSERVAÇÕES:</h2>"
-                + "<pre>" + observacoes + "</pre>"
-                + "<br>"
-                + "<HR>"
-                + "<br>"
-                + "<h4>"
-                + "Cymo Tecnologia em Gestão"
-                + "</h4>"
-                + "<pre>"
-                + "Atenção: esta é uma mensagem automática. Para responder ou consultar o histórico deste atendimento, acesse:"
-                + "<pre>"
-                + "</body>"
-                + "</html>";
-        return html;
     }
 
     /**
@@ -309,101 +231,102 @@ public class EmailService {
                 + "<head>"
                 + "<meta charset='UTF-8\'>"
                 + "<style>"
-                + "h2{color:blue;font-size: 16px;font-weight: bold;}"
+                + "h1{font-weight: bold;}"
                 + "pre{color:black;font-size: 15px;font-weight: normal;}"
                 + "</style>"
                 + "</head>"
                 + "<body>"
-                + "<h3> Novo Ticket Criado </h3>"
+                + "<h1> NOVO TICKET CRIADO </h1>"
+                + "<HR>"
                 + "<table>"
                 + "<tr>"
-                + "<th><h2>ASSUNTO:&nbsp;</h2></th>"
+                + "<th><h3>ASSUNTO:&nbsp;</h3></th>"
                 + "<th><pre>" + assunto + "</pre></th>"
                 + "</tr>"
                 + "</table>"
+                + "<HR>"
                 + "<table>"
                 + "<tr>"
-                + "<th><h2>CATEGORIA:&nbsp;</h2></th>"
+                + "<th><h3>CATEGORIA:&nbsp;</h3></th>"
                 + "<th><pre>" + categoria + "</pre></th>"
                 + "</tr>"
                 + "</table>"
-                + "<br>"
                 + "<HR>"
-                + "<br>"
-                + "<h2>PASSOS PARA REPRODUZIR:</h2>"
-                + "<pre>" + passos + "</pre>"
-                + "<br>"
+                + "<table>"
+                + "<tr>"
+                + "<th><h3>PASSOS PARA REPRODUZIR:&nbsp;</h3></th>"
+                + "<th><pre>" + passos + "</pre></th>"
+                + "</tr>"
+                + "</table>"
                 + "<HR>"
-                + "<br>"
-                + "<h2>OBSERVAÇÕES:</h2>"
-                + "<pre>" + observacoes + "</pre>"
-                + "<br>"
-                + "<HR>"
-                + "<br>"
+                + "<table>"
+                + "<tr>"
+                + "<th><h3>OBSERVAÇÕES:&nbsp;</h3></th>"
+                + "<th><pre>" + observacoes + "</pre></th>"
+                + "</tr>"
+                + "</table>"
                 + "<h4>"
                 + "Cymo Tecnologia em Gestão"
                 + "</h4>"
-                + "<pre>"
-                + "Atenção: esta é uma mensagem automática. Para responder ou consultar o histórico deste atendimento, acesse:"
-                + "<pre>"
                 + "</body>"
                 + "</html>";
         return html;
     }
 
     private String contentEditTicket(Ticket olderTicket, Ticket newTicket) {
-        String html = "<!DOCTYPE html>"
+                String html = "<!DOCTYPE html>"
                 + "<html>"
                 + "<head>"
                 + "<meta charset='UTF-8\'>"
                 + "<style>"
-                + "h2{color:blue;font-size: 16px;font-weight: bold;}"
+                + "h1{font-weight: bold;}"
                 + "pre{color:black;font-size: 15px;font-weight: normal;}"
                 + "</style>"
                 + "</head>"
                 + "<body>"
-                + "<h3> Novo Ticket Criado </h3>"
+                + "<h1> TICKET EDITADO </h1>"
+                + "<HR>"
                 + "<table>"
                 + "<tr>"
-                + "<th><h2>CATEGORIA ANTIGA:&nbsp;</h2></th>"
+                + "<th><h3>CATEGORIA ANTIGA:&nbsp;</h3></th>"
                 + "<th><pre>" + olderTicket.getCategoryName() + "</pre></th>"
-                + "<th><h2>CATEGORIA NOVA:&nbsp;</h2></th>"
+                + "<th><h3>CATEGORIA NOVA:&nbsp;</h3></th>"
                 + "<th><pre>" + newTicket.getCategoryName() + "</pre></th>"
                 + "</tr>"
                 + "</table>"
+                + "<HR>"
                 + "<table>"
                 + "<tr>"
-                + "<th><h2>PRAZO ANTIGO:&nbsp;</h2></th>"
+                + "<th><h3>PRAZO ANTIGO:&nbsp;</h3></th>"
                 + "<th><pre>" + olderTicket.getEstimateTime() + "</pre></th>"
-                + "<th><h2>PRAZO NOVO:&nbsp;</h2></th>"
+                + "<th><h3>PRAZO NOVO:&nbsp;</h3></th>"
                 + "<th><pre>" + newTicket.getEstimateTime() + "</pre></th>"
                 + "</tr>"
                 + "</table>"
-                + "<br>"
                 + "<HR>"
-                + "<br>"
-                + "<th><h2>PRIORIDADE ANTIGA:&nbsp;</h2></th>"
+                + "<table>"
+                + "<tr>"
+                + "<th><h3>PRIORIDADE ANTIGA:&nbsp;</h3></th>"
                 + "<th><pre>" + olderTicket.getPriorityName() + "</pre></th>"
-                + "<th><h2>PRIORIDADE NOVA:&nbsp;</h2></th>"
+                + "<th><h3>PRIORIDADE NOVA:&nbsp;</h3></th>"
                 + "<th><pre>" + newTicket.getPriorityName() + "</pre></th>"
-                + "<br>"
+                + "</tr>"
+                + "</table>"
                 + "<HR>"
-                + "<br>"
-                + "<th><h2>PRIORIDADE ANTIGA:&nbsp;</h2></th>"
-                + "<th><pre>" + olderTicket.getResponsibleName() + "</pre></th>"
-                + "<th><h2>PRIORIDADE NOVA:&nbsp;</h2></th>"
-                + "<th><pre>" + newTicket.getResponsibleName() + "</pre></th>"
-                + "<br>"
-                + "<HR>"
-                + "<br>"
+                + "<table>"
+                + "<tr>"
+                + "<th><h3>RESPONSÁVEL ANTIGO:&nbsp;</h3></th>"
+                + "<th><pre>" + olderTicket.getResponsible().getName() + "</pre></th>"
+                + "<th><h3>RESPONSÁVEL NOVO:&nbsp;</h3></th>"
+                + "<th><pre>" + newTicket.getResponsible().getName() + "</pre></th>"
+                + "</tr>"
+                + "</table>"
                 + "<h4>"
                 + "Cymo Tecnologia em Gestão"
                 + "</h4>"
-                + "<pre>"
-                + "Atenção: esta é uma mensagem automática. Para responder ou consultar o histórico deste atendimento, acesse:"
-                + "<pre>"
                 + "</body>"
                 + "</html>";
+
         return html;
     }
 
@@ -413,21 +336,21 @@ public class EmailService {
                 + "<head>"
                 + "<meta charset='UTF-8\'>"
                 + "<style>"
-                + "h2{color:blue;font-size: 16px;font-weight: bold;}"
+                + "h1{font-weight: bold;}"
                 + "pre{color:black;font-size: 15px;font-weight: normal;}"
                 + "</style>"
                 + "</head>"
                 + "<body>"
-                + "<h3> Nova Resposta Criada</h3>"
+                + "<h1> NOVA RESPOSTA CRIADA </h1>"
                 + "<table>"
                 + "<tr>"
-                + "<th><h2>CRIADA POR:&nbsp;</h2></th>"
+                + "<th><h3>CRIADA POR:&nbsp;</h3></th>"
                 + "<th><pre>" + userName + "</pre></th>"
                 + "</tr>"
                 + "</table>"
                 + "<table>"
                 + "<tr>"
-                + "<th><h2>RESPOSTA:&nbsp;</h2></th>"
+                + "<th><h3>RESPOSTA:&nbsp;</h3></th>"
                 + "<th><pre>" + description + "</pre></th>"
                 + "</tr>"
                 + "</table>"
@@ -435,9 +358,6 @@ public class EmailService {
                 + "<h4>"
                 + "Cymo Tecnologia em Gestão"
                 + "</h4>"
-                + "<pre>"
-                + "Atenção: esta é uma mensagem automática. Para responder ou consultar o histórico deste atendimento, acesse:"
-                + "<pre>"
                 + "</body>"
                 + "</html>";
         return html;

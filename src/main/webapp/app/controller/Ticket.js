@@ -179,11 +179,15 @@ Ext.define('Helpdesk.controller.Ticket', {
         record.data.responsible = this.getRecordFromComboBox(form.down('combobox#responsibleTicket').getStore(),form.down('combobox#responsibleTicket').getValue());
         record.data.stepsTicket = form.down('textarea#stepsTicket').getValue();
         record.data.estimateTime = form.down('datefield#estimateTime').getValue(); //Ext.Date.format(form.down('datefield#estimateTime').getValue(),'d/m/Y');
-                
+
         record.dirty = true;        
         var store = this.getTicketsStore();
-        record.data.priority = null;
-        record.data.responsible = null;
+        if(typeof record.data.priority === 'undefined'){
+            record.data.priority = null;
+        }        
+        if(typeof record.data.responsible === 'undefined'){
+            record.data.responsible = null;
+        }
         console.log(record);
         store.add(record);        
         if (store.getModifiedRecords().length > 0) {

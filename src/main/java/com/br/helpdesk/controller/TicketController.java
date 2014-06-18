@@ -256,6 +256,8 @@ public class TicketController {
                 for (User admin : admins) {
                     emails.add(admin.getEmail());
                 }
+            } else {
+                emails.add(ticket.getResponsible().getEmail());
             }
             emailService.sendEmailNewTicket(ticket, emails);
         } else {
@@ -267,7 +269,6 @@ public class TicketController {
             }
             emailService.sendEmailEditTicket(olderTicket, ticket, emails);
         }
-
         return ticket;
     }
 

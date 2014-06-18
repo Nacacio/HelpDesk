@@ -191,6 +191,8 @@ translations = {
 
     SAVE: 'Salvar',
     SAVED_WITH_SUCCESS: 'salvo(a) com sucesso',
+    SAVING: 'Salvando...',
+    SAVING_REPLY: 'Salvando resposta..',
     SECOND: 'Segundo',
     SESSION_TIMEOUT_TEXT: "Sua sessão irá automaticar expirar após 15 minutos de inatividade. Se sua sessão expirar, qualquer dado que não foi salvo será perdido e você será automaticamente redirecionado à tela de login</br></br> Se você quer continuar logado clique em no botão 'Continuar Logado' </br></br>",
     SESSION_TIMEOUT_WARNING: 'Alerta de tempo de sessão',
@@ -238,7 +240,7 @@ translations = {
     TICKET_INNOVATION: 'Inovação',
     TICKET_SERVICE: 'Serviço',
     TICKET_ANSWER_EMPTY_WARNING: 'O campo de resposta não pode ficar vazio',
-    TICKET_ANSWER_SAVED: 'Nova interação com o ticket salva com sucesso',
+    TICKET_ANSWER_SAVED: 'Nova resposta salva com sucesso',
     THE_FILE: 'O arquivo ',
     TICKETS_BY_CATEGORY: 'Tickets por Categoria',
     TICKETS_BY_USER: 'Tickets por Usuário',

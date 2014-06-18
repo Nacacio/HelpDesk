@@ -2,7 +2,7 @@
 Ext.define('Helpdesk.store.TicketAnswers', {
     extend: 'Helpdesk.store.BasicStore',
     requires: ['Helpdesk.model.TicketAnswer'],
-    model: 'Helpdesk.model.TicketAnswer',
+    model: 'Helpdesk.model.TicketAnswer',    
     storeId: 'tktAnswers',
     autoLoad: false,
     constructor: function(config) {
@@ -19,7 +19,6 @@ Ext.define('Helpdesk.store.TicketAnswers', {
         if (success) {           
             Ext.Msg.alert(translations.INFORMATION, translations.TICKET_ANSWER_SAVED);
         }
-    },
-
+    }
 });
 

@@ -250,7 +250,7 @@ Ext.define('Helpdesk.controller.Reports', {
         var reportsGraphicCategory = graphicCategoryPanel.down('graphiccategory');
         var reportsStore = reportsGraphicCategory.getStore();
         reportsGraphicCategory.surface.removeAll();
-        reportsGraphicCategory.setLoading();
+        reportsGraphicCategory.setLoading(translations.LOADING);
         reportsStore.getGraphicCategory(this.callbackGraphicCategory, Helpdesk.Globals.user, this, tickets, dateFieldFrom.value, dateFieldTo.value, unit);
     },
     /**
@@ -358,7 +358,7 @@ Ext.define('Helpdesk.controller.Reports', {
         var panel = graphicCategoryPanel.items.get('panelConsolidatedPerMonth');
         var cmbBoxMonth = panel.down('formconsolidatedpermonth').down('combobox');
         var grid = panel.down('gridconsolidatedpermonth');
-        grid.setLoading();
+        grid.setLoading(translations.LOADING);
         var period = cmbBoxMonth.getValue();
 
         if (period === null || inicial === true) {
@@ -727,7 +727,7 @@ Ext.define('Helpdesk.controller.Reports', {
         var reportsGraphicClient = graphicClientPanel.down('graphicclient');
         var reportsStore = reportsGraphicClient.getStore();
         reportsGraphicClient.surface.removeAll();
-        reportsGraphicClient.setLoading();
+        reportsGraphicClient.setLoading(translations.LOADING);
         reportsStore.getGraphicClient(this.callbackGraphicClient, Helpdesk.Globals.user, this, tickets, dateFieldFrom.value, dateFieldTo.value, unit);
     },
     /**
@@ -752,7 +752,7 @@ Ext.define('Helpdesk.controller.Reports', {
         var cmbBoxMonth = panel.down('formconsolidatedpermonth').down('combobox');
         var grid = panel.down('gridconsolidatedpermonth');
         var period = cmbBoxMonth.getValue();
-        grid.setLoading();
+        grid.setLoading(translations.LOADING);
 
         if (period === null || inicial === true) {
             cmbBoxMonth.select(cmbBoxMonth.getStore().getAt(0));
@@ -778,7 +778,7 @@ Ext.define('Helpdesk.controller.Reports', {
         var cmbBox = panel.down('usercombobox');
         var idUser = cmbBox.getValue();
 
-        grid.setLoading();
+        grid.setLoading(translations.LOADING);
 
         if (period === null || inicial === true) {
             cmbBoxMonth.select(cmbBoxMonth.getStore().getAt(0));
