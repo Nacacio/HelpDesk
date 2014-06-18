@@ -15,14 +15,14 @@ import java.io.IOException;
 public class EmailTest {
 
     public static void main(String [] args) throws IOException, Exception{
-        EmailUtil emailUtil = new EmailUtil();
+       // EmailUtil emailUtil = new EmailUtil();
         /**
          * TITULO
          * CATEGORIA
          * OBSERVAÇÕES
          * PASSO-A-PASSO
          */
-        emailUtil.sendEmail("Ticket #00123# - Teste","BUG","Inicio das observações \n\n\n\nFim das observações","Inicio do Passo a Passo \n\n\n\nFim do Passo a Passo");
+       // emailUtil.sendEmail("Ticket #00123# - Teste","BUG","Inicio das observações \n\n\n\nFim das observações","Inicio do Passo a Passo \n\n\n\nFim do Passo a Passo");
         
         //emailUtil.getEmailsNaoLidos();
     }

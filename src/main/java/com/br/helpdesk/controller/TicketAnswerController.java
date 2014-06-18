@@ -5,12 +5,12 @@
  */
 package com.br.helpdesk.controller;
 
-import com.br.helpdesk.email.EmailUtil;
 import com.br.helpdesk.model.Ticket;
 import com.br.helpdesk.model.TicketAnswer;
 import com.br.helpdesk.model.User;
 import com.br.helpdesk.repository.TicketRepository;
 import com.br.helpdesk.repository.UserRepository;
+import com.br.helpdesk.service.EmailService;
 import com.br.helpdesk.service.TicketAnswerService;
 import java.io.IOException;
 import java.text.ParseException;
@@ -66,13 +66,19 @@ public class TicketAnswerController {
         return answerService.findAll();
 
     }
+    
+        @Autowired
+    private EmailService emailService;
+
+    public void setEmailService(EmailService service) {
+        this.emailService = service;
+    }
 
     @RequestMapping(value = {"", "/{id}"}, method = {RequestMethod.PUT, RequestMethod.POST})
     @ResponseBody
     public TicketAnswer save(@RequestBody String ticketAnwString) throws ParseException {
 
         JSONObject jSONObject = new JSONObject(ticketAnwString);
-        EmailUtil emailUtil = new EmailUtil();
         List<String> emails = new ArrayList<String>();
 
         Ticket ticket = ticketRepository.findOne(jSONObject.getLong("ticketId"));
@@ -106,7 +112,7 @@ public class TicketAnswerController {
         answer.setUser(userAnswer);
         answerService.save(answer);
 
-        emailUtil.sendEmailNewAnswer(answer, userAnswer, emails);
+        emailService.sendEmailNewAnswer(answer, userAnswer, emails);
 
         return answer;
     }

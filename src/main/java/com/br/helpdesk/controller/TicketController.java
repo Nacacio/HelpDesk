@@ -1,9 +1,9 @@
 package com.br.helpdesk.controller;
 
-import com.br.helpdesk.email.EmailUtil;
 import com.br.helpdesk.model.TicketFile;
 import com.br.helpdesk.model.Ticket;
 import com.br.helpdesk.model.User;
+import com.br.helpdesk.service.EmailService;
 import com.br.helpdesk.service.TicketFileService;
 import com.br.helpdesk.service.TicketService;
 import com.br.helpdesk.service.UserService;
@@ -62,6 +62,7 @@ public class TicketController {
     @Autowired
     private UserService userService;
 
+
     public void setUserService(UserService service) {
         this.userService = service;
     }
@@ -72,7 +73,14 @@ public class TicketController {
     public void setFileService(TicketFileService service) {
         this.fileService = service;
     }
-
+        
+    @Autowired
+    private EmailService emailService;
+    
+    public void setEmailService(EmailService service) {
+        this.emailService = service;
+    }
+        
     @RequestMapping(method = RequestMethod.GET)
     public @ResponseBody
     List<Ticket> getAllTickets() {
@@ -242,16 +250,14 @@ public class TicketController {
             file.delete();
         }
 
-        EmailUtil eu = new EmailUtil();
-
         if (olderTicket == null) {
-            if (ticket.getResponsible() != null) {
+            if (ticket.getResponsible() == null) {
                 List<User> admins = userService.findByUserAdmin();
                 for (User admin : admins) {
                     emails.add(admin.getEmail());
                 }
             }
-            eu.sendEmailNewTicket(ticket, emails);
+            emailService.sendEmailNewTicket(ticket, emails);
         } else {
             if (ticket.getResponsible() != null) {
                 emails.add(ticket.getResponsible().getEmail());
@@ -259,7 +265,7 @@ public class TicketController {
             if (olderTicket.getResponsible() != null) {
                 emails.add(olderTicket.getResponsible().getEmail());
             }
-            eu.sendEmailEditTicket(olderTicket, ticket, emails);
+            emailService.sendEmailEditTicket(olderTicket, ticket, emails);
         }
 
         return ticket;
