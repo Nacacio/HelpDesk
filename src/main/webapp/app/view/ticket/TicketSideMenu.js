@@ -29,8 +29,7 @@ Ext.define('Helpdesk.view.ticket.TicketSideMenu', {
             itemId:'buttonWithoutResponsible'
         },
         {                    
-            itemId:'buttonOpened',
-            pressed: true
+            itemId:'buttonOpened'
         },
         {                   
             itemId:'buttonClosed'

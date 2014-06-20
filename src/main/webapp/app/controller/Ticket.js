@@ -98,7 +98,13 @@ Ext.define('Helpdesk.controller.Ticket', {
         this.getCardPanel().getLayout().setActiveItem(Helpdesk.Globals.ticketview);
         this.getTicketEditContainer().getLayout().setActiveItem(Helpdesk.Globals.ticket_details_view);
         if(typeof this.getTicketPanel() !== 'undefined'){
-            this.getTicketsOpened();            
+            if(Helpdesk.Globals.userLogged.userGroup.id === 1){
+                this.getMyTickets();
+                this.getTicketSideMenu().down('#buttonMyTickets').toggle(true);
+            } else {
+                this.getTicketsOpened();
+                this.getTicketSideMenu().down('#buttonOpened').toggle(true);
+            }            
         }
         else{
             this.setSideMenuButtonText();
@@ -450,7 +456,7 @@ Ext.define('Helpdesk.controller.Ticket', {
     /**
      * Busca todos os tickets em que não tenha responsavel 
      */
-    getTicketsSemResponsavel: function(){
+    getTicketsWithoutResponsible: function(){
         this.loadStoreBasic('withoutresponsible');
     },
     

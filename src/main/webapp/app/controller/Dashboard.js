@@ -81,9 +81,10 @@ Ext.define('Helpdesk.controller.Dashboard', {
             params: {
                 user: Helpdesk.Globals.user
             },
-            callback: function() {
+            callback: function(success) {
+                console.log(success);
                 myscope.getTicketSide().down('button#buttonWithoutResponsible').toggle(true);
-                //myscope.backToDefaultStore(myscope);
+                myscope.backToDefaultStore(myscope);
             }
         });
     },

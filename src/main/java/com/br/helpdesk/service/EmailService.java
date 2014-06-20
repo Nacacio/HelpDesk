@@ -217,7 +217,7 @@ public class EmailService {
             message.setFrom(new InternetAddress(configEmail.getUser()));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(emails));
             message.setSubject(answer.getTicket().getTitle());
-            message.setContent(contentNewAnswer(answer.getDescription(), userAnswer.getName()), "text/html; charset=utf-8");
+            message.setContent(contentNewAnswer(answer.getTicket().getId(), answer.getTicket().getDescription(), answer.getDescription(), userAnswer.getName()), "text/html; charset=utf-8");
             Transport.send(message);
 
         } catch (MessagingException e) {
@@ -274,7 +274,42 @@ public class EmailService {
     }
 
     private String contentEditTicket(Ticket olderTicket, Ticket newTicket) {
-                String html = "<!DOCTYPE html>"
+        String olderCategoryName = "Sem categoria";
+        String newCategoryName = "Sem categoria";
+        String olderEstimatedTime = "Sem prazo estimado";
+        String newEstimatedTime = "Sem prazo estimado";
+        String olderPriority = "Sem prioridade";
+        String newPriority = "Sem prioridade";
+        String olderResponsible = "Sem responsável";
+        String newResponsible = "Sem responsável";
+
+        if (olderTicket.getCategory() != null) {
+            olderCategoryName = olderTicket.getCategory().getName();
+        }
+        if (olderTicket.getEstimateTime() != null) {
+            olderEstimatedTime = olderTicket.getEstimateTime().toString();
+        }
+        if (olderTicket.getPriority() != null) {
+            olderPriority = olderTicket.getPriority().getName();
+        }
+        if (olderTicket.getResponsible() != null) {
+            olderResponsible = olderTicket.getResponsible().getName();
+        }
+
+        if (newTicket.getCategory() != null) {
+            newCategoryName = newTicket.getCategory().getName();
+        }
+        if (newTicket.getEstimateTime() != null) {
+            newEstimatedTime = newTicket.getEstimateTime().toString();
+        }
+        if (newTicket.getPriority() != null) {
+            newPriority = newTicket.getPriority().getName();
+        }
+        if (newTicket.getResponsible() != null) {
+            newResponsible = newTicket.getResponsible().getName();
+        }
+
+        String html = "<!DOCTYPE html>"
                 + "<html>"
                 + "<head>"
                 + "<meta charset='UTF-8\'>"
@@ -288,37 +323,52 @@ public class EmailService {
                 + "<HR>"
                 + "<table>"
                 + "<tr>"
+                + "<th><h3>TICKET:&nbsp;</h3></th>"
+                + "<th><pre>" + "#" + newTicket.getId() + " - " + newTicket.getDescription() + "</pre></th>"
+                + "</tr>"
+                + "</table>"
+                + "<HR>"
+                + "<table>"
+                + "<tr>"
                 + "<th><h3>CATEGORIA ANTIGA:&nbsp;</h3></th>"
-                + "<th><pre>" + olderTicket.getCategoryName() + "</pre></th>"
+                + "<th><pre>" + olderCategoryName + "</pre></th>"
+                + "</tr>"
+                + "<tr>"
                 + "<th><h3>CATEGORIA NOVA:&nbsp;</h3></th>"
-                + "<th><pre>" + newTicket.getCategoryName() + "</pre></th>"
+                + "<th><pre>" + newCategoryName + "</pre></th>"
                 + "</tr>"
                 + "</table>"
                 + "<HR>"
                 + "<table>"
                 + "<tr>"
                 + "<th><h3>PRAZO ANTIGO:&nbsp;</h3></th>"
-                + "<th><pre>" + olderTicket.getEstimateTime() + "</pre></th>"
+                + "<th><pre>" + olderEstimatedTime + "</pre></th>"
+                + "</tr>"
+                + "<tr>"
                 + "<th><h3>PRAZO NOVO:&nbsp;</h3></th>"
-                + "<th><pre>" + newTicket.getEstimateTime() + "</pre></th>"
+                + "<th><pre>" + newEstimatedTime + "</pre></th>"
                 + "</tr>"
                 + "</table>"
                 + "<HR>"
                 + "<table>"
                 + "<tr>"
                 + "<th><h3>PRIORIDADE ANTIGA:&nbsp;</h3></th>"
-                + "<th><pre>" + olderTicket.getPriorityName() + "</pre></th>"
+                + "<th><pre>" + olderPriority + "</pre></th>"
+                + "</tr>"
+                + "<tr>"
                 + "<th><h3>PRIORIDADE NOVA:&nbsp;</h3></th>"
-                + "<th><pre>" + newTicket.getPriorityName() + "</pre></th>"
+                + "<th><pre>" + newPriority + "</pre></th>"
                 + "</tr>"
                 + "</table>"
                 + "<HR>"
                 + "<table>"
                 + "<tr>"
                 + "<th><h3>RESPONSÁVEL ANTIGO:&nbsp;</h3></th>"
-                + "<th><pre>" + olderTicket.getResponsible().getName() + "</pre></th>"
+                + "<th><pre>" + olderResponsible + "</pre></th>"
+                + "</tr>"
+                + "<tr>"
                 + "<th><h3>RESPONSÁVEL NOVO:&nbsp;</h3></th>"
-                + "<th><pre>" + newTicket.getResponsible().getName() + "</pre></th>"
+                + "<th><pre>" + newResponsible + "</pre></th>"
                 + "</tr>"
                 + "</table>"
                 + "<h4>"
@@ -330,7 +380,7 @@ public class EmailService {
         return html;
     }
 
-    private String contentNewAnswer(String description, String userName) {
+    private String contentNewAnswer(long idTicket, String nameTicket, String description, String userName) {
         String html = "<!DOCTYPE html>"
                 + "<html>"
                 + "<head>"
@@ -342,6 +392,12 @@ public class EmailService {
                 + "</head>"
                 + "<body>"
                 + "<h1> NOVA RESPOSTA CRIADA </h1>"
+                + "<table>"
+                + "<tr>"
+                + "<th><h3>TICKET:&nbsp;</h3></th>"
+                + "<th><pre>" + "#" + idTicket + " - " + nameTicket + "</pre></th>"
+                + "</tr>"
+                + "</table>"
                 + "<table>"
                 + "<tr>"
                 + "<th><h3>CRIADA POR:&nbsp;</h3></th>"

@@ -259,7 +259,9 @@ public class TicketController {
             } else {
                 emails.add(ticket.getResponsible().getEmail());
             }
-            emailService.sendEmailNewTicket(ticket, emails);
+            if(emails.size()>0){
+                emailService.sendEmailNewTicket(ticket, emails);
+            }
         } else {
             if (ticket.getResponsible() != null) {
                 emails.add(ticket.getResponsible().getEmail());
@@ -267,7 +269,9 @@ public class TicketController {
             if (olderTicket.getResponsible() != null) {
                 emails.add(olderTicket.getResponsible().getEmail());
             }
-            emailService.sendEmailEditTicket(olderTicket, ticket, emails);
+            if(emails.size()>0){
+                emailService.sendEmailEditTicket(olderTicket, ticket, emails);
+            }
         }
         return ticket;
     }

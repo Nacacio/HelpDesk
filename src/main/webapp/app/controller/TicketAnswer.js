@@ -63,6 +63,16 @@ Ext.define('Helpdesk.controller.TicketAnswer', {
         resposta.down('label#corpo').text = answer.data.description;
         panel.items.add(resposta);
         panel.doLayout();
+        var answers = panel.items;
+        for (var i = 0; i < answers.length; i++) {
+            if (i === answers.length - 1) {
+                answers.get(i).expand(true);
+                answers.get(i).el.setStyle('margin','0 0 10px 0');
+            } else {
+                answers.get(i).collapse(true);
+                answers.get(i).el.setStyle('margin','0 0 0 0');
+            }
+        }
     }
 
 });
