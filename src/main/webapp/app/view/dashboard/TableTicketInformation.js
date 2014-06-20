@@ -22,50 +22,50 @@ Ext.define('Helpdesk.view.dashboard.TableTicketInformation', {
         
         //No Responsible Tickets
         {
-            html: translations.NO_RESPONSIBLE+': ',           
+            html: translations.NO_RESPONSIBLE+': '           
         },
         {
             xtype:'panel',
-            itemId:'noRespHtml',            
+            itemId:'noRespHtml'            
         },
         {
             xtype:'button',
             text:translations.SEE_TICKETS_WITHOUT_RESPONSIBLE,
             baseCls:'dashbord-links-buttons',
             itemId:'btnDashboardNoResp',
-            width:235,
+            width:235
         },
         
         // Tickets late
         {
-            html: translations.LATE+': ',
+            html: translations.LATE+': '
         },
         {
             xtype:'panel',
-            itemId:'noRespLate',            
+            itemId:'noRespLate'            
         },
         {
             xtype:'button',
             text:translations.SEE_TICKETS_LATE,
             baseCls:'dashbord-links-buttons',
             itemId:'btnDashboardLate',
-            width:235,
+            width:235
         },        
         // Tickets without a cayegory
         {
-            html: translations.NO_CATEGORY+': ',
+            html: translations.NO_CATEGORY+': '
         },
         {
             xtype:'panel',
-            itemId:'noRespCat',            
+            itemId:'noRespCat'           
         },
         {            
             xtype:'button',
             text:translations.SEE_TICKETS_WITHOUT_CATEGORY,
             baseCls:'dashbord-links-buttons',   
             itemId:'btnDashboardNoCat',
-            width:235,
+            width:235
         }
         
-    ],    
+    ]    
 });

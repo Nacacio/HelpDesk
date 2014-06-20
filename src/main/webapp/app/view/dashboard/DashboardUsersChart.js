@@ -19,7 +19,7 @@ Ext.define('Helpdesk.view.dashboard.DashboardUsersChart', {
             type: 'Category',
             position: 'bottom',
             fields: ['user'],
-            title: translations.USERS,
+            title: translations.USERS
         }],
     series: [{
             type: 'column',

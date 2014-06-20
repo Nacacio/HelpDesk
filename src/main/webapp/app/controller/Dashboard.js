@@ -27,9 +27,6 @@ Ext.define('Helpdesk.controller.Dashboard', {
     ],
     init: function() {
         this.control({
-            'dashboard': {
-                afterrender: this.setChartsAndView
-            },
             'tableticket button': {
                 click: this.changeView
             }
@@ -47,8 +44,8 @@ Ext.define('Helpdesk.controller.Dashboard', {
         {
             ref: 'ticketPanel',
             selector: 'ticket #ticketgrid'
-        },
-   ],
+        }
+    ],
     /**
      * 
      * @param {type} form
@@ -56,7 +53,7 @@ Ext.define('Helpdesk.controller.Dashboard', {
      * Change the view according the selected button on the dashboard
      */
     changeView: function(button) {
-        Ext.Router.redirect('ticket-dash');
+        Ext.Router.redirect('ticket');
         this.removeSelection();
         if (button.itemId === 'btnDashboardNoResp') {
             this.getTicketsWithoutResponsible();
@@ -139,7 +136,6 @@ Ext.define('Helpdesk.controller.Dashboard', {
         var countUser = 0;
         var form = this.getTableTicket().down('tableticket');
         var scope = this;
-
         var store = this.getTicketsStore();
         store.load({
             callback: function() {
@@ -175,39 +171,43 @@ Ext.define('Helpdesk.controller.Dashboard', {
      * Sets the values from the grids of clients and agents
      */
     setDataGridsTable: function(ticketsStore) {
-        var userStore = this.getUsersStore();
+        var userStore = this.getUsersStore();        
         var scope = this;
         userStore.load({
             callback: function() {
-
+                scope.getTableTicket().down('datagridagent').getStore().removeAll();
+                scope.getTableTicket().down('datagridclient').getStore().removeAll();
+                var userTemp;
+                var ticketTemp;
                 for (var i = 0; i < userStore.getCount(); i++) {
                     var countAgent = 0;
                     var countClient = 0;
+                    userTemp = userStore.data.items[i].data;
                     for (var k = 0; k < ticketsStore.getCount(); k++) {
-                        if (userStore.data.items[i].data.id === ticketsStore.data.items[k].data.user.id) {
-
-                            if (userStore.data.items[i].data.userGroup.id === 1 && ticketsStore.data.items[k].data.isOpen === true) {
-                                countAgent++;
-                            }
-                            if (userStore.data.items[i].data.userGroup.id === 2 && ticketsStore.data.items[k].data.isOpen === true) {
-                                countClient++;
+                        ticketTemp = ticketsStore.data.items[k].data;
+                        if (ticketTemp.isOpen === true) {
+                            if (userTemp.userGroup.id === 1) {
+                                if (ticketTemp.responsible !== null && ticketTemp.responsible.id === userTemp.id) {
+                                    countAgent++;
+                                }
+                            } else {
+                                if (ticketTemp.user.id === userTemp.id) {
+                                    countClient++;
+                                }
                             }
                         }
                     }
-                    if (userStore.data.items[i].data.userGroup.id === 1) {
-                        var object = new Helpdesk.model.TicketsByUser();
-                        object.data.user = userStore.data.items[i].data.name;
+                    var object = new Helpdesk.model.TicketsByUser();
+                    object.data.user = userTemp.name;
+                    if (userTemp.userGroup.id === 1) {
                         object.data.ticketCount = countAgent;
                         scope.getTableTicket().down('datagridagent').getStore().add(object);
                     }
-                    if (userStore.data.items[i].data.userGroup.id === 2) {
-                        var objectTemp = new Helpdesk.model.TicketsByUser();
-                        objectTemp.data.user = userStore.data.items[i].data.name;
-                        objectTemp.data.ticketCount = countClient;
-                        scope.getTableTicket().down('datagridclient').getStore().add(objectTemp);
+                    if (userTemp.userGroup.id === 2) {
+                        object.data.ticketCount = countClient;
+                        scope.getTableTicket().down('datagridclient').getStore().add(object);
                     }
                 }
-
             }
         });
     },
@@ -219,6 +219,7 @@ Ext.define('Helpdesk.controller.Dashboard', {
     setChartCategory: function() {
 
         var store = this.getTicketsByCategoryStore();
+        store.removeAll(true);
         var storeCategories = this.getCategorysStore();
         var storeTicket = this.getTicketsStore();
         storeTicket.load({
@@ -233,9 +234,11 @@ Ext.define('Helpdesk.controller.Dashboard', {
                                 }
                             }
                             var object = new Helpdesk.model.TicketByCategory();
-                            object.data.category = storeCategories.data.items[i].data.name;
+                            object.data.category = translations[storeCategories.data.items[i].data.name];
                             object.data.ticketCount = count;
-                            store.add(object);
+                            if (storeCategories.data.items[i].data.name !== 'NO_CATEGORY') {
+                                store.add(object);
+                            }
                         }
                     }
                 });
@@ -259,11 +262,11 @@ Ext.define('Helpdesk.controller.Dashboard', {
                         count++;
                     }
                 }
-                if (count === 0 || count === 1) {
-                    form.down('#txtDescriptionPlan').setText('Utilizando ' + count + " usuário");
-                } else {
-                    form.down('#txtDescriptionPlan').setText('Utilizando ' + count + " usuários");
-                }
+//                if (count === 0 || count === 1) {
+//                    form.down('#txtDescriptionPlan').setText('Utilizando ' + count + " usuário");
+//                } else {
+//                    form.down('#txtDescriptionPlan').setText('Utilizando ' + count + " usuários");
+//                }
             }
         });
     },
@@ -352,7 +355,7 @@ Ext.define('Helpdesk.controller.Dashboard', {
                 ticketsStore.proxy.url = 'ticket';
             }
         });
-   },
+    },
     backToDefaultStore: function(scope) {
         scope.getTicketPanel().getStore().proxy.url = 'ticket';
     }

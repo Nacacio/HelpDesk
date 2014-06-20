@@ -35,7 +35,6 @@ Ext.application({
     routes: {
         '/': 'home#index',
         'ticket': 'ticket#list',
-        'ticket-dash': 'ticket#initDashView',
         'settings':'settings#index',
         'user': 'user#list',
         'perfil': 'perfil#index',        

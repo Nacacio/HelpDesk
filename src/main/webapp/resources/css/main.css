@@ -443,7 +443,7 @@
 
 .bold-words-size15{
     font-weight: bold;
-    font-size: 15;
+    font-size: 15px;
 }
 .tickets-control-description{
     background-color: #1e62d0;
@@ -456,6 +456,12 @@
 }
 .dashbord-links-buttons{
     border: 0px transparent !important;
+}
+
+.dashbord-links-buttons:hover{
+    cursor: pointer;
+    text-decoration: underline;
+    color: blue;
 }
 .grid-style-header td > div:hover{
     cursor:pointer;

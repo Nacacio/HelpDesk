@@ -4,7 +4,6 @@ Ext.define('Helpdesk.view.dashboard.DataGridAgentControl' ,{
     store: 'TicketsOngoingAgent',
     columns: [
         { header: translations.AGENT,  dataIndex: 'user', flex:1 },
-        { header: translations.ON_GOING, dataIndex: 'ticketCount'},
-        
+        { header: translations.IN_PROGRESS, dataIndex: 'ticketCount'}        
     ]
 });

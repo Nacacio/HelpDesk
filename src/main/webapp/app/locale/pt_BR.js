@@ -30,6 +30,7 @@ translations = {
     CANCEL: 'Cancelar',
     CAPS_LOCK_ON: "O Caps lock está ligado",
     CATEGORY: 'Categoria',
+    CATEGORIES: 'Categorias',
     CLICK_TO_REPORT_ERROR: 'Clique aqui para reportar o erro',
     CLIENT: 'Cliente',
     CLOSE: 'Fechar',

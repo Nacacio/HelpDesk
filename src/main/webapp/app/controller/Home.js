@@ -15,6 +15,7 @@ Ext.define('Helpdesk.controller.Home', {
     stores:[
         'Users'
     ],
+    controllers: ['Dashboard'],        
     init: function() {
         this.control({
             
@@ -87,6 +88,7 @@ Ext.define('Helpdesk.controller.Home', {
         var mainHeader = this.getMainHeader();
         var btnHome = mainHeader.down("#home");
         btnHome.toggle(true);
+        this.getDashboardController().setChartsAndView();
     },
     /*
      * This function controls the history router declared in app.js.
