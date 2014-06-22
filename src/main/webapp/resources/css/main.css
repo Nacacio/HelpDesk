@@ -608,3 +608,15 @@
 .font15{
     font-size: 15px;
 }
+
+.div-title-answer{
+    display: -moz-inline-stack;
+    float: left;
+}
+
+.date-title-answer{
+    font-size: 12px;
+    color: gray;
+    float: right;
+}
+

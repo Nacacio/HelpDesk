@@ -83,6 +83,7 @@ translations = {
     FIRST_TIME_REQUESTING_SERVICE: 'Solicitando Atendimento pela primeira vez?',
     FROM: 'de',
     FORMAT_DATE: 'pt-BR',
+    FORMAT_DATE_TIME: 'd/m/Y H:m',
     //############################################## [ G ] ##############################################//
 
     GROUP: 'Grupo',
@@ -180,6 +181,7 @@ translations = {
     REQUIRED: 'Obrigatório',
     REPLY: 'Resposta',
     REPORTS: 'Relatórios',
+    RE_OPEN_TICKET:'Reabrir ticket',
     REPORTS_BY_CATEGORY: 'Relatórios de tickets por categoria',
     REPORTS_BY_CLIENT: 'Relatórios de tickets por cliente',
     REPORTS_BY_ENTERPRISE: 'Relatórios de tickets por empresa',

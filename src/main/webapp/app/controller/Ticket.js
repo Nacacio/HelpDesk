@@ -16,10 +16,10 @@
 Ext.define('Helpdesk.controller.Ticket', {
     extend: 'Ext.app.Controller',
     views: [
-        'ticket.Ticket','ticket.NewTicket','ticket.TicketDetails','ticket.TicketAnswerPanel'
-    ],      
-    stores : ['Tickets','TicketAnswers','Clients','UsersAdmin','Reports'],
-    requires: ['Helpdesk.store.Tickets','Helpdesk.store.TicketAnswers','Helpdesk.store.Clients','Helpdesk.store.UsersAdmin','Helpdesk.store.Reports'],
+        'ticket.Ticket', 'ticket.NewTicket', 'ticket.TicketDetails', 'ticket.TicketAnswerPanel'
+    ],
+    stores: ['Tickets', 'TicketAnswers', 'Clients', 'UsersAdmin', 'Reports'],
+    requires: ['Helpdesk.store.Tickets', 'Helpdesk.store.TicketAnswers', 'Helpdesk.store.Clients', 'Helpdesk.store.UsersAdmin', 'Helpdesk.store.Reports'],
     init: function() {
         this.control({
             'ticketsidemenu button': {
@@ -31,30 +31,30 @@ Ext.define('Helpdesk.controller.Ticket', {
             '#addTicket': {
                 click: this.saveNewTicket
             },
-            '#addNewClient':{
+            '#addNewClient': {
                 click: this.onAddNewClient
             },
             'clientcadastre button#save': {
                 click: this.onSaveNewClient
-            },            
-            '#ticketgrid':{
-                itemdblclick: this.ticketClicked
             },
-            'button#editTicket':{
+            '#ticketgrid': {
+                itemclick: this.ticketClicked
+            },
+            'button#editTicket': {
                 click: this.editTicket
-            },      
-            'ticket combobox#cmbSearch':{  
-                change:this.changeCmbSearch,
+            },
+            'ticket combobox#cmbSearch': {
+                change: this.changeCmbSearch,
                 buffer: 1000
             },
-            'ticketgrid pagingtoolbar#dockedItem':{
-                beforechange:this.changeGridPage
+            'ticketgrid pagingtoolbar#dockedItem': {
+                beforechange: this.changeGridPage
             },
-            'editticket button#btnSaveEditTicket':{
-                click:this.onSaveTicketChanges
+            'editticket button#btnSaveEditTicket': {
+                click: this.onSaveTicketChanges
             },
-            'ticketdetails button':{
-                click:this.setStatusTicket
+            'ticketdetails button': {
+                click: this.setStatusTicket
             }
 
         });
@@ -79,76 +79,77 @@ Ext.define('Helpdesk.controller.Ticket', {
         {
             ref: 'ticketSideMenu',
             selector: 'ticket > ticketsidemenu'
-        },        
+        },
         {
             ref: 'ticketEditContainer',
             selector: '#ticketEditContainer'
         },
         {
-            ref:'ticketDetailsView',
-            selector:'ticketdetails'
+            ref: 'ticketDetailsView',
+            selector: 'ticketdetails'
         },
         {
-            ref:'ticketView',
-            selector:'ticket'
+            ref: 'ticketView',
+            selector: 'ticket'
         }
-        
+
     ],
     list: function() {
         this.getCardPanel().getLayout().setActiveItem(Helpdesk.Globals.ticketview);
         this.getTicketEditContainer().getLayout().setActiveItem(Helpdesk.Globals.ticket_details_view);
-        if(typeof this.getTicketPanel() !== 'undefined'){
-            if(Helpdesk.Globals.userLogged.userGroup.id === 1){
+        if (typeof this.getTicketPanel() !== 'undefined') {
+            if (Helpdesk.Globals.userLogged.userGroup.id === 1) {
                 this.getMyTickets();
                 this.getTicketSideMenu().down('#buttonMyTickets').toggle(true);
             } else {
                 this.getTicketsOpened();
                 this.getTicketSideMenu().down('#buttonOpened').toggle(true);
-            }            
+            }
         }
-        else{
+        else {
             this.setSideMenuButtonText();
         }
         var mainHeader = this.getMainHeader();
         var btnTicket = mainHeader.down("#ticket");
         btnTicket.toggle(true);
     },
-    
     /**
-     *Fecha o ticket 
+     * Fecha o ticket 
+     * @param {type} button
+     * @returns {undefined}
      */
-    closeTicket:function(button){
+    closeTicket: function(button) {
         var scope = this;
         var record = button.up('form#ticketMainView').getRecord();
         record.dirty = true;
         var store = this.getTicketsStore();
         store.proxy.url = 'ticket/close-ticket';
         store.add(record);
-        store.sync({            
-            callback:function(){
+        store.sync({
+            callback: function() {
                 store.proxy.url = 'ticket';
                 scope.getTicketCardContainer().getLayout().setActiveItem(Helpdesk.Globals.ticket_datagrid);
                 scope.setSideMenuButtonText();
             }
         });
     },
-        //Fecha ou abre o ticket
-    setStatusTicket:function(button){        
-        if(button.id === 'btnCloseTkt' || button.id === 'btnOpenTkt'){        
-            
+    //Fecha ou abre o ticket
+    setStatusTicket: function(button) {
+        if (button.id === 'btnCloseTkt' || button.id === 'btnOpenTkt') {
+
             var scope = this;
             var record = button.up('form#ticketMainView').getRecord();
             record.dirty = true;
             var store = this.getTicketsStore();
-            
-            if(button.id === 'btnCloseTkt'){
+
+            if (button.id === 'btnCloseTkt') {
                 store.proxy.url = 'ticket/close-ticket';
-            }else if(button.id === 'btnOpenTkt'){
+            } else if (button.id === 'btnOpenTkt') {
                 store.proxy.url = 'ticket/open-ticket';
             }
             store.add(record);
-            store.sync({            
-                callback:function(){
+            store.sync({
+                callback: function() {
                     store.proxy.url = 'ticket';
                     scope.getTicketCardContainer().getLayout().setActiveItem(Helpdesk.Globals.ticket_datagrid);
                     scope.setSideMenuButtonText();
@@ -157,194 +158,196 @@ Ext.define('Helpdesk.controller.Ticket', {
             });
         }
     },
-
     /**
      * Salva as alterações do ticket
-     * 
+     * @param {type} button
+     * @returns {undefined}
      */
-    onSaveTicketChanges:function(button){
+    onSaveTicketChanges: function(button) {
         var myScope = this;
         var mainView = this.getTicketView();
-        var form = button.up('form#ticketMainView');        
-        var record = button.up('form#ticketMainView').getRecord() ;
+        var form = button.up('form#ticketMainView');
+        var record = button.up('form#ticketMainView').getRecord();
         mainView.setLoading('Salvando...');
-        if(form.down('combobox#priorityTicket').getValue()===null || form.down('combobox#priorityTicket').getValue()===''){
-            var priorityIndex = Ext.StoreMgr.lookup(form.down('combobox#priorityTicket').getStore()).findExact('name',translations.NO_PRIORITY);
-            var priorityRecord = Ext.StoreMgr.lookup(form.down('combobox#priorityTicket').getStore()).getAt(priorityIndex);            
+        if (form.down('combobox#priorityTicket').getValue() === null || form.down('combobox#priorityTicket').getValue() === '') {
+            var priorityIndex = Ext.StoreMgr.lookup(form.down('combobox#priorityTicket').getStore()).findExact('name', translations.NO_PRIORITY);
+            var priorityRecord = Ext.StoreMgr.lookup(form.down('combobox#priorityTicket').getStore()).getAt(priorityIndex);
             form.down('combobox#priorityTicket').setValue(priorityRecord);
-            record.data.priority = this.getRecordFromComboBox(form.down('combobox#priorityTicket').getStore(),form.down('combobox#priorityTicket').getValue());
-        }else{
-            record.data.priority = this.getRecordFromComboBox(form.down('combobox#priorityTicket').getStore(),form.down('combobox#priorityTicket').getValue());
+            record.data.priority = this.getRecordFromComboBox(form.down('combobox#priorityTicket').getStore(), form.down('combobox#priorityTicket').getValue());
+        } else {
+            record.data.priority = this.getRecordFromComboBox(form.down('combobox#priorityTicket').getStore(), form.down('combobox#priorityTicket').getValue());
         }
-        
-        record.data.category = this.getRecordFromComboBox(form.down('combobox#categoryTicket').getStore(),form.down('combobox#categoryTicket').getValue());
+
+        record.data.category = this.getRecordFromComboBox(form.down('combobox#categoryTicket').getStore(), form.down('combobox#categoryTicket').getValue());
         //Se nenhuma categoria tiver sido marcada, o ticket recebe "Sem categoria"
-        if(typeof record.data.category === 'undefined'){
-            record.data.category = form.down('combobox#categoryTicket').getStore().data.items[4].data;            
+        if (typeof record.data.category === 'undefined') {
+            record.data.category = form.down('combobox#categoryTicket').getStore().data.items[4].data;
         }
-        record.data.responsible = this.getRecordFromComboBox(form.down('combobox#responsibleTicket').getStore(),form.down('combobox#responsibleTicket').getValue());
+        record.data.responsible = this.getRecordFromComboBox(form.down('combobox#responsibleTicket').getStore(), form.down('combobox#responsibleTicket').getValue());
         record.data.stepsTicket = form.down('textarea#stepsTicket').getValue();
         record.data.estimateTime = form.down('datefield#estimateTime').getValue(); //Ext.Date.format(form.down('datefield#estimateTime').getValue(),'d/m/Y');
 
-        record.dirty = true;        
+        record.dirty = true;
         var store = this.getTicketsStore();
-        if(typeof record.data.priority === 'undefined'){
+        if (typeof record.data.priority === 'undefined') {
             record.data.priority = null;
-        }        
-        if(typeof record.data.responsible === 'undefined'){
+        }
+        if (typeof record.data.responsible === 'undefined') {
             record.data.responsible = null;
         }
         console.log(record);
-        store.add(record);        
+        store.add(record);
         if (store.getModifiedRecords().length > 0) {
             store.sync({
-                callback:function(){                    
-                    myScope.getTicketEditContainer().getLayout().setActiveItem(Helpdesk.Globals.ticket_details_view);                    
-                    myScope.setValuesFromView(form.up(),record);
+                callback: function() {
+                    myScope.getTicketEditContainer().getLayout().setActiveItem(Helpdesk.Globals.ticket_details_view);
+                    myScope.setValuesFromView(form.up(), record);
                     mainView.setLoading(false);
                 }
             });
-        }else{  
+        } else {
             mainView.setLoading(false);
-            Ext.Msg.alert(translations.INFORMATION,translations.NOTHING_TO_SAVE);
+            Ext.Msg.alert(translations.INFORMATION, translations.NOTHING_TO_SAVE);
         }
-        
-    },  
+
+    },
     //Retorna o record selecionado no combobox
-    getRecordFromComboBox:function(store,idSelected){        
-        if(store!==null && idSelected!== null){
-            for(var i=0;i<store.getCount();i++){
-                if(store.data.items[i].data.id === idSelected){
+    getRecordFromComboBox: function(store, idSelected) {
+        if (store !== null && idSelected !== null) {
+            for (var i = 0; i < store.getCount(); i++) {
+                if (store.data.items[i].data.id === idSelected) {
                     return store.data.items[i].data;
                 }
-            };
+            }
+            ;
             return null;
-        }        
+        }
     },
-    
     /**
      * Faz a paginação do grid de tickets de acordo com a página selecionada
-     */    
-    changeGridPage:function(toolbar,page){        
+     * @param {type} toolbar
+     * @param {type} page
+     * @returns {undefined}
+     */
+    changeGridPage: function(toolbar, page) {
         var myscope = this;
-        var limit = (page)*Helpdesk.Globals.pageSizeGrid;
-        var start = limit-Helpdesk.Globals.pageSizeGrid;
-        
-        myscope.getTicketPanel().getStore().proxy.url = this.getProxy() + '-paging' ; 
+        var limit = (page) * Helpdesk.Globals.pageSizeGrid;
+        var start = limit - Helpdesk.Globals.pageSizeGrid;
+
+        myscope.getTicketPanel().getStore().proxy.url = this.getProxy() + '-paging';
         myscope.getTicketPanel().getStore().load({
-            params:{
+            params: {
                 user: Helpdesk.Globals.user,
                 start: start,
                 limit: limit
             },
-            callback: function(){               
+            callback: function() {
                 myscope.backToDefaultStore(myscope);
                 myscope.setSideMenuButtonText();
             }
-        }); 
+        });
     },
-    
-    getProxy:function(){
-        
+    getProxy: function() {
+
         var form = this.getTicketSideMenu();
-        
-        if(form.down('button#buttonAll').pressed === true){
-            return 'ticket/all';    
-        }else if(form.down('button#buttonMyTickets').pressed === true){
-            return 'ticket/mytickets';    
-        }else if(form.down('button#buttonWithoutResponsible').pressed === true){
-            return 'ticket/withoutresponsible';    
-        }else if(form.down('button#buttonOpened').pressed === true){
-            return 'ticket/opened';    
-        }else if(form.down('button#buttonClosed').pressed === true){
-            return 'ticket/closed';    
-        }else{
-            return 'ticket/all';   
-        } 
-    },  
-    
-    changeCmbSearch:function(field,newValue, oldValue, eOpts){
+
+        if (form.down('button#buttonAll').pressed === true) {
+            return 'ticket/all';
+        } else if (form.down('button#buttonMyTickets').pressed === true) {
+            return 'ticket/mytickets';
+        } else if (form.down('button#buttonWithoutResponsible').pressed === true) {
+            return 'ticket/withoutresponsible';
+        } else if (form.down('button#buttonOpened').pressed === true) {
+            return 'ticket/opened';
+        } else if (form.down('button#buttonClosed').pressed === true) {
+            return 'ticket/closed';
+        } else {
+            return 'ticket/all';
+        }   },
+    changeCmbSearch: function(field, newValue, oldValue, eOpts) {
         //The method will be executed only if the new value have at least 3 characters
         var scope = this;
         var store = field.up('container#maincontainer').down('#ticketgrid').getStore();
         var grid = field.up('container#maincontainer').down('#ticketgrid');
-        var form = this.getTicketSideMenu();         
-        if(newValue!== null){           
+        var form = this.getTicketSideMenu();
+        if (newValue !== null) {
             field.up('container#maincontainer').down('#ticketgrid').setLoading(true);
-            store.removeAll();            
-            var storeTemp = new Helpdesk.store.Tickets(); 
+            store.removeAll();
+            var storeTemp = new Helpdesk.store.Tickets();
             storeTemp.proxy.url = this.getProxy();
             storeTemp.load({
-                params:{
+                params: {
                     user: Helpdesk.Globals.user
                 },
-                callback:function(){  
+                callback: function() {
                     field.up('container#maincontainer').down('#ticketgrid').setLoading(false);
-                    for(var i=0;i<storeTemp.getCount();i++){            
-                        if(storeTemp.data.items[i].data.client.name.toLowerCase().indexOf(newValue.toLowerCase()) > -1){                
-                            store.add(storeTemp.data.items[i].data);                        
-                        }else if(storeTemp.data.items[i].data.title.toLowerCase().indexOf(newValue.toLowerCase()) > -1){
-                            store.add(storeTemp.data.items[i].data);     
-                        }else if(storeTemp.data.items[i].data.category.name.toLowerCase().indexOf(newValue.toLowerCase()) > -1){
-                            store.add(storeTemp.data.items[i].data);     
-                        }else if(storeTemp.data.items[i].data.user.name.toLowerCase().indexOf(newValue.toLowerCase()) > -1){
-                            store.add(storeTemp.data.items[i].data);     
-                        }else if(storeTemp.data.items[i].data.isOpen===true){
-                            if(translations.OPENED.toLowerCase().indexOf(newValue.toLowerCase()) > -1){
+                    for (var i = 0; i < storeTemp.getCount(); i++) {
+                        if (storeTemp.data.items[i].data.client.name.toLowerCase().indexOf(newValue.toLowerCase()) > -1) {
+                            store.add(storeTemp.data.items[i].data);
+                        } else if (storeTemp.data.items[i].data.title.toLowerCase().indexOf(newValue.toLowerCase()) > -1) {
+                            store.add(storeTemp.data.items[i].data);
+                        } else if (storeTemp.data.items[i].data.category.name.toLowerCase().indexOf(newValue.toLowerCase()) > -1) {
+                            store.add(storeTemp.data.items[i].data);
+                        } else if (storeTemp.data.items[i].data.user.name.toLowerCase().indexOf(newValue.toLowerCase()) > -1) {
+                            store.add(storeTemp.data.items[i].data);
+                        } else if (storeTemp.data.items[i].data.isOpen === true) {
+                            if (translations.OPENED.toLowerCase().indexOf(newValue.toLowerCase()) > -1) {
                                 store.add(storeTemp.data.items[i].data);
                             }
-                        }else if(storeTemp.data.items[i].data.isOpen===false){
-                            if(translations.CLOSED.toLowerCase().indexOf(newValue.toLowerCase()) > -1){
+                        } else if (storeTemp.data.items[i].data.isOpen === false) {
+                            if (translations.CLOSED.toLowerCase().indexOf(newValue.toLowerCase()) > -1) {
                                 store.add(storeTemp.data.items[i].data);
                             }
                         }
                     }
-                    if(store.getCount()===0 && newValue === ''){
-                        for(var i=0;i<storeTemp.getCount();i++){          
-                            store.add(storeTemp.data.items[i].data);                             
+                    if (store.getCount() === 0 && newValue === '') {
+                        for (var i = 0; i < storeTemp.getCount(); i++) {
+                            store.add(storeTemp.data.items[i].data);
                         }
                     }
                     //Selects the matching values on the grid
-                    scope.onTextFieldChange(newValue,store,grid); 
+                    scope.onTextFieldChange(newValue, store, grid);
                 }
             });
-        }else{
+        } else {
             store.proxy.url = this.getProxy();
             store.load({
-                params:{
+                params: {
                     user: Helpdesk.Globals.user,
-                    start:0,
-                    limit:Helpdesk.Globals.pageSizeGrid
+                    start: 0,
+                    limit: Helpdesk.Globals.pageSizeGrid
                 },
-                callback:function(){
-                    store.proxy.url = 'ticket'; 
+                callback: function() {
+                    store.proxy.url = 'ticket';
                 }
             });
         }
     },
-    
-    
-    /**
-     * Finds all strings that matches the searched value in each grid cells.     * 
-     */
-    onTextFieldChange:function(searchValue,store,grid) {
-        
+   /**
+    * Finds all strings that matches the searched value in each grid cells.
+    * @param {type} searchValue
+    * @param {type} store
+    * @param {type} grid
+    * @returns {undefined}
+    */
+    onTextFieldChange: function(searchValue, store, grid) {
+
         var tagsRe = /<[^>]*>/gm;
-        var tagsProtect = '\x0f';       
+        var tagsProtect = '\x0f';
         var searchRegExp = new RegExp(searchValue, 'g' + (false ? '' : 'i'));
         var count = 0;
         var indexes = [];
         var currentIndex = null;
         store.each(function(record, idx) {
-            
+
             var td = Ext.fly(grid.view.getNode(idx)).down('td'),
-            cell, matches, cellHTML;     
-            
-            while(td) {
+                    cell, matches, cellHTML;
+
+            while (td) {
                 cell = td.down('.x-grid-cell-inner');
                 matches = cell.dom.innerHTML.match(tagsRe);
-                cellHTML = cell.dom.innerHTML.replace(tagsRe,tagsProtect);
-                
+                cellHTML = cell.dom.innerHTML.replace(tagsRe, tagsProtect);
+
                 // populate indexes array, set currentIndex, and replace wrap matched string in a span
                 cellHTML = cellHTML.replace(searchRegExp, function(m) {
                     count += 1;
@@ -356,239 +359,230 @@ Ext.define('Helpdesk.controller.Ticket', {
                     }
                     return '<span class="' + 'x-livesearch-match' + '">' + m + '</span>';
                 });
-                cell.dom.innerHTML = cellHTML;                     
+                cell.dom.innerHTML = cellHTML;
                 td = td.next();
             }
-            
-            
-            
-        });        
-        
-    },    
-    
-    
+
+
+
+        });
+
+    },
     //Atualiza o grid após ação de crud
-    atualizaGrid:function(){
-        var button;        
+    atualizaGrid: function() {
+        var button;
         var sideMenu = this.getTicketSideMenu();
-        
-        if(sideMenu.down('button#buttonAll').pressed === true){
+
+        if (sideMenu.down('button#buttonAll').pressed === true) {
             button = sideMenu.down('button#buttonAll');
-        }else if(sideMenu.down('button#buttonOpened').pressed === true){
+        } else if (sideMenu.down('button#buttonOpened').pressed === true) {
             button = sideMenu.down('button#buttonOpened');
-        }else if(sideMenu.down('button#buttonClosed').pressed === true){
+        } else if (sideMenu.down('button#buttonClosed').pressed === true) {
             button = sideMenu.down('button#buttonClosed');
-        }else if(sideMenu.down('button#buttonMyTickets').pressed === true){
+        } else if (sideMenu.down('button#buttonMyTickets').pressed === true) {
             button = sideMenu.down('button#buttonMyTickets');
-        }else if(sideMenu.down('button#buttonWithoutResponsible').pressed === true){
+        } else if (sideMenu.down('button#buttonWithoutResponsible').pressed === true) {
             button = sideMenu.down('button#buttonWithoutResponsible');
         }
-        if(button!== null){
+        if (button !== null) {
             this.onTicketMenuClick(button);
         }
-        
-    },
 
-    initDashView:function(){
-        this.getCardPanel().getLayout().setActiveItem(Helpdesk.Globals.ticketview);        
+    },
+    initDashView: function() {
+        this.getCardPanel().getLayout().setActiveItem(Helpdesk.Globals.ticketview);
         this.setSideMenuButtonText();
     },
-    
     /**
      * Açoes realizadas por cada side button 
+     * @param {type} btn
+     * @returns {undefined}
      */
-    onTicketMenuClick: function(btn){
+    onTicketMenuClick: function(btn) {
         this.getTicketCardContainer().getLayout().setActiveItem(Helpdesk.Globals.ticket_datagrid);
         this.getTicketEditContainer().getLayout().setActiveItem(Helpdesk.Globals.ticket_details_view);
-        if(typeof this.getTicketPanel() !== 'undefined'){
-            if(btn.itemId === 'buttonAll'){
+        if (typeof this.getTicketPanel() !== 'undefined') {
+            if (btn.itemId === 'buttonAll') {
                 this.getAllTickets();
             }
-            else if(btn.itemId === 'buttonOpened'){
+            else if (btn.itemId === 'buttonOpened') {
                 this.getTicketsOpened();
             }
-            else if(btn.itemId === 'buttonClosed'){
-                this.getTicketsClosed();     
-            }  
-            else if(btn.itemId === 'buttonMyTickets'){
-                this.getMyTickets();     
-            }  
-            else if(btn.itemId === 'buttonWithoutResponsible'){
-                this.getTicketsWithoutResponsible();     
-            }  
+            else if (btn.itemId === 'buttonClosed') {
+                this.getTicketsClosed();
+            }
+            else if (btn.itemId === 'buttonMyTickets') {
+                this.getMyTickets();
+            }
+            else if (btn.itemId === 'buttonWithoutResponsible') {
+                this.getTicketsWithoutResponsible();
+            }
         }
     },
-    
     /**
      * Retorna o proxy da store de Ticket para o default
+     * @param {type} scope
+     * @returns {undefined}
      */
-    backToDefaultStore: function(scope){
+    backToDefaultStore: function(scope) {
         scope.getTicketPanel().getStore().proxy.url = 'ticket';
     },
-    
     /**
      * Busca todos os Tickets
      */
-    getAllTickets: function(){
+    getAllTickets: function() {
         this.loadStoreBasic('all');
     },
-    
     /**
      * Busca todos os tickets ABERTOS
      */
-    getTicketsOpened: function(){
+    getTicketsOpened: function() {
         this.loadStoreBasic('opened');
     },
     /**
      * Busca todos os tickets FECHADOS
      */
-    getTicketsClosed: function(){
+    getTicketsClosed: function() {
         this.loadStoreBasic('closed');
     },
-    
     /**
      * Busca todos os tickets em que o usuario logado é o responsavel
      */
-    getMyTickets: function(){
+    getMyTickets: function() {
         this.loadStoreBasic('mytickets');
     },
-    
     /**
      * Busca todos os tickets em que não tenha responsavel 
      */
-    getTicketsWithoutResponsible: function(){
+    getTicketsWithoutResponsible: function() {
         this.loadStoreBasic('withoutresponsible');
     },
-    
     /**
      * Busca e preenche as informações do sidemenu (Quantidade de tickets em cada categoria),
      * e seta visibilidade dos botões de acorodo com o perfil utilizado
      */
-    setSideMenuButtonText: function(){
+    setSideMenuButtonText: function() {
         var myscope = this;
         Ext.Ajax.request({
             url: 'ticket/textmenu',
             method: 'GET',
-            async:false,
+            async: false,
             params: {
-                user : Helpdesk.Globals.user
+                user: Helpdesk.Globals.user
             },
             success: function(o) {
                 var decodedString = Ext.decode(o.responseText);
-                
+
                 var sm = myscope.getTicketSideMenu();
                 var buttonAll = sm.down('#buttonAll');
                 var buttonOpened = sm.down('#buttonOpened');
                 var buttonClosed = sm.down('#buttonClosed');
                 var buttonMyTickets = sm.down('#buttonMyTickets');
                 var buttonWithoutResponsible = sm.down('#buttonWithoutResponsible');
-                buttonAll.setText(translations.ALL +((decodedString.todos==='0')?(" "):(" ("+decodedString.todos+")")));  
-                buttonOpened.setText(translations.IN_PROGRESS +((decodedString.abertos==='0')?(" "):(" ("+decodedString.abertos+")"))); 
-                buttonClosed.setText(translations.CLOSED+((decodedString.fechados==='0')?(" "):(" ("+decodedString.fechados+")"))); 
-                buttonMyTickets.setText(translations.MY_TICKETS+((decodedString.mytickets === '0')?(" "):(" ("+decodedString.mytickets+")"))); 
-                buttonWithoutResponsible.setText(translations.WITHOUT_RESPONSIBLE+((decodedString.withoutresponsible==='0')?(" "):(" ("+decodedString.withoutresponsible+")"))); 
-                if(Helpdesk.Globals.userGroup === "1"){//superusuario
+                buttonAll.setText(translations.ALL + ((decodedString.todos === '0') ? (" ") : (" (" + decodedString.todos + ")")));
+                buttonOpened.setText(translations.IN_PROGRESS + ((decodedString.abertos === '0') ? (" ") : (" (" + decodedString.abertos + ")")));
+                buttonClosed.setText(translations.CLOSED + ((decodedString.fechados === '0') ? (" ") : (" (" + decodedString.fechados + ")")));
+                buttonMyTickets.setText(translations.MY_TICKETS + ((decodedString.mytickets === '0') ? (" ") : (" (" + decodedString.mytickets + ")")));
+                buttonWithoutResponsible.setText(translations.WITHOUT_RESPONSIBLE + ((decodedString.withoutresponsible === '0') ? (" ") : (" (" + decodedString.withoutresponsible + ")")));
+                if (Helpdesk.Globals.userGroup === "1") {//superusuario
                     buttonAll.setVisible(true);
                     buttonOpened.setVisible(true);
                     buttonClosed.setVisible(true);
                     buttonMyTickets.setVisible(true);
                     buttonWithoutResponsible.setVisible(true);
                 }
-                else{//outros
+                else {//outros
                     buttonAll.setVisible(true);
                     buttonOpened.setVisible(true);
                     buttonClosed.setVisible(true);
                     buttonMyTickets.setVisible(false);
                     buttonWithoutResponsible.setVisible(false);
                 }
-                
+
             }
         });
     },
-    
     /*
      * Quando o botão de novo ticket for clicado, realiza a mudança de view do TicketCardContainer
      */
-    onCriarTicket: function(){
+    onCriarTicket: function() {
         this.getTicketCardContainer().getLayout().setActiveItem(Helpdesk.Globals.ticket_new);
     },
-    
     saveNewTicket: function(button, e, options) {
         var ticketView = this.getTicketView();
         //upload arquivos, caso seja success, salva o novo ticket
         var multiupload = ticketView.down('multiupload');
         this.submitValues(multiupload);
     },
-    
-    saveTicket: function(){
+    saveTicket: function() {
         var scope = this;
-        var ticketView = scope.getTicketView();      
+        var ticketView = scope.getTicketView();
         var form = ticketView.down('form');
         var record = form.getRecord();
         var values = form.getValues();
-        
-        
+
+
         record.set(values);
         record.data.startDate = new Date();
         record.data.endDate = null;
         record.data.user = Helpdesk.Globals.userLogged;
-        record.data.isOpen = true;   
-        
-        if(form.down('combobox#responsibleTicket').rawValue===''){
+        record.data.isOpen = true;
+
+        if (form.down('combobox#responsibleTicket').rawValue === '') {
             record.data.responsible = null;
             record.data.responsibleName = null;
         }
-        
-        if(form.down('combobox#priorityCmb').rawValue===''){
+
+        if (form.down('combobox#priorityCmb').rawValue === '') {
             record.data.priority = null;
             record.data.priorityName = null;
         }
-        
 
-        if(Helpdesk.Globals.userLogged.id !== 1){
+
+        if (Helpdesk.Globals.userLogged.id !== 1) {
             record.data.responsible = null;
             record.data.priority = null;
             record.data.estimateTime = null;
-            record.data.client = Helpdesk.Globals.userLogged.client;           
+            record.data.client = Helpdesk.Globals.userLogged.client;
         }
-        
+
         var check = false;
-            if(record.data.user.userGroup.id === 1){
-                if(form.down('combobox#clientName').rawValue!=='' && 
-                   form.down('combobox#categoryTicket').rawValue!=='' &&
-                   form.down('textarea#stepsTicket').value!=='' && 
-                   form.down('textfield#subject').value!=='' && 
-                   form.down('textarea#description').value!==''){
-                    check = true;
-                }
-            }else if(record.data.user.userGroup.id === 2){
-                if(form.down('combobox#categoryTicket').rawValue!=='' && 
-                   form.down('textarea#stepsTicket').value!=='' && 
-                   form.down('textfield#subject').value!=='' && 
-                   form.down('textarea#description').value!==''){
-                    check = true;
-                }
+        if (record.data.user.userGroup.id === 1) {
+            if (form.down('combobox#clientName').rawValue !== '' &&
+                    form.down('combobox#categoryTicket').rawValue !== '' &&
+                    form.down('textarea#stepsTicket').value !== '' &&
+                    form.down('textfield#subject').value !== '' &&
+                    form.down('textarea#description').value !== '') {
+                check = true;
             }
-            if(check){         
+        } else if (record.data.user.userGroup.id === 2) {
+            if (form.down('combobox#categoryTicket').rawValue !== '' &&
+                    form.down('textarea#stepsTicket').value !== '' &&
+                    form.down('textfield#subject').value !== '' &&
+                    form.down('textarea#description').value !== '') {
+                check = true;
+            }
+        }
+        if (check) {
             this.getTicketPanel().getStore().add(record);
             if (this.getTicketPanel().getStore().getModifiedRecords().length > 0) {
                 this.getTicketPanel().getStore().sync({
-                    callback: function(records,operation,success) {
-                        form.getForm().reset();                    
+                    callback: function(records, operation, success) {
+                        form.getForm().reset();
                         scope.getTicketCardContainer().getLayout().setActiveItem(Helpdesk.Globals.ticket_datagrid);
                         scope.setSideMenuButtonText();
                         ticketView.setLoading(false);
                     }
-                });          
+                });
             } else {
                 Ext.Msg.alert(translations.INFORMATION, translations.NOTHING_TO_SAVE);
                 ticketView.setLoading(false);
             }
-        }else{
+        } else {
             ticketView.setLoading(false);
             Ext.Msg.alert(translations.INFORMATION, translations.REQUIRED_ITENS_TICKETS);
         }
-         
+
     },
     /**
      * Função para criar um novo Client durante o cadastro de Tikcet
@@ -600,7 +594,6 @@ Ext.define('Helpdesk.controller.Ticket', {
         form.loadRecord(Ext.create('Helpdesk.model.Client'));
         editWindow.show();
     },
-    
     /*
      * Função para salvar o novo Client criado
      */
@@ -621,100 +614,118 @@ Ext.define('Helpdesk.controller.Ticket', {
             Ext.Msg.alert(translations.INFORMATION, translations.NOTHING_TO_SAVE);
         }
     },
-    
     /**
      * @author Ricardo
      * 
      * Altera para a view de resposta de ticket
-     *     
+     * @param {type} grid
+     * @param {type} record
+     * @param {type} item
+     * @param {type} index
+     * @param {type} e
+     * @param {type} eOpts
+     * @returns {undefined}
      */
-    ticketClicked:function(grid, record, item, index, e, eOpts){
-        var ticketView = this.getTicketCardContainer().getLayout().setActiveItem(Helpdesk.Globals.ticket_details);        
-        ticketView.down('form#ticketMainView').loadRecord(Ext.create('Helpdesk.model.Ticket'));      
-        this.setValuesFromView(ticketView,record);   
+    ticketClicked: function(grid, record, item, index, e, eOpts) {
+        //this.getTicketCardContainer().setLoading(translations.LOADING);
+        var ticketView = this.getTicketCardContainer().getLayout().setActiveItem(Helpdesk.Globals.ticket_details);
+        ticketView.down('form#ticketMainView').loadRecord(Ext.create('Helpdesk.model.Ticket'));
+        this.setValuesFromView(ticketView, record);
     },
-    
-  /**
+    /**
      * @author Ricardo
      * 
      * Insere os valores na view de cadastro de ticket
+     * @param {type} ticketView
+     * @param {type} record
+     * @returns {undefined}
      */
-    setValuesFromView:function(ticketView,record){
+    setValuesFromView: function(ticketView, record) {
         var scope = this;
-        if(ticketView !== null && record !== null){
-            
-            ticketView.down('form#ticketMainView').loadRecord(record);           
-            
-            ticketView.down('text#tktTitle').setText(translations.TICKET+' #'+record.data.id+' - '+record.data.title);
-            if(record.data.isOpen)
+        if (ticketView !== null && record !== null) {
+
+            ticketView.down('form#ticketMainView').loadRecord(record);
+
+            ticketView.down('text#tktTitle').setText(translations.TICKET + ' #' + record.data.id + ' - ' + record.data.title);
+            if (record.data.isOpen)
                 ticketView.down('text#tktStatus').setText(translations.TICKET_TITLE_OPENED);
             else
                 ticketView.down('text#tktStatus').setText(translations.TICKET_TITLE_CLOSED);
-            
+
             ticketView.down('text#tktBy').setText(record.data.userName);
-            
+
             //formata data Inicial do ticket
             var dateTemp = new Date(record.data.startDate);
-            dateTemp = Ext.Date.format(dateTemp ,'d/m/Y');         
+            dateTemp = Ext.Date.format(dateTemp, translations.FORMAT_DATE_TIME);
             ticketView.down('text#tktAt').setText(dateTemp);
-            
+
             ticketView.down('text#tktCategory').setText(record.data.categoryName);
-            if(record.data.estimateTime!==null){
+            if (record.data.estimateTime !== null) {
                 record.data.estimateTime = new Date(record.data.estimateTime);
-                record.data.estimateTime = Ext.Date.format(record.data.estimateTime ,'d/m/Y');
+                record.data.estimateTime = Ext.Date.format(record.data.estimateTime, translations.FORMAT_DATE_TIME);
                 ticketView.down('text#tktEstimatedTime').setText(record.data.estimateTime);
-            }else{
+            } else {
                 ticketView.down('text#tktEstimatedTime').setText(translations.NO_DEADLINE_DEFINED);
-            }            
-            
-            
-            if(record.data.priorityName!==null && record.data.priorityName!==''){
+            }
+
+
+            if (record.data.priorityName !== null && record.data.priorityName !== '') {
                 ticketView.down('text#tktPriority').setText(record.data.priorityName);
-            }else{
+            } else {
                 ticketView.down('text#tktPriority').setText(translations.NO_PRIORITY);
             }
-            
-            
-            if(record.data.responsibleName!==null && record.data.responsibleName!==''){
+
+
+            if (record.data.responsibleName !== null && record.data.responsibleName !== '') {
                 ticketView.down('text#tktResponsible').setText(record.data.responsibleName);
-            }else{
+            } else {
                 ticketView.down('text#tktResponsible').setText(translations.NO_RESPONSIBLE);
             }
-            ticketView.down('text#tktSteps').setText(record.data.stepsTicket);          
-            
+            ticketView.down('text#tktSteps').setText(record.data.stepsTicket);
+
             //Insere a descrição do ticket            
-            ticketView.down('panel#tktAnswers').removeAll(true);                  
-            
+            ticketView.down('panel#tktAnswers').removeAll(true);
+
             //Recebe todas as respostas do ticket
-            var answerStore = this.getTicketAnswersStore();             
-            answerStore.proxy.url = 'ticket-answer/find-by-ticket/'+record.data.id;
+            var answerStore = this.getTicketAnswersStore();
+            answerStore.proxy.url = 'ticket-answer/find-by-ticket/' + record.data.id;
             answerStore.load({
-                callback:function(){ 
-                    var resposta =  Ext.create('Helpdesk.view.ticket.TicketAnswerPanel',{
-                        title:record.data.userName
+                callback: function() {                  
+                    var resposta = Ext.create('Helpdesk.view.ticket.TicketAnswerPanel', {
+                        title:'<span align="left" class="div-title-answer"><p align="left">'+record.data.userName+'</p><p class="date-title-answer">'+dateTemp+'</p></span>'
                     });
                     resposta.down('label#corpo').text = record.data.description;
                     resposta.down('hiddenfield#id').text = record.data.id;
-                    resposta.down('hiddenfield#idAnswer').text  = 0;
-                    
+                    resposta.down('hiddenfield#idAnswer').text = 0;
+
                     ticketView.down('panel#tktAnswers').items.add(resposta);
-                    for(i=0;i<answerStore.getCount();i++){          
-                        resposta =  Ext.create('Helpdesk.view.ticket.TicketAnswerPanel',{
-                            title:answerStore.data.items[i].data.user.name
-                        });              
-                        resposta.down('label#corpo').text = answerStore.data.items[i].data.description;
+                    for (i = 0; i < answerStore.getCount(); i++) {
+                        var answerTemp = answerStore.data.items[i].data;
+                        var name = answerTemp.user.name;
+                        dateTemp = new Date(answerTemp.dateCreation);
+                        var date = Ext.Date.format(dateTemp, translations.FORMAT_DATE_TIME);                        
+                        resposta = Ext.create('Helpdesk.view.ticket.TicketAnswerPanel', {
+                            title:'<span align="left" class="div-title-answer"><p align="left">'+name+'</p><p class="date-title-answer">'+date+'</p></span>'   
+                        });
+                        resposta.down('label#corpo').text = answerTemp.description;
                         resposta.down('hiddenfield#id').text = record.data.id;
-                        resposta.down('hiddenfield#idAnswer').text  = answerStore.data.items[i].data.id;
-                        ticketView.down('panel#tktAnswers').items.add(resposta);                       
+                        resposta.down('hiddenfield#idAnswer').text = answerTemp.id;
+                        ticketView.down('panel#tktAnswers').items.add(resposta);
                     }
-                    ticketView.down('panel#tktAnswers').doLayout(); 
-                    scope.getFilesFromRecord(ticketView,record);
+                    ticketView.down('panel#tktAnswers').doLayout();
+                    var answers = ticketView.down('panel#tktAnswers').items;
+                    var itemsLength = answers.length;
+                    if (itemsLength > 0) {
+                        answers.items[itemsLength - 1].expand(true);
+                        answers.items[itemsLength - 1].el.setStyle('margin', '0 0 10px 0');
+                    }
+                    scope.getFilesFromRecord(ticketView, record);
                 }
             });
-        }        
+        }
         //Seta a visibilidade dos botões de fechar ou abrir tickets de acordo com o ticket corrente
-        
-        if(record.data.isOpen === true){            
+
+        if (record.data.isOpen === true) {
             ticketView.down('label#lblTicketOpen').setVisible(true);
             ticketView.down('button#btnCloseTkt').setVisible(true);
             ticketView.down('label#lblTicketClosed').setVisible(false);
@@ -722,135 +733,134 @@ Ext.define('Helpdesk.controller.Ticket', {
             //Seta visibilidade do botão salvar
             ticketView.down('button#btnSaveAnswTkt').setVisible(true);
             //Seta a visibilidade do botão de edição do ticket
-            if(Helpdesk.Globals.userLogged.userGroup.id === 1){
+            if (Helpdesk.Globals.userLogged.userGroup.id === 1) {
                 ticketView.down('button#editTicket').show();
             }
+            ticketView.down('textarea#tktNewAnswer').show();
+            ticketView.down('text#txtNewAnswer').show();
         }
-        else{            
+        else {
             ticketView.down('label#lblTicketOpen').setVisible(false);
-            ticketView.down('button#btnCloseTkt').setVisible(false);            
-            ticketView.down('label#lblTicketClosed').setVisible(true);            
+            ticketView.down('button#btnCloseTkt').setVisible(false);
+            ticketView.down('label#lblTicketClosed').setVisible(true);
             ticketView.down('button#btnOpenTkt').setVisible(true);
             //Seta visibilidade do botão salvar
-            ticketView.down('button#btnSaveAnswTkt').setVisible(false);           
+            ticketView.down('button#btnSaveAnswTkt').setVisible(false);
             //Seta a visibilidade do botão de edição do ticket
             ticketView.down('button#editTicket').hide();
-            
-            
-            
-            
+            ticketView.down('textarea#tktNewAnswer').hide();
+            ticketView.down('text#txtNewAnswer').hide();
         }
     },
-    
     /*
      * Muda CardContainer para a view de Edição do ticket.
      * Seta os valores do ticket na tela de edição
      */
-    editTicket:function(button, e, options){ 
+    editTicket: function(button, e, options) {
         var ticketView = this.getTicketEditContainer();
         this.getTicketEditContainer().getLayout().setActiveItem(Helpdesk.Globals.ticket_details_edit);
-        
+
         //set category combobox
         var categoryText = ticketView.down('#tktCategory').text;
         var categoryCombo = ticketView.down('#categoryTicket');
         var categoryStore = categoryCombo.store;
-        var categoryIndex = Ext.StoreMgr.lookup(categoryStore).findExact('name',categoryText);
+        var categoryIndex = Ext.StoreMgr.lookup(categoryStore).findExact('name', categoryText);
         var categoryRecord = Ext.StoreMgr.lookup(categoryStore).getAt(categoryIndex);
         categoryCombo.setValue(categoryRecord);
-        
+
         //set responsavel combobox        
         var responsibleText = ticketView.down('#tktResponsible').text;
         var responsibleCombo = ticketView.down('#responsibleTicket');
         var responsibleStore = responsibleCombo.store;
-        var resposibleTemp;        
-        if(responsibleText ==='' || translations.NO_RESPONSIBLE){            
+        var resposibleTemp;
+        if (responsibleText === '' || translations.NO_RESPONSIBLE) {
             resposibleTemp = new Helpdesk.model.User();
             resposibleTemp.data.name = translations.NO_RESPONSIBLE;
             responsibleCombo.setValue(resposibleTemp);
         }
-        else{
-            var responsibleIndex = Ext.StoreMgr.lookup(responsibleStore).findExact('name',responsibleText);
+        else {
+            var responsibleIndex = Ext.StoreMgr.lookup(responsibleStore).findExact('name', responsibleText);
             var responsibleRecord = Ext.StoreMgr.lookup(responsibleStore).getAt(responsibleIndex);
             responsibleCombo.setValue(responsibleRecord);
         }
-        
+
         //set priority combobox
         var priorityText = ticketView.down('#tktPriority').text;
         var priorityCombo = ticketView.down('#priorityTicket');
         var priorityStore = priorityCombo.store;
-        var priorityTemp;        
-        if(priorityText ==='' || translations.NO_PRIORITY){            
+        var priorityTemp;
+        if (priorityText === '' || translations.NO_PRIORITY) {
             priorityTemp = new Helpdesk.model.Priority();
             priorityTemp.data.name = translations.NO_PRIORITY;
             priorityCombo.setValue(priorityTemp);
         }
-        else{
-            var priorityIndex = Ext.StoreMgr.lookup(priorityStore).findExact('name',priorityText);
+        else {
+            var priorityIndex = Ext.StoreMgr.lookup(priorityStore).findExact('name', priorityText);
             var priorityRecord = Ext.StoreMgr.lookup(priorityStore).getAt(priorityIndex);
             priorityCombo.setValue(priorityRecord);
         }
-        
+
         //set prazo datefield       
-        var estimatedText = ticketView.down('#tktEstimatedTime').text;        
-        if(estimatedText !== '' && estimatedText!==translations.NO_DEADLINE_DEFINED){
+        var estimatedText = ticketView.down('#tktEstimatedTime').text;
+        if (estimatedText !== '' && estimatedText !== translations.NO_DEADLINE_DEFINED) {
             //var estimatedDate = new Date(estimatedText);
             var estimatedDateField = ticketView.down('#estimateTime');
             //estimatedDateField.setValue(estimatedDate);
             estimatedDateField.setValue(estimatedText);
         }
-        
+
         //set steps textarea
         var stepsText = ticketView.down('#tktSteps').text;
         ticketView.down('#stepsTicket').setValue(stepsText);
-        
+
     },
-    getFilesFromRecord:function(ticketView,record){
+    getFilesFromRecord: function(ticketView, record) {
         var scope = this;
-        if(ticketView !== null && record !== null){   
+        if (ticketView !== null && record !== null) {
             var ticketId = record.data.id;
             Ext.Ajax.request({
-                url: 'ticket/'+ticketId+'/files',
+                url: 'ticket/' + ticketId + '/files',
                 method: 'GET',
-                success: function (response, opts) {
-                    if(response.responseText !== ''){
+                success: function(response, opts) {
+                    if (response.responseText !== '') {
                         var responseJSON = Ext.decode(response.responseText);
                         var answersList = ticketView.down('panel#tktAnswers').items.items;
-                        
-                        for (var i = 0; i < answersList.length; i++){
+
+                        for (var i = 0; i < answersList.length; i++) {
                             var answer = answersList[i];
                             var idAnswer = answer.down('hiddenfield#idAnswer').text;
                             var idTicket = answer.down('hiddenfield#id').text;
                             var fileContainer = answer.down('container#anexo');
-                            for (var j = 0; j < responseJSON.length; j++){
+                            for (var j = 0; j < responseJSON.length; j++) {
                                 var file = responseJSON[j];
                                 var fileIdTicket = file.fileTicketId;
                                 var fileIdAnswer = file.fileTicketAnswerId;
                                 var fileName = file.fileName;
                                 var fileId = file.fileId;
                                 var insertAnexo = false;
-                                if(idAnswer === 0){
-                                    if(fileIdAnswer === '' && fileIdTicket == idTicket){
+                                if (idAnswer === 0) {
+                                    if (fileIdAnswer === '' && fileIdTicket === idTicket) {
                                         insertAnexo = true;
                                     }
                                 }
-                                else{
-                                    if(fileIdAnswer == idAnswer){
+                                else {
+                                    if (fileIdAnswer === idAnswer) {
                                         insertAnexo = true;
                                     }
                                 }
-                                if(insertAnexo){
+                                if (insertAnexo) {
                                     var linkButton = {
-                                        xtype : 'button',
-                                        text : fileName,
+                                        xtype: 'button',
+                                        text: fileName,
                                         fileId: fileId,
                                         cls: 'btn-linkbutton-custom',
                                         iconCls: 'clip',
-                                        listeners : {
-                                            click : function(button, e, eOpts){
+                                        listeners: {
+                                            click: function(button, e, eOpts) {
                                                 scope.downloadFile(button.fileId);
                                             }
                                         }
-                                    }
+                                    };
                                     fileContainer.insert(linkButton);
                                 }
                             }
@@ -860,42 +870,40 @@ Ext.define('Helpdesk.controller.Ticket', {
             });
         }
     },
-    
-    loadStoreBasic:function(urlSimples){
+    loadStoreBasic: function(urlSimples) {
         //loadStore to GRID
-        var myscope = this;        
-        myscope.getTicketPanel().getStore().proxy.url = 'ticket/'+urlSimples+'-paging';
+        var myscope = this;
+        myscope.getTicketPanel().getStore().proxy.url = 'ticket/' + urlSimples + '-paging';
         myscope.getTicketPanel().getStore().load({
-            params:{
+            params: {
                 user: Helpdesk.Globals.user,
-                start:0,
-                limit:Helpdesk.Globals.pageSizeGrid
+                start: 0,
+                limit: Helpdesk.Globals.pageSizeGrid
             },
-            callback: function(){
+            callback: function() {
                 myscope.backToDefaultStore(myscope);
-                myscope.setSideMenuButtonText(); 
+                myscope.setSideMenuButtonText();
                 //loadStore to toolbar
-                var toolbar = myscope.getTicketPanel().getDockedItems()[1];                
-                toolbar.getStore().proxy.url = 'ticket/'+urlSimples;
+                var toolbar = myscope.getTicketPanel().getDockedItems()[1];
+                toolbar.getStore().proxy.url = 'ticket/' + urlSimples;
                 toolbar.getStore().load({
-                    params:{
-                        user: Helpdesk.Globals.user          
+                    params: {
+                        user: Helpdesk.Globals.user
                     },
-                    callback:function(){
+                    callback: function() {
                         toolbar.getStore().proxy.url = 'ticket';
                     }
                 });
             }
         });
-        
+
     },
-    
-    downloadFile:function(fileId){
+    downloadFile: function(fileId) {
         Ext.core.DomHelper.append(document.body, {
-            tag : 'iframe',
-            id : 'downloadIframe',
-            style : 'display:none;',
-            src : 'ticket/files/'+fileId
+            tag: 'iframe',
+            id: 'downloadIframe',
+            style: 'display:none;',
+            src: 'ticket/files/' + fileId
         });
     },
     submitValues: function(multiupload) {
@@ -903,7 +911,7 @@ Ext.define('Helpdesk.controller.Ticket', {
         var ticketView = scope.getTicketView();
         if (multiupload.filesListArchive.length > 0) {
             var time = new Date().getTime();
-            var userLogadoText = Ext.DomHelper.append(Ext.getBody(),'<input type="text" name="username" value="'+Helpdesk.Globals.user+'">');
+            var userLogadoText = Ext.DomHelper.append(Ext.getBody(), '<input type="text" name="username" value="' + Helpdesk.Globals.user + '">');
             //Criação do form para upload de arquivos
             var formId = 'fileupload-form-' + time;
             var formEl = Ext.DomHelper.append(Ext.getBody(), '<form id="' + formId + '" method="POST" action="ticket/files" enctype="multipart/form-data" class="x-hide-display"></form>');
@@ -911,26 +919,25 @@ Ext.define('Helpdesk.controller.Ticket', {
             Ext.each(multiupload.filesListArchive, function(fileField) {
                 formEl.appendChild(fileField);
             });
-            
-            
-            var form = $("#"+formId);
+
+            var form = $("#" + formId);
             form.ajaxForm({
                 beforeSend: function() {
-                    
+
                 },
-                uploadProgress: function(event, position, total, percentComplete) {                    
-                    ticketView.setLoading('Uploading Files ... '+percentComplete+'%');
+                uploadProgress: function(event, position, total, percentComplete) {
+                    ticketView.setLoading('Uploading Files ... ' + percentComplete + '%');
                 },
                 success: function() {
-                                      
+
                 },
-                complete: function(xhr) {                    
+                complete: function(xhr) {
                     var responseJSON = Ext.decode(xhr.responseText);
-                    if(responseJSON.success){                        
+                    if (responseJSON.success) {
                         ticketView.setLoading('Saving Ticket ...');
                         scope.saveTicket();
                     }
-                    else{
+                    else {
                         ticketView.setLoading(false);
                         console.info("ERRO UPLOAD FILE");
                     }
@@ -940,9 +947,9 @@ Ext.define('Helpdesk.controller.Ticket', {
             //Clear Fields
             multiupload.filesListArchive.length = 0;
             multiupload.fileslist.length = 0;
-            multiupload.doLayout();            
+            multiupload.doLayout();
         }
-        else{
+        else {
             ticketView.setLoading('Saving Ticket ...');
             scope.saveTicket();
         }

@@ -19,6 +19,7 @@ import java.security.AccessController;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
@@ -236,8 +237,9 @@ public class TicketController {
 
         if (!(ticket.getId() == null)) {
             olderTicket = ticketService.findById(ticket.getId());
+        } else {
+            ticket.setStartDate(new Date());
         }
-
         ticket = ticketService.save(ticket);
         TicketFile ticketFile = null;
         for (File file : filesToSave) {

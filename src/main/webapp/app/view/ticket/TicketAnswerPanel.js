@@ -10,8 +10,7 @@ Ext.define('Helpdesk.view.ticket.TicketAnswerPanel', {
     collapsed:true,
     hideCollapseTool:true,
     floatable:false,  
-    cls:'panel-answer',
-    
+    cls:'panel-answer',    
    listeners: {
       afterrender: function(panel) {
         panel.header.el.on('click', function() {

@@ -6,6 +6,8 @@
 
 package com.br.helpdesk.model;
 
+import java.util.Calendar;
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,6 +18,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  *
@@ -43,6 +47,11 @@ public class TicketAnswer {
     @ManyToOne
     @JoinColumn(name="USER_ID",nullable = false)
     private User user;
+    
+    @Basic
+    @Column(name="DATE_CREATION",nullable = true)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateCreation;
 
     public User getUser() {
         return user;
@@ -75,7 +84,13 @@ public class TicketAnswer {
     public void setDescription(String description) {
         this.description = description;
     }
-    
-    
+
+    public Date getDateCreation() {
+        return dateCreation;
+    }
+
+    public void setDateCreation(Date dateCreation) {
+        this.dateCreation = dateCreation;
+    }   
     
 }

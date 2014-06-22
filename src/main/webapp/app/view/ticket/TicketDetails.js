@@ -151,6 +151,7 @@ Ext.define('Helpdesk.view.ticket.TicketDetails',{
                 },       
                 {
                     xtype:'text',
+                    itemId: 'txtNewAnswer',
                     text:translations.TICKET_NEW_ANSWER,
                     padding:'20 0 0 0',
                     baseCls:'bold-words'
@@ -204,7 +205,7 @@ Ext.define('Helpdesk.view.ticket.TicketDetails',{
                         },                        
                         {
                             xtype:'button',                            
-                            text:translations.OPEN_TICKET,               
+                            text:translations.RE_OPEN_TICKET,               
                             id:'btnOpenTkt',
                             width:130,                            
                             baseCls:'btn-grey'                           

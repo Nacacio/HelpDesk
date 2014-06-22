@@ -6,7 +6,8 @@ Ext.define('Helpdesk.model.TicketAnswer', {
         {name: 'ticketId'}, 
         {name: 'user'},
         {name: 'userId'},   
-        {name: 'description'},    
+        {name: 'description'},  
+        {name: 'dateCreation'},
         {name: 'userName', mapping: 'user.name',persist: false}
     ]
 });

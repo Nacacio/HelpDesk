@@ -30,12 +30,12 @@ public class Ticket {
 
     @Basic
     @Column(name="START_DATE",nullable = false)
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date startDate;
 
     @Basic
     @Column(name="END_DATE",nullable = true)
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date endDate;
 
     @Lob

@@ -58,7 +58,7 @@ Ext.define('Helpdesk.controller.TicketAnswer', {
     },
     addNewAnswerInPanel: function(answer, panel) {
         var resposta = Ext.create('Helpdesk.view.ticket.TicketAnswerPanel', {
-            title: Helpdesk.Globals.userLogged.name
+            title: '<div class="div-title-answer"><p align="left">'+Helpdesk.Globals.userLogged.name+'</p><p class="date-title-answer">'+1234+'</p></div>' //Helpdesk.Globals.userLogged.name
         });
         resposta.down('label#corpo').text = answer.data.description;
         panel.items.add(resposta);

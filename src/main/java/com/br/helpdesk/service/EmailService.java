@@ -226,7 +226,7 @@ public class EmailService {
     }
 
     private String contentNewTicket(String assunto, String categoria, String observacoes, String passos) {
-        String html = "<!DOCTYPE html>"
+        String html = "#####<!DOCTYPE html>"
                 + "<html>"
                 + "<head>"
                 + "<meta charset='UTF-8\'>"

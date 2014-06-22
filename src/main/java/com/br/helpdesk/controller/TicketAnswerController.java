@@ -13,6 +13,7 @@ import com.br.helpdesk.repository.UserRepository;
 import com.br.helpdesk.service.EmailService;
 import com.br.helpdesk.service.TicketAnswerService;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -110,6 +111,7 @@ public class TicketAnswerController {
         answer.setDescription(jSONObject.getString("description"));
         answer.setTicket(ticket);
         answer.setUser(userAnswer);
+        answer.setDateCreation(new Date());
         answerService.save(answer);
 
         emailService.sendEmailNewAnswer(answer, userAnswer, emails);
