@@ -22,10 +22,70 @@ Ext.define('Helpdesk.controller.TicketAnswer', {
             selector: 'ticketdetails'
         }
     ],
+    saveNewAnswer: function(button, e, options) {
+        
+        var panel = button.up('container');        
+        var form = panel.up('form');        
+        var tktDetails = form.up();        
+        var multiupload = tktDetails.down('form').down('multiupload');
+        this.submitValues(button, multiupload);
+    },
+    submitValues: function(button, multiupload) {
+        var scope = this;
+
+        var panel = button.up('container');
+        var form = panel.up('form');
+        var txtNewAnswer = form.down('textarea#tktNewAnswer');
+
+        if (multiupload.filesListArchive.length > 0) {
+            var time = new Date().getTime();
+            var userLogadoText = Ext.DomHelper.append(Ext.getBody(), '<input type="text" name="username" value="' + Helpdesk.Globals.user + '">');
+            //Criação do form para upload de arquivos
+            var formId = 'fileupload-form-' + time;
+            var formEl = Ext.DomHelper.append(Ext.getBody(), '<form id="' + formId + '" method="POST" action="ticket/files" enctype="multipart/form-data" class="x-hide-display"></form>');
+            formEl.appendChild(userLogadoText);
+            Ext.each(multiupload.filesListArchive, function(fileField) {
+                formEl.appendChild(fileField);
+            });
+
+            var form = $("#" + formId);
+            form.ajaxForm({
+                beforeSend: function() {
+
+                },
+                uploadProgress: function(event, position, total, percentComplete) {
+                    txtNewAnswer.setLoading(translations.UPLOADING_FILES + percentComplete + '%');
+                },
+                success: function() {
+
+                },
+                complete: function(xhr) {
+                    var responseJSON = Ext.decode(xhr.responseText);
+                    if (responseJSON.success) {
+                        txtNewAnswer.setLoading(false);
+                        scope.saveAnswer(button);
+                    }
+                    else {
+                        txtNewAnswer.setLoading(false);
+                        console.info("ERRO UPLOAD FILE");
+                    }
+                }
+            });
+            form.submit();
+            //Clear Fields
+            multiupload.filesListArchive.length = 0;
+            multiupload.fileslist.length = 0;
+            multiupload.doLayout();
+        }
+        else {
+            scope.saveAnswer(button);
+        }
+
+    },
     /**
      * Salva uma nova resposta para o ticket
      */
-    saveNewAnswer: function(button, e, options) {
+    saveAnswer: function(button, e, options) {
         var scope = this;
         var panel = button.up('container');
         var form = panel.up('form');
@@ -57,22 +117,60 @@ Ext.define('Helpdesk.controller.TicketAnswer', {
         }
     },
     addNewAnswerInPanel: function(answer, panel) {
-        var resposta = Ext.create('Helpdesk.view.ticket.TicketAnswerPanel', {
-            title: '<div class="div-title-answer"><p align="left">'+Helpdesk.Globals.userLogged.name+'</p><p class="date-title-answer">'+1234+'</p></div>' //Helpdesk.Globals.userLogged.name
-        });
-        resposta.down('label#corpo').text = answer.data.description;
-        panel.items.add(resposta);
-        panel.doLayout();
-        var answers = panel.items;
-        for (var i = 0; i < answers.length; i++) {
-            if (i === answers.length - 1) {
-                answers.get(i).expand(true);
-                answers.get(i).el.setStyle('margin','0 0 10px 0');
-            } else {
-                answers.get(i).collapse(true);
-                answers.get(i).el.setStyle('margin','0 0 0 0');
+
+        var answerStore = this.getTicketAnswersStore();
+        answerStore.proxy.url = 'ticket-answer/find-by-ticket/' + answer.data.ticketId;
+        answerStore.load({
+            callback: function() {
+                var dateTemp = new Date(answer.data.ticket.startDate);
+                dateTemp = Ext.Date.format(dateTemp, translations.FORMAT_DATE_TIME);
+                panel.removeAll();
+
+                var resposta = Ext.create('Helpdesk.view.ticket.TicketAnswerPanel', {
+                    title: '<div class="div-title-answer"><p align="left">' + answer.data.ticket.user.name + '</p><p class="date-title-answer">' + dateTemp + '</p></div>'
+                });
+                resposta.down('label#corpo').text = answer.data.description;
+
+                panel.items.add(resposta);
+                for (i = 0; i < answerStore.getCount(); i++) {
+                    var answerTemp = answerStore.data.items[i].data;
+                    var name = answerTemp.user.name;
+                    dateTemp = new Date(answerTemp.dateCreation);
+                    var date = Ext.Date.format(dateTemp, translations.FORMAT_DATE_TIME);
+
+                    resposta = Ext.create('Helpdesk.view.ticket.TicketAnswerPanel', {
+                        title: '<div class="div-title-answer"><p align="left">' + name + '</p><p class="date-title-answer">' + date + '</p></div>'
+                    });
+                    resposta.down('label#corpo').text = answerTemp.description;
+                    panel.items.add(resposta);
+                }
+                panel.doLayout();
+                var answers = panel.items;
+                var itemsLength = answers.length;
+                if (itemsLength > 0) {
+                    answers.items[itemsLength - 1].expand(true);
+                    answers.items[itemsLength - 1].el.setStyle('margin', '0 0 10px 0');
+                }
+
             }
-        }
+        });
+
+//        var resposta = Ext.create('Helpdesk.view.ticket.TicketAnswerPanel', {
+//            title: '<div class="div-title-answer"><p align="left">' + Helpdesk.Globals.userLogged.name + '</p><p class="date-title-answer">' + 1234 + '</p></div>' //Helpdesk.Globals.userLogged.name
+//        });
+//        resposta.down('label#corpo').text = answer.data.description;
+//        panel.items.add(resposta);
+//        panel.doLayout();
+//        var answers = panel.items;
+//        for (var i = 0; i < answers.length; i++) {
+//            if (i === answers.length - 1) {
+//                answers.get(i).expand(true);
+//                answers.get(i).el.setStyle('margin', '0 0 10px 0');
+//            } else {
+//                answers.get(i).collapse(true);
+//                answers.get(i).el.setStyle('margin', '0 0 0 0');
+//            }
+//        }
     }
 
 });

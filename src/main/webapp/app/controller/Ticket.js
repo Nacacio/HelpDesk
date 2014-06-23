@@ -263,7 +263,8 @@ Ext.define('Helpdesk.controller.Ticket', {
             return 'ticket/closed';
         } else {
             return 'ticket/all';
-        }   },
+        }
+    },
     changeCmbSearch: function(field, newValue, oldValue, eOpts) {
         //The method will be executed only if the new value have at least 3 characters
         var scope = this;
@@ -323,13 +324,13 @@ Ext.define('Helpdesk.controller.Ticket', {
             });
         }
     },
-   /**
-    * Finds all strings that matches the searched value in each grid cells.
-    * @param {type} searchValue
-    * @param {type} store
-    * @param {type} grid
-    * @returns {undefined}
-    */
+    /**
+     * Finds all strings that matches the searched value in each grid cells.
+     * @param {type} searchValue
+     * @param {type} store
+     * @param {type} grid
+     * @returns {undefined}
+     */
     onTextFieldChange: function(searchValue, store, grid) {
 
         var tagsRe = /<[^>]*>/gm;
@@ -521,7 +522,6 @@ Ext.define('Helpdesk.controller.Ticket', {
         var record = form.getRecord();
         var values = form.getValues();
 
-
         record.set(values);
         record.data.startDate = new Date();
         record.data.endDate = null;
@@ -627,7 +627,6 @@ Ext.define('Helpdesk.controller.Ticket', {
      * @returns {undefined}
      */
     ticketClicked: function(grid, record, item, index, e, eOpts) {
-        //this.getTicketCardContainer().setLoading(translations.LOADING);
         var ticketView = this.getTicketCardContainer().getLayout().setActiveItem(Helpdesk.Globals.ticket_details);
         ticketView.down('form#ticketMainView').loadRecord(Ext.create('Helpdesk.model.Ticket'));
         this.setValuesFromView(ticketView, record);
@@ -668,13 +667,11 @@ Ext.define('Helpdesk.controller.Ticket', {
                 ticketView.down('text#tktEstimatedTime').setText(translations.NO_DEADLINE_DEFINED);
             }
 
-
             if (record.data.priorityName !== null && record.data.priorityName !== '') {
                 ticketView.down('text#tktPriority').setText(record.data.priorityName);
             } else {
                 ticketView.down('text#tktPriority').setText(translations.NO_PRIORITY);
             }
-
 
             if (record.data.responsibleName !== null && record.data.responsibleName !== '') {
                 ticketView.down('text#tktResponsible').setText(record.data.responsibleName);
@@ -690,9 +687,9 @@ Ext.define('Helpdesk.controller.Ticket', {
             var answerStore = this.getTicketAnswersStore();
             answerStore.proxy.url = 'ticket-answer/find-by-ticket/' + record.data.id;
             answerStore.load({
-                callback: function() {                  
+                callback: function() {
                     var resposta = Ext.create('Helpdesk.view.ticket.TicketAnswerPanel', {
-                        title:'<span align="left" class="div-title-answer"><p align="left">'+record.data.userName+'</p><p class="date-title-answer">'+dateTemp+'</p></span>'
+                        title: '<div class="div-title-answer"><p align="left">' + record.data.userName + '</p><p class="date-title-answer">' + dateTemp + '</p></div>'
                     });
                     resposta.down('label#corpo').text = record.data.description;
                     resposta.down('hiddenfield#id').text = record.data.id;
@@ -703,9 +700,10 @@ Ext.define('Helpdesk.controller.Ticket', {
                         var answerTemp = answerStore.data.items[i].data;
                         var name = answerTemp.user.name;
                         dateTemp = new Date(answerTemp.dateCreation);
-                        var date = Ext.Date.format(dateTemp, translations.FORMAT_DATE_TIME);                        
+                        var date = Ext.Date.format(dateTemp, translations.FORMAT_DATE_TIME);
+
                         resposta = Ext.create('Helpdesk.view.ticket.TicketAnswerPanel', {
-                            title:'<span align="left" class="div-title-answer"><p align="left">'+name+'</p><p class="date-title-answer">'+date+'</p></span>'   
+                            title: '<div class="div-title-answer"><p align="left">' + name + '</p><p class="date-title-answer">' + date + '</p></div>'
                         });
                         resposta.down('label#corpo').text = answerTemp.description;
                         resposta.down('hiddenfield#id').text = record.data.id;

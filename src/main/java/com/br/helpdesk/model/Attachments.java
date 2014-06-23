@@ -11,9 +11,9 @@ import org.codehaus.jackson.annotate.JsonAutoDetect;
  To change this template use TicketFile | Settings | TicketFile Templates.
  */
 @Entity
-@Table(name = "TICKET_FILE")
+@Table(name = "ATTACHMENTS")
 @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.ANY, fieldVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.ANY)
-public class TicketFile{
+public class Attachments{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -1,7 +1,5 @@
 package com.br.helpdesk.service;
 
-import com.br.helpdesk.model.Category;
-import com.br.helpdesk.model.Client;
 import com.br.helpdesk.model.Ticket;
 import com.br.helpdesk.model.User;
 import com.br.helpdesk.repository.TicketRepository;

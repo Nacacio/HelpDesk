@@ -5,13 +5,16 @@
  */
 package com.br.helpdesk.controller;
 
+import com.br.helpdesk.model.Attachments;
 import com.br.helpdesk.model.Ticket;
 import com.br.helpdesk.model.TicketAnswer;
 import com.br.helpdesk.model.User;
 import com.br.helpdesk.repository.TicketRepository;
 import com.br.helpdesk.repository.UserRepository;
+import com.br.helpdesk.service.AttachmentsService;
 import com.br.helpdesk.service.EmailService;
 import com.br.helpdesk.service.TicketAnswerService;
+import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -55,6 +58,13 @@ public class TicketAnswerController {
         this.answerService = service;
     }
 
+    @Autowired
+    private AttachmentsService attachmentsService;
+
+    public void setFileService(AttachmentsService service) {
+        this.attachmentsService = service;
+    }
+
     @Resource
     private TicketRepository ticketRepository;
 
@@ -67,8 +77,8 @@ public class TicketAnswerController {
         return answerService.findAll();
 
     }
-    
-        @Autowired
+
+    @Autowired
     private EmailService emailService;
 
     public void setEmailService(EmailService service) {
@@ -77,13 +87,15 @@ public class TicketAnswerController {
 
     @RequestMapping(value = {"", "/{id}"}, method = {RequestMethod.PUT, RequestMethod.POST})
     @ResponseBody
-    public TicketAnswer save(@RequestBody String ticketAnwString) throws ParseException {
+    public TicketAnswer save(@RequestBody String ticketAnwString) throws ParseException, IOException {
 
         JSONObject jSONObject = new JSONObject(ticketAnwString);
         List<String> emails = new ArrayList<String>();
 
         Ticket ticket = ticketRepository.findOne(jSONObject.getLong("ticketId"));
         User userAnswer = userRepository.findOne(jSONObject.getLong("userId"));
+
+        List<File> filesToSave = attachmentsService.getAttachmentsFromUser(userAnswer.getUserName());
 
         User userTicket = ticket.getUser();
         User userResponsible = ticket.getResponsible();
@@ -108,11 +120,23 @@ public class TicketAnswerController {
         }
 
         TicketAnswer answer = new TicketAnswer();
+
         answer.setDescription(jSONObject.getString("description"));
         answer.setTicket(ticket);
         answer.setUser(userAnswer);
         answer.setDateCreation(new Date());
         answerService.save(answer);
+
+        Attachments attachment = null;
+        for (File file : filesToSave) {
+            //file.renameTo(file.getName().replace(username, username));
+            attachment = new Attachments();
+            attachment.setName(file.getName());
+            attachment.setByteArquivo(attachmentsService.getBytesFromFile(file));
+            attachment.setTicketAnswer(answer);
+            attachmentsService.save(attachment);
+            file.delete();
+        }
 
         emailService.sendEmailNewAnswer(answer, userAnswer, emails);
 

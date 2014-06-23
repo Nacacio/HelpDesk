@@ -1,6 +1,9 @@
 Ext.define('Helpdesk.view.ticket.TicketDetails',{
     extend:'Ext.container.Container',    
-    alias:'widget.ticketdetails',    
+    alias:'widget.ticketdetails', 
+    requires: [
+      'Helpdesk.util.MultiUpload'  
+    ],
     bodyPadding: 5,
     layout: {
         type: 'vbox',
@@ -162,6 +165,10 @@ Ext.define('Helpdesk.view.ticket.TicketDetails',{
                     height:100,
                     width:800,
                     padding:'5 0 15 0'            
+                },                
+                {
+                    xtype: 'multiupload',
+                    padding: '0 0 10 0'
                 },
                 {
                     xtype:'panel',

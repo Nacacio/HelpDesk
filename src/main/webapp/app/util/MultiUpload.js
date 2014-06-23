@@ -147,7 +147,6 @@ Ext.define("Helpdesk.util.MultiUpload", {
             me.reset();
         }
 
-
         return isValid;
-    }    
+    }
 });

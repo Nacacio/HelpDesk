@@ -83,7 +83,7 @@ translations = {
     FIRST_TIME_REQUESTING_SERVICE: 'Solicitando Atendimento pela primeira vez?',
     FROM: 'de',
     FORMAT_DATE: 'pt-BR',
-    FORMAT_DATE_TIME: 'd/m/Y H:m',
+    FORMAT_DATE_TIME: 'd/m/Y H:i',
     //############################################## [ G ] ##############################################//
 
     GROUP: 'Grupo',
@@ -264,6 +264,7 @@ translations = {
     USER: 'Usuário',
     USERS: 'Usuários',
     USER_IN_USE: 'Usuário já existe.',
+    UPLOADING_FILES: 'Enviando arquivos..',
     UNIT: 'unidade',
     //############################################## [ V ] ##############################################//
 
