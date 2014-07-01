@@ -21,4 +21,9 @@ public interface AttachmentsRepository extends CrudRepository<Attachments,Long> 
     )            
     List<Attachments> findByTicket(@Param("ticketId") Long ticketId);
     
+    @Query(
+            "Select t FROM Attachments t WHERE t.ticketAnswer.id= :answerId"
+    )            
+    List<Attachments> findByAnswer(@Param("answerId") Long answerId);
+    
 }

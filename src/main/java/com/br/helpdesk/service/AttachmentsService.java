@@ -53,6 +53,10 @@ public class AttachmentsService {
         return repository.findByTicket(idTicket);
     }
 
+    public List<Attachments> findByAnswer(Long idAnswer) {
+        return repository.findByAnswer(idAnswer);
+    }
+
     public File createTempDirectory() throws IOException {
         final File temp;
 
@@ -72,17 +76,24 @@ public class AttachmentsService {
     public String getListFilesJSON(List<Attachments> attachments) {
         if (attachments != null && attachments.size() > 0) {
             String retornoJSON = "[";
-            for (Attachments attachment : attachments) {
+            for (int i = 0; i < attachments.size(); i++) {
+                if (i != 0) {
+                    retornoJSON += ",";
+                }
                 retornoJSON += "{";
-                retornoJSON += "fileId:'" + attachment.getId() + "', ";
-                retornoJSON += "fileName:'" + attachment.getName() + "', ";
-                retornoJSON += "fileTicketId:'" + attachment.getTicket().getId() + "', ";
-                if (attachment.getTicketAnswer() != null) {
-                    retornoJSON += "fileTicketAnswerId:'" + attachment.getTicketAnswer().getId() + "'";
+                retornoJSON += "fileId:'" + attachments.get(i).getId() + "', ";
+                retornoJSON += "fileName:'" + attachments.get(i).getName() + "', ";
+                if (attachments.get(i).getTicket() != null) {
+                    retornoJSON += "fileTicketId:'" + attachments.get(i).getTicket().getId() + "',";
+                } else {
+                    retornoJSON += "fileTicketId:'',";
+                }
+                if (attachments.get(i).getTicketAnswer() != null) {
+                    retornoJSON += "fileTicketAnswerId:'" + attachments.get(i).getTicketAnswer().getId() + "'";
                 } else {
                     retornoJSON += "fileTicketAnswerId:''";
                 }
-                retornoJSON += "},";
+                retornoJSON += "}";
             }
             retornoJSON += "]";
 

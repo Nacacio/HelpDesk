@@ -4,7 +4,6 @@ import com.br.helpdesk.model.User;
 import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.query.Param;
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,8 +14,8 @@ import org.springframework.data.repository.query.Param;
  */
 public interface UserRepository extends CrudRepository<User,Long> {
     User findByUserName(String username);
+    User findByEmail(String email);
     
     @Query("Select u FROM User u WHERE u.userGroup.id=1")
-    public List<User> findByUserAdmin();
-    
+    public List<User> findByUserAdmin();    
 }

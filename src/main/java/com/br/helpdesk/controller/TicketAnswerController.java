@@ -14,16 +14,14 @@ import com.br.helpdesk.repository.UserRepository;
 import com.br.helpdesk.service.AttachmentsService;
 import com.br.helpdesk.service.EmailService;
 import com.br.helpdesk.service.TicketAnswerService;
+import com.br.helpdesk.service.TicketService;
+import com.br.helpdesk.service.UserService;
 import java.io.File;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import javax.annotation.Resource;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletResponse;
 import org.json.JSONObject;
@@ -65,17 +63,18 @@ public class TicketAnswerController {
         this.attachmentsService = service;
     }
 
-    @Resource
-    private TicketRepository ticketRepository;
+    @Autowired
+    private TicketService ticketService;
+    
+    public void setTicketService(TicketService service) {
+        this.ticketService = service;
+    }
 
-    @Resource
-    private UserRepository userRepository;
-
-    @RequestMapping(method = RequestMethod.GET)
-    public @ResponseBody
-    Iterable<TicketAnswer> findAll() {
-        return answerService.findAll();
-
+    @Autowired
+    private UserService userService;
+    
+    public void setUserService(UserService service) {
+        this.userService = service;
     }
 
     @Autowired
@@ -84,44 +83,40 @@ public class TicketAnswerController {
     public void setEmailService(EmailService service) {
         this.emailService = service;
     }
+    
+    @RequestMapping(method = RequestMethod.GET)
+    public @ResponseBody
+    Iterable<TicketAnswer> findAll() {
+        return answerService.findAll();
+    }
 
     @RequestMapping(value = {"", "/{id}"}, method = {RequestMethod.PUT, RequestMethod.POST})
     @ResponseBody
     public TicketAnswer save(@RequestBody String ticketAnwString) throws ParseException, IOException {
 
         JSONObject jSONObject = new JSONObject(ticketAnwString);
+
+        Long ticketId = jSONObject.getLong("ticketId");
+        Long userId = jSONObject.getLong("userId");
+        String respostaString = jSONObject.getString("description");
+        return saveNewAnswer(ticketId, userId, respostaString);
+    }
+
+    public TicketAnswer saveNewAnswer(Long idTicket, Long userId, String answerDescription) throws ParseException, IOException {
+
         List<String> emails = new ArrayList<String>();
 
-        Ticket ticket = ticketRepository.findOne(jSONObject.getLong("ticketId"));
-        User userAnswer = userRepository.findOne(jSONObject.getLong("userId"));
+        Ticket ticket = ticketService.findById(idTicket);
+        User userAnswer = userService.findById(userId);
 
         List<File> filesToSave = attachmentsService.getAttachmentsFromUser(userAnswer.getUserName());
 
         User userTicket = ticket.getUser();
         User userResponsible = ticket.getResponsible();
 
-        if (userTicket != null && userResponsible != null) {
-            if (userAnswer.getId().equals(userTicket.getId())) {
-                emails.add(userResponsible.getEmail());
-            } else if (userAnswer.getId().equals(userResponsible.getId())) {
-                emails.add(userTicket.getEmail());
-            } else {
-                emails.add(userResponsible.getEmail());
-                emails.add(userTicket.getEmail());
-            }
-        } else if (userTicket != null) {
-            if (!userAnswer.getId().equals(userTicket.getId())) {
-                emails.add(userTicket.getEmail());
-            }
-        } else if (userResponsible != null) {
-            if (userAnswer.getId().equals(userResponsible.getId())) {
-                emails.add(userResponsible.getEmail());
-            }
-        }
-
         TicketAnswer answer = new TicketAnswer();
 
-        answer.setDescription(jSONObject.getString("description"));
+        answer.setDescription(answerDescription);
         answer.setTicket(ticket);
         answer.setUser(userAnswer);
         answer.setDateCreation(new Date());
@@ -137,8 +132,12 @@ public class TicketAnswerController {
             attachmentsService.save(attachment);
             file.delete();
         }
-
-        emailService.sendEmailNewAnswer(answer, userAnswer, emails);
+        
+        emails = emailService.getListEmailsToSend(ticket, null, answer);
+        
+        if(emails.size()>0){
+            emailService.sendEmailNewAnswer(answer, userAnswer, emails);
+        }
 
         return answer;
     }
@@ -146,7 +145,7 @@ public class TicketAnswerController {
     @RequestMapping(value = "/find-by-ticket/{ticketId}", method = RequestMethod.GET)
     public @ResponseBody
     List<TicketAnswer> findAnswersByTicket(@PathVariable String ticketId) {
-        Ticket ticket = ticketRepository.findOne(Long.parseLong(ticketId));
+        Ticket ticket = ticketService.findById(Long.parseLong(ticketId));
         return answerService.findAnswersByTicket(ticket);
     }
 

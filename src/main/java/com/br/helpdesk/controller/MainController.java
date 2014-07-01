@@ -1,5 +1,6 @@
 package com.br.helpdesk.controller;
 
+import com.Consts;
 import com.br.helpdesk.model.Client;
 import com.br.helpdesk.model.User;
 import com.br.helpdesk.model.UserGroup;
@@ -26,10 +27,10 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/")
 public class MainController {
 
-    public static final String BAD_CREDENTIALS = "badcredentials";
-    public static final String CREDENTIALS_EXPIRED = "credentialsexpired";
-    public static final String ACCOUNT_LOCKED = "accountlocked";
-    public static final String ACCOUNT_DISABLED = "accountdisabled";
+    //public static final String BAD_CREDENTIALS = "badcredentials";
+   // public static final String CREDENTIALS_EXPIRED = "credentialsexpired";
+   // public static final String ACCOUNT_LOCKED = "accountlocked";
+   // public static final String ACCOUNT_DISABLED = "accountdisabled";
     @Resource
     private UserRepository userRepository;
     @Resource
@@ -47,7 +48,7 @@ public class MainController {
         if(clients == null || clients.size() == 0){
             //CRIAR NOVO CLIENT
             client = new Client();
-            client.setName((String)jsObject.get("client"));
+            client.setName((String)jsObject.get(Consts.CLIENT));
             client = clientRepository.save(client);
         }
         else{
@@ -58,11 +59,11 @@ public class MainController {
         //2 - CLIENTE
         UserGroup ug = userGroupRepository.findOne(new Long(2));
         
-        newUsuario.setName((String)jsObject.get("name"));
-        newUsuario.setEmail((String)jsObject.get("email"));
+        newUsuario.setName((String)jsObject.get(Consts.NAME));
+        newUsuario.setEmail((String)jsObject.get(Consts.EMAIL));
         newUsuario.setIsEnabled(true);
-        newUsuario.setPassword((String)jsObject.get("password"));
-        newUsuario.setUserName((String)jsObject.get("userName"));
+        newUsuario.setPassword((String)jsObject.get(Consts.PASSWORD));
+        newUsuario.setUserName((String)jsObject.get(Consts.USERNAME));
         newUsuario.setClient(client);
         newUsuario.setUserGroup(ug);
         
@@ -83,17 +84,17 @@ public class MainController {
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView getHome() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        ModelAndView modelAndView = new ModelAndView("home");
+        ModelAndView modelAndView = new ModelAndView(Consts.HOME);
         User user = userRepository.findByUserName(auth.getName());
         JSONObject jsObject = new JSONObject(user);
         
-        modelAndView.addObject("user", auth.getName());
-        modelAndView.addObject("logged", true);
-        modelAndView.addObject("client", user.getClient().getId());
-        modelAndView.addObject("email", user.getEmail());
-        modelAndView.addObject("name", user.getName());
-        modelAndView.addObject("userGroup", user.getUserGroup().getId());
-        modelAndView.addObject("userLogged", jsObject.toString().replace("\"", "\'"));
+        modelAndView.addObject(Consts.USER, auth.getName());
+        modelAndView.addObject(Consts.LOGGED, true);
+        modelAndView.addObject(Consts.CLIENT, user.getClient().getId());
+        modelAndView.addObject(Consts.EMAIL, user.getEmail());
+        modelAndView.addObject(Consts.NAME, user.getName());
+        modelAndView.addObject(Consts.USER_GROUP, user.getUserGroup().getId());
+        modelAndView.addObject(Consts.USER_LOGGED, jsObject.toString().replace("\"", "\'"));
         
         return modelAndView;
     }
@@ -101,17 +102,17 @@ public class MainController {
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public ModelAndView getLogin() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        ModelAndView modelAndView = new ModelAndView("login");
-        if (!auth.getName().equals("anonymousUser")) {
+        ModelAndView modelAndView = new ModelAndView(Consts.LOGIN);
+        if (!auth.getName().equals(Consts.ANONYMOUS_USER)) {
             User user = userRepository.findByUserName(auth.getName());
-            modelAndView.addObject("user", auth.getName());
-            modelAndView.addObject("logged", true);
-            modelAndView.addObject("client", user.getClient().getId());
-            modelAndView.addObject("email", user.getEmail());
+            modelAndView.addObject(Consts.USER, auth.getName());
+            modelAndView.addObject(Consts.LOGGED, true);
+            modelAndView.addObject(Consts.CLIENT, user.getClient().getId());
+            modelAndView.addObject(Consts.EMAIL, user.getEmail());
         } else {
-            modelAndView.addObject("logged", false);
-            modelAndView.addObject("user", "anonymousUser");
-            modelAndView.addObject("client", "none");
+            modelAndView.addObject(Consts.LOGGED, false);
+            modelAndView.addObject(Consts.USER, Consts.ANONYMOUS_USER);
+            modelAndView.addObject(Consts.CLIENT, Consts.NONE);
         }
         return modelAndView;
     }

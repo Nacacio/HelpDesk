@@ -46,8 +46,7 @@ Ext.define('Helpdesk.view.ticket.NewTicket', {
             xtype: 'label',
             text: translations.NEW_TICKET,
             cls: 'title-new',
-            margin: '0 0 30 0'
-            
+            margin: '0 0 30 0'            
         },
         {
             layout: {

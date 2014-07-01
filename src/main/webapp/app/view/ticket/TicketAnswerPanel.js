@@ -5,28 +5,28 @@
  */
 Ext.define('Helpdesk.view.ticket.TicketAnswerPanel', {
     extend: 'Ext.panel.Panel',
-    alias: 'widget.ticketanswerpanel',    
-    collapsible:true,
-    collapsed:true,
-    hideCollapseTool:true,
-    floatable:false,  
-    cls:'panel-answer',    
-   listeners: {
-      afterrender: function(panel) {
-        panel.header.el.on('click', function() {
-            if (panel.collapsed) 
-            {
-                panel.expand();
-                panel.el.setStyle('margin','0 0 10px 0');
-            }
-            else {
-                panel.collapse();
-                panel.el.setStyle('margin','0 0 0 0');
-            }
-        });
-      }
+    alias: 'widget.ticketanswerpanel',
+    collapsible: true,
+    collapsed: true,
+    hideCollapseTool: true,
+    floatable: false,
+    cls: 'panel-answer',
+    listeners: {
+        afterrender: function(panel) {
+            panel.header.el.on('click', function() {
+                if (panel.collapsed)
+                {
+                    panel.expand();
+                    panel.el.setStyle('margin', '0 0 10px 0');
+                }
+                else {
+                    panel.collapse();
+                    panel.el.setStyle('margin', '0 0 0 0');
+                }
+            });
+        }
     },
-    items:[        
+    items: [
         {
             xtype: 'hiddenfield',
             itemId: 'id'
@@ -37,16 +37,34 @@ Ext.define('Helpdesk.view.ticket.TicketAnswerPanel', {
         },
         {
             xtype: 'label',
-            itemId: 'corpo'            
+            itemId: 'corpo'
         },
         {
-            xtype: 'container',
-            itemId: 'anexo',  
-            margin: '10 0 0 0',
-            layout: {
-                type: 'vbox'
-            }
+            layout: 'hbox',
+            border: 0,
+            hidden: true,
+            itemId: 'containerAttachments',
+            margin: '0 0 0 -30',
+            items: [
+                {
+                    xtype: 'label',
+                    text: translations.ATTACHMENTS,
+                    margin: '10 5 0 0'
+                },
+                {
+                    xtype: 'container',
+                    itemId: 'anexo',
+                    default:{
+                      class: 'shadow'      
+                    },
+                    margin: '10 0 0 0',
+                    layout: {
+                        type: 'vbox'
+                    }
+                }
+            ]
         }
+
     ]
 });
 

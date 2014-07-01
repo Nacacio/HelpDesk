@@ -15,7 +15,7 @@ translations = {
     AND_REQUEST_SERVICE: 'E solicite seu atendimento',
     AUTHENTICATING: 'Autenticando.. Por favor espere',
     AT: 'Em',
-    ATTACHMENTS: 'Anexos',
+    ATTACHMENTS: 'Anexos:',
     ATTACHMENT_FILE: 'Anexar arquivos...',
     ALREADY_ADDED: ' já foi adicionado!',
     AGENT: 'Agente',
@@ -24,7 +24,7 @@ translations = {
     BACK: 'Voltar',
     BAD_CREDENTIALS: 'Usuário e/ou Senha inválidos',
     BY: 'Por',
-    BUG: 'BUG',
+    BUG: 'Bug',
     //############################################## [ C ] ##############################################//
 
     CANCEL: 'Cancelar',
@@ -83,7 +83,7 @@ translations = {
     FIRST_TIME_REQUESTING_SERVICE: 'Solicitando Atendimento pela primeira vez?',
     FROM: 'de',
     FORMAT_DATE: 'pt-BR',
-    FORMAT_DATE_TIME: 'd/m/Y H:i',
+    FORMAT_DATE_TIME: 'd/m/Y H:i',    
     //############################################## [ G ] ##############################################//
 
     GROUP: 'Grupo',
@@ -94,6 +94,7 @@ translations = {
     HELP_AND_SUPPORT: 'Ajuda e suporte',
     HIGHLIGHT_CURRENT: 'Destaques atuais',
     HABILITADED_CATEGORIES: 'categorias habilitadas',
+    HIGH_PRIORITY: 'Prioridade Alta',
     //############################################## [ I ] ##############################################//
 
     ID: 'ID',
@@ -118,11 +119,13 @@ translations = {
     LOGIN_FAILED: 'O login falhou',
     LOGOUT: 'Sair',
     LATE: 'Atrasados',
+    LOW_PRIORITY: 'Prioridade Baixa',
     LOADING: 'Carregando..',
     //############################################## [ M ] ##############################################//
 
     MY_PROFILE: 'Meu perfil',
     MY_TICKETS: 'Meus Tickets',
+    MEDIUM_PRIORITY: 'Prioridade Média',
     MONTH: 'Mês',
     MONTH_1: 'Janeiro',
     MONTH_2: 'Fevereiro',
@@ -147,20 +150,19 @@ translations = {
     NO_RESPONSIBLE: 'Sem responsável',
     NEWS: 'Novidades',
     NO_CATEGORY: 'Sem categoria',
-    NO_PRIORITY:'Sem Prioridade',
-    NO_DEADLINE_DEFINED:'Sem prazo estimado',
-
+    NO_PRIORITY: 'Sem Prioridade',
+    NO_DEADLINE_DEFINED: 'Sem prazo estimado',
+    NUMBER_OF_TICKETS: 'Número de tickets',
     //############################################## [ O ] ##############################################//
 
     OPENED: 'Aberto',
     OPENED_TICKETS: 'Tickets Abertos',
     OBSERVATIONS: 'Observações',
     ON_GOING: 'Em andamento',
-    OPEN: 'Em aberto', 
+    OPEN: 'Em aberto',
     OPEN_FROM: 'Em aberto',
     OPEN_TO: 'Em aberto',
-    OPEN_TICKET:'Abrir ticket',
-
+    OPEN_TICKET: 'Abrir ticket',
     //############################################## [ P ] ##############################################//
 
     PASSWORD: 'Senha',
@@ -181,21 +183,20 @@ translations = {
     REQUIRED: 'Obrigatório',
     REPLY: 'Resposta',
     REPORTS: 'Relatórios',
-    RE_OPEN_TICKET:'Reabrir ticket',
+    RE_OPEN_TICKET: 'Reabrir ticket',
     REPORTS_BY_CATEGORY: 'Relatórios de tickets por categoria',
     REPORTS_BY_CLIENT: 'Relatórios de tickets por cliente',
     REPORTS_BY_ENTERPRISE: 'Relatórios de tickets por empresa',
     REPORTS_EXPORT_DATA: 'Exportar dados de tickets para Excel (xls)',
     REGISTERED_CLIENTS: 'clientes registrados',
     REQUIRED_ITENS_TICKETS: 'Todos os campos obrigatórios devem ser preenchidos',
-
-
     //############################################## [ S ] ##############################################//
 
     SAVE: 'Salvar',
     SAVED_WITH_SUCCESS: 'salvo(a) com sucesso',
     SAVING: 'Salvando...',
     SAVING_REPLY: 'Salvando resposta..',
+    SAVING_TICKET: 'Salvando ticket..',
     SECOND: 'Segundo',
     SESSION_TIMEOUT_TEXT: "Sua sessão irá automaticar expirar após 15 minutos de inatividade. Se sua sessão expirar, qualquer dado que não foi salvo será perdido e você será automaticamente redirecionado à tela de login</br></br> Se você quer continuar logado clique em no botão 'Continuar Logado' </br></br>",
     SESSION_TIMEOUT_WARNING: 'Alerta de tempo de sessão',
@@ -215,6 +216,7 @@ translations = {
     SEE: 'Ver',
     SELECT_A_CLIENT: 'Selecione um cliente',
     SELECT_A_USER: 'Selecione um usuário',
+    SHOW_ALL: '(Mostrar todas)',
     //############################################## [ T ] ##############################################//
 
     TICKETS: 'Tickets',
@@ -254,10 +256,8 @@ translations = {
     TO: 'a',
     TOTAL: 'Total',
     TICKETS_OPEN_OF_CLIENT: 'tickets abertos do cliente',
-    TICKET_CLOSED:'Ticket fechado',
-    TICKET_OPENED:'Ticket aberto',
-
-    
+    TICKET_CLOSED: 'Ticket fechado',
+    TICKET_OPENED: 'Ticket aberto',
     //############################################## [ U ] ##############################################//
 
     UPDATED_WITH_SUCCESS: 'atualizado(a) com sucesso',
@@ -266,6 +266,7 @@ translations = {
     USER_IN_USE: 'Usuário já existe.',
     UPLOADING_FILES: 'Enviando arquivos..',
     UNIT: 'unidade',
+    URGENT: 'Urgente',
     //############################################## [ V ] ##############################################//
 
 

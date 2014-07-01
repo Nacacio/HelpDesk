@@ -19,6 +19,10 @@ public class ConfigEmailService {
 
     @Resource
     private ConfigEmailRepository repository;
+    
+    public void setRepository(ConfigEmailRepository repository) {
+        this.repository = repository;
+    }
 
     public ConfigEmail findById(Long id) {
         return repository.findOne(id);

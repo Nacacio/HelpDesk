@@ -8,55 +8,55 @@ Ext.define('Helpdesk.view.ticket.EditTicket', {
     alias: 'widget.editticket',
     border: 0,
     layout: 'card',
-    width:800,
-    items:[
+    width: 800,
+    items: [
         {
-            xtype:'form',
-            bodyPadding:15,
-            layout:{
-                type:'vbox'
+            xtype: 'form',
+            bodyPadding: 15,
+            layout: {
+                type: 'vbox'
             },
             padding: '20 0 0 0',
-            items:[ 
+            items: [
                 {
-                    xtype:'container',
-                    baseCls:'bordless',                    
-                    layout:{
-                        type:'hbox'                      
+                    xtype: 'container',
+                    baseCls: 'bordless',
+                    layout: {
+                        type: 'hbox'
                     },
-                    items:[                        
+                    items: [
                         {
-                            xtype:'panel',                            
-                            baseCls:'bordless',                            
-                            items:[
+                            xtype: 'panel',
+                            baseCls: 'bordless',
+                            items: [
                                 {
-                                    xtype:'text',
-                                    text:translations.TICKET_CATEGORY,                                    
-                                    baseCls:'description-ticket-bold'
+                                    xtype: 'text',
+                                    text: translations.TICKET_CATEGORY,
+                                    baseCls: 'description-ticket-bold'
                                 },
                                 {
-                                    xtype:'text',
-                                    itemId:'tktCategory',                               
-                                    baseCls:'description-ticket',
+                                    xtype: 'text',
+                                    itemId: 'tktCategory',
+                                    baseCls: 'description-ticket',
                                     width: 250,
                                     height: 30
-                                }                               
+                                }
                             ]
                         },
                         {
-                            xtype:'panel',    
-                            baseCls:'bordless',
-                            padding:'0 0 0 200',
-                            items:[
+                            xtype: 'panel',
+                            baseCls: 'bordless',
+                            padding: '0 0 0 200',
+                            items: [
                                 {
-                                    xtype:'text',
-                                    text:translations.TICKET_ESTIMATED_TIME,
-                                    baseCls:'description-ticket-bold'
+                                    xtype: 'text',
+                                    text: translations.TICKET_ESTIMATED_TIME,
+                                    baseCls: 'description-ticket-bold'
                                 },
                                 {
-                                    xtype:'text',
-                                    itemId:'tktEstimatedTime',
-                                    baseCls:'description-ticket',   
+                                    xtype: 'text',
+                                    itemId: 'tktEstimatedTime',
+                                    baseCls: 'description-ticket',
                                     width: 250,
                                     height: 30,
                                     emptyText: translations.WITHOUT_DEADLINE
@@ -66,52 +66,52 @@ Ext.define('Helpdesk.view.ticket.EditTicket', {
                     ]
                 },
                 {
-                    xtype:'panel',
-                    width:770,
-                    height:1,  
-                    padding:'10 0 10 0'
+                    xtype: 'panel',
+                    width: 770,
+                    height: 1,
+                    padding: '10 0 10 0'
                 },
                 {
-                    xtype:'container',
-                    baseCls:'bordless',
-                    padding:'20 0 0 0',                    
-                    layout:{
-                        type:'hbox'
+                    xtype: 'container',
+                    baseCls: 'bordless',
+                    padding: '20 0 0 0',
+                    layout: {
+                        type: 'hbox'
                     },
-                    items:[
+                    items: [
                         {
-                            xtype:'panel',
-                            flex:1,
-                            baseCls:'bordless',
-                            items:[
+                            xtype: 'panel',
+                            flex: 1,
+                            baseCls: 'bordless',
+                            items: [
                                 {
-                                    xtype:'text',
-                                    text:translations.TICKET_PRIORITY,
-                                    baseCls:'description-ticket-bold'
+                                    xtype: 'text',
+                                    text: translations.TICKET_PRIORITY,
+                                    baseCls: 'description-ticket-bold'
                                 },
                                 {
-                                    xtype:'text',
-                                    itemId:'tktPriority',
-                                    baseCls:'description-ticket',
+                                    xtype: 'text',
+                                    itemId: 'tktPriority',
+                                    baseCls: 'description-ticket',
                                     width: 250,
                                     height: 30
                                 }
                             ]
                         },
                         {
-                            xtype:'panel',
-                            padding:'0 0 0 200',
-                            baseCls:'bordless',                            
-                            items:[
+                            xtype: 'panel',
+                            padding: '0 0 0 200',
+                            baseCls: 'bordless',
+                            items: [
                                 {
-                                    xtype:'text',
-                                    text:translations.RESPONSIBLE,
-                                    baseCls:'description-ticket-bold'
+                                    xtype: 'text',
+                                    text: translations.RESPONSIBLE,
+                                    baseCls: 'description-ticket-bold'
                                 },
                                 {
-                                    xtype:'text',
-                                    itemId:'tktResponsible',
-                                    baseCls:'description-ticket', 
+                                    xtype: 'text',
+                                    itemId: 'tktResponsible',
+                                    baseCls: 'description-ticket',
                                     width: 250,
                                     height: 30
                                 }
@@ -120,81 +120,80 @@ Ext.define('Helpdesk.view.ticket.EditTicket', {
                     ]
                 },
                 {
-                    xtype:'panel',
-                    width:770,
-                    height:1,  
-                    padding:'10 0 10 0'
+                    xtype: 'panel',
+                    width: 770,
+                    height: 1,
+                    padding: '10 0 10 0'
                 },
                 {
-                    xtype:'panel',
-                    baseCls:'bordless',
-                    padding:'20 0 10 0',
-                    layout:{
-                        type:'hbox'
+                    xtype: 'panel',
+                    baseCls: 'bordless',
+                    padding: '20 0 10 0',
+                    layout: {
+                        type: 'hbox'
                     },
-                    items:[
+                    items: [
                         {
-                            xtype:'panel',
-                            baseCls:'bordless',
-                            items:[
+                            xtype: 'panel',
+                            baseCls: 'bordless',
+                            items: [
                                 {
-                                    xtype:'text',
-                                    text:translations.TICKET_PROBLEM_STEPS,
-                                    baseCls:'description-ticket-bold'
+                                    xtype: 'text',
+                                    text: translations.TICKET_PROBLEM_STEPS,
+                                    baseCls: 'description-ticket-bold'
                                 },
                                 {
-                                    xtype:'text',
-                                    itemId:'tktSteps',
-                                    baseCls:'description-ticket'
+                                    xtype: 'text',
+                                    itemId: 'tktSteps',
+                                    baseCls: 'description-ticket'
                                 }
                             ]
                         }
                     ]
-                },                            
+                },
                 {
-                    xtype:'container',
+                    xtype: 'container',
                     layout: {
                         type: 'vbox',
                         align: 'right'
                     },
                     width: 770,
-                    items:[
+                    items: [
                         {
                             xtype: 'button',
                             text: translations.EDIT,
-                            iconCls:'edit_ticket',
+                            iconCls: 'edit_ticket',
                             cls: 'btn-ticket-details-edit',
                             itemId: 'editTicket',
-                            hidden:true
-                            
+                            hidden: true
                         }
                     ]
                 }
             ]
         },
         {
-            xtype:'form',
-            bodyPadding:15,
-            layout:{
-                type:'vbox'
+            xtype: 'form',
+            bodyPadding: 15,
+            layout: {
+                type: 'vbox'
             },
             padding: '20 0 0 0',
-            items:[ 
+            items: [
                 {
-                    xtype:'container',
-                    baseCls:'bordless',                    
-                    layout:{
-                        type:'hbox'                       
+                    xtype: 'container',
+                    baseCls: 'bordless',
+                    layout: {
+                        type: 'hbox'
                     },
-                    items:[                        
+                    items: [
                         {
-                            xtype:'panel',                            
-                            baseCls:'bordless',                            
-                            items:[
+                            xtype: 'panel',
+                            baseCls: 'bordless',
+                            items: [
                                 {
-                                    xtype:'text',
-                                    text:translations.TICKET_CATEGORY,                                    
-                                    baseCls:'description-ticket-bold'
+                                    xtype: 'text',
+                                    text: translations.TICKET_CATEGORY,
+                                    baseCls: 'description-ticket-bold'
                                 },
                                 {
                                     xtype: 'categorycombobox',
@@ -202,18 +201,18 @@ Ext.define('Helpdesk.view.ticket.EditTicket', {
                                     cls: 'new-ticket-item',
                                     itemId: 'categoryTicket',
                                     width: 250
-                                }                              
+                                }
                             ]
                         },
                         {
-                            xtype:'panel',    
-                            baseCls:'bordless',
-                            padding:'0 0 0 200',
-                            items:[
+                            xtype: 'panel',
+                            baseCls: 'bordless',
+                            padding: '0 0 0 200',
+                            items: [
                                 {
-                                    xtype:'text',
-                                    text:translations.TICKET_ESTIMATED_TIME,
-                                    baseCls:'description-ticket-bold'
+                                    xtype: 'text',
+                                    text: translations.TICKET_ESTIMATED_TIME,
+                                    baseCls: 'description-ticket-bold'
                                 },
                                 {
                                     xtype: 'datefield',
@@ -227,47 +226,47 @@ Ext.define('Helpdesk.view.ticket.EditTicket', {
                     ]
                 },
                 {
-                    xtype:'panel',
-                    width:770,
-                    height:1,  
-                    padding:'10 0 10 0'
+                    xtype: 'panel',
+                    width: 770,
+                    height: 1,
+                    padding: '10 0 10 0'
                 },
                 {
-                    xtype:'container',
-                    baseCls:'bordless',
-                    padding:'20 0 0 0',                    
-                    layout:{
-                        type:'hbox'
+                    xtype: 'container',
+                    baseCls: 'bordless',
+                    padding: '20 0 0 0',
+                    layout: {
+                        type: 'hbox'
                     },
-                    items:[
+                    items: [
                         {
-                            xtype:'panel',
-                            flex:1,
-                            baseCls:'bordless',
-                            items:[
+                            xtype: 'panel',
+                            flex: 1,
+                            baseCls: 'bordless',
+                            items: [
                                 {
-                                    xtype:'text',
-                                    text:translations.TICKET_PRIORITY,
-                                    baseCls:'description-ticket-bold'
+                                    xtype: 'text',
+                                    text: translations.TICKET_PRIORITY,
+                                    baseCls: 'description-ticket-bold'
                                 },
                                 {
                                     xtype: 'prioritycombobox',
                                     fieldLabel: '',
                                     width: 250,
                                     cls: 'new-ticket-item',
-                                    itemId: 'priorityTicket'                                    
+                                    itemId: 'priorityTicket'
                                 }
                             ]
                         },
                         {
-                            xtype:'panel',
-                            padding:'0 0 0 200',
-                            baseCls:'bordless',                            
-                            items:[
+                            xtype: 'panel',
+                            padding: '0 0 0 200',
+                            baseCls: 'bordless',
+                            items: [
                                 {
-                                    xtype:'text',
-                                    text:translations.RESPONSIBLE,
-                                    baseCls:'description-ticket-bold'
+                                    xtype: 'text',
+                                    text: translations.RESPONSIBLE,
+                                    baseCls: 'description-ticket-bold'
                                 },
                                 {
                                     xtype: 'responsiblescombobox',
@@ -282,27 +281,27 @@ Ext.define('Helpdesk.view.ticket.EditTicket', {
                     ]
                 },
                 {
-                    xtype:'panel',
-                    width:770,
-                    height:1,  
-                    padding:'10 0 10 0'
+                    xtype: 'panel',
+                    width: 770,
+                    height: 1,
+                    padding: '10 0 10 0'
                 },
                 {
-                    xtype:'panel',
-                    baseCls:'bordless',
-                    padding:'20 0 10 0',
-                    layout:{
-                        type:'hbox'
+                    xtype: 'panel',
+                    baseCls: 'bordless',
+                    padding: '20 0 10 0',
+                    layout: {
+                        type: 'hbox'
                     },
-                    items:[
+                    items: [
                         {
-                            xtype:'panel',
-                            baseCls:'bordless',
-                            items:[
+                            xtype: 'panel',
+                            baseCls: 'bordless',
+                            items: [
                                 {
-                                    xtype:'text',
-                                    text:translations.TICKET_PROBLEM_STEPS,
-                                    baseCls:'description-ticket-bold'
+                                    xtype: 'text',
+                                    text: translations.TICKET_PROBLEM_STEPS,
+                                    baseCls: 'description-ticket-bold'
                                 },
                                 {
                                     xtype: 'textarea',
@@ -315,27 +314,46 @@ Ext.define('Helpdesk.view.ticket.EditTicket', {
                             ]
                         }
                     ]
-                },                            
+                },
                 {
-                    xtype:'container',
+                    xtype: 'container',
                     layout: {
                         type: 'vbox',
                         align: 'right'
                     },
                     width: 770,
-                    items:[
+                    items: [
                         {
-                            xtype: 'button',
-                            text: translations.SAVE,
-                            itemId: 'btnSaveEditTicket',
-                            height: 37,
-                            width: 100,
-                            baseCls: 'new-ticket-save-button'
+                            layout: 'hbox',
+                            border: 0,
+                            items: [
+                                {
+                                    xtype: 'button',
+                                    text: translations.SAVE,
+                                    itemId: 'btnSaveEditTicket',
+                                    height: 37,
+                                    width: 100,
+                                    baseCls: 'new-ticket-save-button'
+                                },
+                                {
+                                    xtype: 'button',
+                                    itemId: 'btnCancelEditTicket',
+                                    style: {
+                                        background: 0,
+                                        border: 0,
+                                        'text-decoration': 'underline',
+                                        padding: '12 0 0 5',
+                                        'text-size': '15px'
+                                    },
+                                    text: translations.CANCEL
+                                }
+                            ]
                         }
+
                     ]
                 }
             ]
         }
     ]
-        
+
 });

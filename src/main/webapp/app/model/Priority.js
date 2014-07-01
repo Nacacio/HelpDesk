@@ -7,7 +7,11 @@ Ext.define('Helpdesk.model.Priority',{
    extend: 'Ext.data.Model',
    idProperty: 'id',
    fields: [
-       {name: 'name'}
+       {name: 'name',
+           convert: function (newValue, model) {
+               return translations[newValue];
+           }
+       }
    ]
 });
 

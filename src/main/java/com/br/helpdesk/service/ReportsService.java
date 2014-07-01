@@ -1,5 +1,6 @@
 package com.br.helpdesk.service;
 
+import com.Consts;
 import com.br.helpdesk.model.Category;
 import com.br.helpdesk.model.CategoryContainer;
 import com.br.helpdesk.model.Client;
@@ -68,11 +69,11 @@ public class ReportsService {
      */
     public String getGraphic(String username, long idUser, String tickets, Date dateFrom, Date dateTo, String unit, String type, HttpServletResponse response) throws UnsupportedEncodingException {
         String resultado = "";
-        if (type.equals("client")) {
+        if (type.equals(Consts.CLIENT)) {
             resultado = getGraphicClient(username, tickets, dateFrom, dateTo, unit);
-        } else if (type.equals("category")) {
+        } else if (type.equals(Consts.CATEGORY)) {
             resultado = getGraphicCategory(username, tickets, dateFrom, dateTo, unit);
-        } else if (type.equals("user")) {
+        } else if (type.equals(Consts.USER)) {
             resultado = getGraphicUser(idUser, dateFrom, dateTo, unit);
         }
         return resultado;
@@ -96,7 +97,7 @@ public class ReportsService {
         String resultado = "";
         Date currentDay;
         int quantTickets = 0;
-        Format formatter = new SimpleDateFormat("yyyy-MM-dd");
+        Format formatter = new SimpleDateFormat(Consts.SIMPLE_DATE_FORMAT);
         String currentDayString;
 
         List<Ticket> listTicket;
@@ -106,7 +107,11 @@ public class ReportsService {
         CategoryContainer categoryContainer = null;
         List<Category> listCategory = null;
 
-        if (tickets.equals("Criados")) {
+        int yearTemp = 0;
+        int monthTemp = 0;
+        int dayTemp = 0;
+
+        if (tickets.equals(Consts.CREATED)) {
             listTicket = ticketService.findBetweenStartDate(dateFrom, dateTo);
         } else {
             listTicket = ticketService.findBetweenEndDate(dateFrom, dateTo);
@@ -134,14 +139,22 @@ public class ReportsService {
                 categoryContainer.setCategory(categoryTemp);
 
                 for (Ticket ticketTemp : listTicket) {
-                    if (tickets.equals("Criados")) {
-                        if (ticketTemp.getStartDate().getTime() == currentDay.getTime()) {
+                    if (tickets.equals(Consts.CREATED)) {
+                        yearTemp = ticketTemp.getStartDate().getYear();
+                        monthTemp = ticketTemp.getStartDate().getMonth();
+                        dayTemp = ticketTemp.getStartDate().getDate();
+                        
+                        if (yearTemp == currentDay.getYear() && monthTemp == currentDay.getMonth() && dayTemp == currentDay.getDate()) {
                             if (ticketTemp.getCategory().getId().equals(categoryTemp.getId())) {
                                 quantTickets++;
                             }
                         }
                     } else {
-                        if (ticketTemp.getEndDate().getTime() == currentDay.getTime()) {
+                        yearTemp = ticketTemp.getEndDate().getYear();
+                        monthTemp = ticketTemp.getEndDate().getMonth();
+                        dayTemp = ticketTemp.getEndDate().getDate();
+
+                        if (yearTemp == currentDay.getYear() && monthTemp == currentDay.getMonth() && dayTemp == currentDay.getDate()) {
                             if (ticketTemp.getCategory().getId().equals(categoryTemp.getId())) {
                                 quantTickets++;
                             }
@@ -157,7 +170,7 @@ public class ReportsService {
             listGraphicContainer.add(graphicContainer);
         }
 
-        resultado = getJsonGraphic(listGraphicContainer, unit, "category");
+        resultado = getJsonGraphic(listGraphicContainer, unit, Consts.CATEGORY);
 
         return resultado;
     }
@@ -180,7 +193,7 @@ public class ReportsService {
         String resultado = "";
         Date currentDay;
         int quantTickets = 0;
-        Format formatter = new SimpleDateFormat("yyyy-MM-dd");
+        Format formatter = new SimpleDateFormat(Consts.SIMPLE_DATE_FORMAT);
         String currentDayString;
 
         List<Ticket> listTicket;
@@ -190,7 +203,11 @@ public class ReportsService {
         ClientContainer clientContainer = null;
         List<Client> listClient = null;
 
-        if (tickets.equals("Criados")) {
+        int yearTemp = 0;
+        int monthTemp = 0;
+        int dayTemp = 0;
+
+        if (tickets.equals(Consts.CREATED)) {
             listTicket = ticketService.findBetweenStartDate(dateFrom, dateTo);
         } else {
             listTicket = ticketService.findBetweenEndDate(dateFrom, dateTo);
@@ -218,14 +235,24 @@ public class ReportsService {
                 clientContainer.setClient(clientTemp);
 
                 for (Ticket ticketTemp : listTicket) {
-                    if (tickets.equals("Criados")) {
-                        if (ticketTemp.getStartDate().getTime() == currentDay.getTime()) {
+                    if (tickets.equals(Consts.CREATED)) {
+
+                        yearTemp = ticketTemp.getStartDate().getYear();
+                        monthTemp = ticketTemp.getStartDate().getMonth();
+                        dayTemp = ticketTemp.getStartDate().getDate();
+
+                        if (yearTemp == currentDay.getYear() && monthTemp == currentDay.getMonth() && dayTemp == currentDay.getDate()) {
                             if (ticketTemp.getCategory().getId().equals(clientTemp.getId())) {
                                 quantTickets++;
                             }
                         }
+
                     } else {
-                        if (ticketTemp.getEndDate().getTime() == currentDay.getTime()) {
+                        yearTemp = ticketTemp.getEndDate().getYear();
+                        monthTemp = ticketTemp.getEndDate().getMonth();
+                        dayTemp = ticketTemp.getEndDate().getDate();
+
+                        if (yearTemp == currentDay.getYear() && monthTemp == currentDay.getMonth() && dayTemp == currentDay.getDate()) {
                             if (ticketTemp.getCategory().getId().equals(clientTemp.getId())) {
                                 quantTickets++;
                             }
@@ -241,7 +268,7 @@ public class ReportsService {
             listGraphicContainer.add(graphicContainer);
         }
 
-        resultado = getJsonGraphic(listGraphicContainer, unit, "client");
+        resultado = getJsonGraphic(listGraphicContainer, unit, Consts.CLIENT);
 
         return resultado;
     }
@@ -265,7 +292,7 @@ public class ReportsService {
                 resultado += ",";
             }
             resultado += "{\"date\":\"" + temp.getDateString() + "\",";
-            if (type.equals("category")) {
+            if (type.equals(Consts.CATEGORY)) {
                 for (int j = 0; j < temp.getListCategory().size(); j++) {
                     CategoryContainer categoryTemp = temp.getListCategory().get(j);
                     if (j != 0) {
@@ -274,7 +301,7 @@ public class ReportsService {
                     resultado += "\"" + categoryTemp.getCategory().getName() + "\":" + categoryTemp.getQuantidade() + "";
                 }
 
-            } else if (type.equals("client")) {
+            } else if (type.equals(Consts.CLIENT)) {
                 for (int j = 0; j < temp.getListClient().size(); j++) {
                     ClientContainer clientTemp = temp.getListClient().get(j);
                     if (j != 0) {
@@ -282,7 +309,7 @@ public class ReportsService {
                     }
                     resultado += "\"" + clientTemp.getClient().getName() + "\":" + clientTemp.getQuantidade() + "";
                 }
-            } else if (type.equals("user")) {
+            } else if (type.equals(Consts.USER)) {
                 resultado += "\"created\":" + temp.getCreated() + ",\"closed\":" + temp.getClosed() + "";
             }
             resultado += "}";
@@ -301,7 +328,7 @@ public class ReportsService {
      */
     public String getJsonGraphicCategoryByUnit(List<GraphicContainer> listGraphicCategoryContainer, String unit) {
         String resultado = "";
-        Format formatter = new SimpleDateFormat("yyyy-MM-dd");
+        Format formatter = new SimpleDateFormat(Consts.SIMPLE_DATE_FORMAT);
         Date currentDay;
         String currentDayString;
 
@@ -311,9 +338,9 @@ public class ReportsService {
 
         int periodo = 0;
         String dias = "";
-        if (unit.equals("Dia")) {
+        if (unit.equals(Consts.DAY)) {
             listGraphicCategoryContainerByPeriodicidade = listGraphicCategoryContainer;
-        } else if (unit.equals("Semana")) {
+        } else if (unit.equals(Consts.WEEK)) {
             Calendar c = new GregorianCalendar();
             for (GraphicContainer listTemp : listGraphicCategoryContainer) {
                 if (graphicCategoryContainer == null) {
@@ -328,9 +355,9 @@ public class ReportsService {
                 }
             }
             periodo = 7;
-        } else if (unit.equals("Mês")) {
+        } else if (unit.equals(Consts.MONTH)) {
             periodo = 30;
-        } else if (unit.equals("Ano")) {
+        } else if (unit.equals(Consts.YEAR)) {
             periodo = 365;
         }
 
@@ -499,7 +526,7 @@ public class ReportsService {
         Calendar to = Calendar.getInstance();
         to.set(date.get(0), date.get(1), date.get(3));
 
-        if (type.equals("category")) {
+        if (type.equals(Consts.CATEGORY)) {
             listCategory = (List) categoryService.findAll();
             for (Category temp : listCategory) {
 
@@ -520,7 +547,7 @@ public class ReportsService {
 
                 listConsolidated.add(consolidatedTemp);
             }
-        } else if (type.equals("client")) {
+        } else if (type.equals(Consts.CLIENT)) {
             listClient = (List) clientService.findAll();
 
             for (Client temp : listClient) {
@@ -541,12 +568,12 @@ public class ReportsService {
 
                 listConsolidated.add(consolidatedTemp);
             }
-        } else if (type.equals("user")) {
+        } else if (type.equals(Consts.USER)) {
             User user = userService.findById(idUser);
 
             openFrom = (ticketService.findIsOpenUntilDateAndUser(from.getTime(), user.getId()));
             consolidatedTemp = new ConsolidatedPerMonthContainer();
-            consolidatedTemp.setName("OPEN_FROM");
+            consolidatedTemp.setName(Consts.OPEN_FROM);
             consolidatedTemp.setValue(openFrom.size());
             consolidatedTemp.setDateOpenFrom(from.getTime());
             consolidatedTemp.setDateOpenTo(to.getTime());
@@ -554,7 +581,7 @@ public class ReportsService {
 
             created = (ticketService.findBetweenStartDateAndUser(from.getTime(), to.getTime(), user.getId()));
             consolidatedTemp = new ConsolidatedPerMonthContainer();
-            consolidatedTemp.setName("CREATED");
+            consolidatedTemp.setName(Consts.CREATED_EN);
             consolidatedTemp.setValue(created.size());
             consolidatedTemp.setDateOpenFrom(from.getTime());
             consolidatedTemp.setDateOpenTo(to.getTime());
@@ -562,7 +589,7 @@ public class ReportsService {
 
             closed = (ticketService.findBetweenEndDateAndUser(from.getTime(), to.getTime(), user.getId()));
             consolidatedTemp = new ConsolidatedPerMonthContainer();
-            consolidatedTemp.setName("CLOSED");
+            consolidatedTemp.setName(Consts.CLOSED_EN);
             consolidatedTemp.setValue(closed.size());
             consolidatedTemp.setDateOpenFrom(from.getTime());
             consolidatedTemp.setDateOpenTo(to.getTime());
@@ -570,7 +597,7 @@ public class ReportsService {
 
             openTo = (ticketService.findIsOpenUntilDateAndUser(to.getTime(), user.getId()));
             consolidatedTemp = new ConsolidatedPerMonthContainer();
-            consolidatedTemp.setName("OPEN_TO");
+            consolidatedTemp.setName(Consts.OPEN_TO);
             consolidatedTemp.setValue(openTo.size());
             consolidatedTemp.setDateOpenFrom(from.getTime());
             consolidatedTemp.setDateOpenTo(to.getTime());
@@ -590,7 +617,7 @@ public class ReportsService {
      */
     public String getJsonGridConsolidatedPerMonth(List<ConsolidatedPerMonthContainer> list) {
         String resultado = "";
-        Format formatter = new SimpleDateFormat("MM-dd");
+        Format formatter = new SimpleDateFormat(Consts.SIMPLE_DATE_FORMAT_MONTH);
         for (int i = 0; i < list.size(); i++) {
             if (i != 0) {
                 resultado += ",";
@@ -623,7 +650,7 @@ public class ReportsService {
 
         highLightTemp = new HighlightCurrentContainer();
         highLightTemp.setValue(listCategory.size());
-        highLightTemp.setText("HABILITADED_CATEGORIES");
+        highLightTemp.setText(Consts.HABILITADED_CATEGORIES);
         list.add(highLightTemp);
 
         int cont = 0;
@@ -637,7 +664,7 @@ public class ReportsService {
             if (cont > 0) {
                 highLightTemp = new HighlightCurrentContainer();
                 highLightTemp.setValue(cont);
-                highLightTemp.setText("IN_CATEGORY:" + temp.getName());
+                highLightTemp.setText(Consts.IN_CATEGORY + temp.getName());
                 list.add(highLightTemp);
             }
             cont = 0;
@@ -682,7 +709,7 @@ public class ReportsService {
 
         highLightTemp = new HighlightCurrentContainer();
         highLightTemp.setValue(listClient.size());
-        highLightTemp.setText("REGISTERED_CLIENTS");
+        highLightTemp.setText(Consts.REGISTERED_CLIENTS);
         list.add(highLightTemp);
 
         int cont = 0;
@@ -696,7 +723,7 @@ public class ReportsService {
             if (cont > 0) {
                 highLightTemp = new HighlightCurrentContainer();
                 highLightTemp.setValue(cont);
-                highLightTemp.setText("TICKETS_OPEN_OF_CLIENT:" + temp.getName());
+                highLightTemp.setText(Consts.TICKETS_OPEN_OF_CLIENT + temp.getName());
                 list.add(highLightTemp);
             }
             cont = 0;
@@ -712,11 +739,15 @@ public class ReportsService {
         List<GraphicContainer> listGraphicContainer = null;
         GraphicContainer graphicContainer = null;
         Date currentDay;
-        Format formatter = new SimpleDateFormat("yyyy-MM-dd");
+        Format formatter = new SimpleDateFormat(Consts.SIMPLE_DATE_FORMAT);
         String currentDayString;
         List<Ticket> ticketsCreated;
         List<Ticket> ticketsClosed;
         int quantTickets = 0;
+
+        int yearTemp = 0;
+        int monthTemp = 0;
+        int dayTemp = 0;
 
         ticketsCreated = ticketService.findBetweenStartDate(dateFrom, dateTo);
         ticketsClosed = ticketService.findBetweenEndDate(dateFrom, dateTo);
@@ -733,7 +764,11 @@ public class ReportsService {
 
             for (Ticket temp : ticketsCreated) {
                 if (temp.getUser().getId().equals(user.getId())) {
-                    if (temp.getStartDate().getTime() == currentDay.getTime()) {
+                    yearTemp = temp.getStartDate().getYear();
+                    monthTemp = temp.getStartDate().getMonth();
+                    dayTemp = temp.getStartDate().getDate();
+
+                    if (yearTemp == currentDay.getYear() && monthTemp == currentDay.getMonth() && dayTemp == currentDay.getDate()) {
                         quantTickets++;
                     }
                 }
@@ -741,7 +776,13 @@ public class ReportsService {
             graphicContainer.setCreated(quantTickets);
             quantTickets = 0;
             for (Ticket temp : ticketsClosed) {
-                if (temp.getUser().getId().equals(user.getId()) && temp.getEndDate().getTime() == currentDay.getTime()) {
+                if (temp.getUser().getId().equals(user.getId())) {
+                    yearTemp = temp.getEndDate().getYear();
+                    monthTemp = temp.getEndDate().getMonth();
+                    dayTemp = temp.getEndDate().getDate();
+                    if (yearTemp == currentDay.getYear() && monthTemp == currentDay.getMonth() && dayTemp == currentDay.getDate()) {
+                        quantTickets++;
+                    }
                     quantTickets++;
                 }
             }
@@ -750,7 +791,7 @@ public class ReportsService {
             listGraphicContainer.add(graphicContainer);
         }
 
-        resultado = getJsonGraphic(listGraphicContainer, unit, "user");
+        resultado = getJsonGraphic(listGraphicContainer, unit, Consts.USER);
 
         return resultado;
     }

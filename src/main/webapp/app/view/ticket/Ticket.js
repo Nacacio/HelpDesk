@@ -19,20 +19,20 @@ Ext.define('Helpdesk.view.ticket.Ticket', {
        type: 'border'
    },    
    itemId: 'ticketView',
-   items: [{
+   items: [
+       {
            xtype: 'ticketsidemenu',
            width: 180,
            region: 'west'
        },
        {
-           xtype: 'container',
+           xtype: 'container',           
            itemId: 'cardContainer',
            region: 'center',            
            cls:'background-white-and-shadow',
            border: 0,
            layout: 'card',
-           padding: '50 20 50 20',
-           autoScroll:true,
+           padding: '20 20 20 20',
            items:[{
                    xtype: 'container',
                    itemId:'maincontainer',
@@ -50,6 +50,7 @@ Ext.define('Helpdesk.view.ticket.Ticket', {
                                    xtype: 'button',
                                    itemId: 'btnNewTicket',
                                    text: translations.CREATE_TICKET,
+                                   margin: '30 0 10 20',
                                    height: 60,
                                    width: 265,
                                    iconCls: 'plus_icon_24',
@@ -62,8 +63,8 @@ Ext.define('Helpdesk.view.ticket.Ticket', {
                                {
                                  xtype:'text',
                                  baseCls:'bold-words-size15',
-                                 text:'Busca ',
-                                 padding:'40 10 0 0'
+                                 text:translations.SEARCH,
+                                 padding:'70 10 0 0'
                                },
                                {
                                    xtype:'combobox',
@@ -71,12 +72,13 @@ Ext.define('Helpdesk.view.ticket.Ticket', {
                                    text:translations.SEARCH,
                                    hideTrigger:true,
                                    width:200,
-                                   padding:'40 0 0 0'
+                                   padding:'70 0 0 0'
                                } 
                            ]
                        }                        
                        ,{
                            xtype: 'ticketgrid',
+                           margin: '20 0 0 20',
                            itemId: 'ticketgrid',
                            region:'center'
                        }
@@ -86,7 +88,7 @@ Ext.define('Helpdesk.view.ticket.Ticket', {
                    xtype: 'newticket'
                },
                {
-                   xtype:'ticketdetails'                    
+                   xtype:'ticketdetails'
                }
            ]
        }]

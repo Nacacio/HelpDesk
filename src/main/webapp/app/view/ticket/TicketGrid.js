@@ -40,7 +40,13 @@ Ext.define('Helpdesk.view.ticket.TicketGrid', {
                 header: translations.CATEGORY,
                 width: 170,
                 flex:0,
-                dataIndex: 'categoryName'
+                dataIndex: 'categoryName',
+                renderer: function(value, metaData, record) { // #2
+                    if(value===translations[value]){
+                        return value;
+                    }
+                    return translations[value];
+                }
             },{
                 header: translations.STATUS,
                 width: 170,

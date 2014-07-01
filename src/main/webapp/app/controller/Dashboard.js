@@ -234,7 +234,7 @@ Ext.define('Helpdesk.controller.Dashboard', {
                                 }
                             }
                             var object = new Helpdesk.model.TicketByCategory();
-                            object.data.category = translations[storeCategories.data.items[i].data.name];
+                            object.data.category = storeCategories.data.items[i].data.name;
                             object.data.ticketCount = count;
                             if (storeCategories.data.items[i].data.name !== 'NO_CATEGORY') {
                                 store.add(object);

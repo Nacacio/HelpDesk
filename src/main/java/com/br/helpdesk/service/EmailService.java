@@ -5,15 +5,19 @@
  */
 package com.br.helpdesk.service;
 
+import com.Consts;
+import com.br.helpdesk.controller.TicketAnswerController;
 import com.br.helpdesk.model.ConfigEmail;
 import com.br.helpdesk.model.Ticket;
 import com.br.helpdesk.model.TicketAnswer;
 import com.br.helpdesk.model.User;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.mail.Address;
 import javax.mail.Flags;
 import javax.mail.Folder;
 import javax.mail.Message;
@@ -46,6 +50,20 @@ public class EmailService {
 
     @Autowired
     private ConfigEmailService configEmailService;
+
+    public void setConfigEmailService(ConfigEmailService service) {
+        this.configEmailService = service;
+    }
+
+    @Autowired
+    private UserService userService;
+
+    public void setUserService(UserService service) {
+        this.userService = service;
+    }
+
+    @Autowired
+    private TicketAnswerController answerController;
 
     private ConfigEmail configEmail;
 
@@ -183,14 +201,13 @@ public class EmailService {
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(configEmail.getUser()));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(emails));
-            message.setSubject(ticket.getTitle());
+            message.setSubject(ticket.getTitle() + " #" + ticket.getId());
             message.setContent(contentNewTicket(ticket.getTitle(), ticket.getCategory().getName(), ticket.getDescription(), ticket.getStepsTicket()), "text/html; charset=utf-8");
             Transport.send(message);
 
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     public void sendEmailEditTicket(Ticket olderTicket, Ticket newTicket, List<String> listEmailsTo) {
@@ -200,10 +217,9 @@ public class EmailService {
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(configEmail.getUser()));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(emails));
-            message.setSubject(olderTicket.getTitle());
+            message.setSubject(olderTicket.getTitle() + " #" + olderTicket.getId());
             message.setContent(contentEditTicket(olderTicket, newTicket), "text/html; charset=utf-8");
             Transport.send(message);
-
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
@@ -216,7 +232,7 @@ public class EmailService {
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(configEmail.getUser()));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(emails));
-            message.setSubject(answer.getTicket().getTitle());
+            message.setSubject(answer.getTicket().getTitle() + " #" + answer.getTicket().getId());
             message.setContent(contentNewAnswer(answer.getTicket().getId(), answer.getTicket().getDescription(), answer.getDescription(), userAnswer.getName()), "text/html; charset=utf-8");
             Transport.send(message);
 
@@ -226,7 +242,7 @@ public class EmailService {
     }
 
     private String contentNewTicket(String assunto, String categoria, String observacoes, String passos) {
-        String html = "#####<!DOCTYPE html>"
+        String html = Consts.REPLY_ABOVE_THIS_LINE+"<!DOCTYPE html>"
                 + "<html>"
                 + "<head>"
                 + "<meta charset='UTF-8\'>"
@@ -269,19 +285,19 @@ public class EmailService {
                 + "Cymo Tecnologia em Gestão"
                 + "</h4>"
                 + "</body>"
-                + "</html>";
+                + "</html> --#";
         return html;
     }
 
     private String contentEditTicket(Ticket olderTicket, Ticket newTicket) {
-        String olderCategoryName = "Sem categoria";
-        String newCategoryName = "Sem categoria";
-        String olderEstimatedTime = "Sem prazo estimado";
-        String newEstimatedTime = "Sem prazo estimado";
-        String olderPriority = "Sem prioridade";
-        String newPriority = "Sem prioridade";
-        String olderResponsible = "Sem responsável";
-        String newResponsible = "Sem responsável";
+        String olderCategoryName = Consts.NO_CATEGORY;
+        String newCategoryName = Consts.NO_CATEGORY;
+        String olderEstimatedTime = Consts.NO_ESTIMATED_TIME;
+        String newEstimatedTime = Consts.NO_ESTIMATED_TIME;
+        String olderPriority = Consts.NO_PRIORITY;
+        String newPriority = Consts.NO_PRIORITY;
+        String olderResponsible = Consts.NO_RESPONSIBLE;
+        String newResponsible = Consts.NO_RESPONSIBLE;
 
         if (olderTicket.getCategory() != null) {
             olderCategoryName = olderTicket.getCategory().getName();
@@ -381,7 +397,7 @@ public class EmailService {
     }
 
     private String contentNewAnswer(long idTicket, String nameTicket, String description, String userName) {
-        String html = "<!DOCTYPE html>"
+        String html = Consts.REPLY_ABOVE_THIS_LINE+"<!DOCTYPE html>"
                 + "<html>"
                 + "<head>"
                 + "<meta charset='UTF-8\'>"
@@ -428,6 +444,131 @@ public class EmailService {
             emails += listEmails.get(i);
         }
         return emails;
+    }
+
+    /**
+     * Method reads emails from the IMAP or POP3 server.
+     */
+    public void readEmails() {
+        // Create the session        
+        Session session = getSession();
+        try {
+            // Set the store depending on the parameter flag value
+            Store store = session.getStore(configEmail.getImaps());
+            // Set the server depending on the parameter flag value            
+            //VALORES DO SERVIDOR
+            store.connect(configEmail.getImap(), configEmail.getUser(), configEmail.getPassword());
+
+            // Get the Inbox folder
+            Folder inbox = store.getFolder(configEmail.getFolder());
+            // Set the mode to the read-write mode
+            inbox.open(Folder.READ_WRITE);
+
+            // Get messages not seen
+            FlagTerm ft = new FlagTerm(new Flags(Flags.Flag.SEEN), false);
+            Message messages[] = inbox.search(ft);
+
+            // Display the messages
+            for (Message message : messages) {
+
+                //Recebe o id do ticket se for resposta de tickets já criados.
+                String[] ss;
+                long idTicket = 0;
+                ss = message.getSubject().split("\\#");
+                if (ss.length > 1) {
+                    ss = ss[1].split("\\#");
+                    idTicket = Long.parseLong(ss[0]);
+                }
+
+                //Recebe o remetente do e mail
+                String email = ((InternetAddress) ((Address) (message.getFrom()[0]))).getAddress();
+
+                if (message.getContent() instanceof Multipart) {
+                    Multipart mp = (Multipart) message.getContent();
+                    for (int i = 0, n = mp.getCount(); i < n; i++) {
+                        //handlePart(mp.getBodyPart(i));
+                        String contentType = mp.getBodyPart(i).getContentType();
+                        if ((contentType.length() >= 10) && (contentType.toLowerCase().substring(0, 10).equals("text/plain"))) {
+                            String body = getText(mp.getBodyPart(i));
+                            String[] split = body.split("##Responda acima desta linha##");
+                            String answer = split[0];
+                            if (!answer.equals("") && !email.equals("")) {
+                                User user = userService.findByEmail(email);
+                                if (user != null) {
+                                    answerController.saveNewAnswer(idTicket, user.getId(), answer);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<String> getListEmailsToSend(Ticket olderTicket, Ticket newTicket, TicketAnswer ticketAnswer) {
+        List<String> listEmails = new ArrayList<String>();
+        User userTicket;
+        User userResponsible;
+        User userAnswer;
+
+        if (ticketAnswer != null) {
+            userAnswer = ticketAnswer.getUser();
+            userTicket = olderTicket.getUser();
+            userResponsible = olderTicket.getResponsible();
+
+            if (userTicket != null && userResponsible != null) {
+                if (userAnswer.getId().equals(userTicket.getId())) {
+                    listEmails.add(userResponsible.getEmail());
+                } else if (userAnswer.getId().equals(userResponsible.getId())) {
+                    listEmails.add(userTicket.getEmail());
+                } else {
+                    listEmails.add(userResponsible.getEmail());
+                    listEmails.add(userTicket.getEmail());
+                }
+            } else if (userTicket != null) {
+                if (!userAnswer.getId().equals(userTicket.getId())) {
+                    listEmails.add(userTicket.getEmail());
+                }
+            } else if (userResponsible != null) {
+                if (userAnswer.getId().equals(userResponsible.getId())) {
+                    listEmails.add(userResponsible.getEmail());
+                }
+            }
+        } else {
+            if (olderTicket == null) {
+                if (newTicket.getResponsible() == null) {
+                    listEmails.addAll(getAdminEmails());
+                } else {
+                    listEmails.add(newTicket.getResponsible().getEmail());
+                }
+            } else {
+                if (newTicket.getResponsible() != null) {
+                    listEmails.add(newTicket.getResponsible().getEmail());
+                }
+                if (olderTicket.getResponsible() != null) {
+                    listEmails.add(olderTicket.getResponsible().getEmail());
+                }
+            }
+        }
+
+        return listEmails;
+    }
+
+    /**
+     * @author andresulivam
+     *
+     * Lista com email de todos os admins do sistema.
+     * @return
+     */
+    public List<String> getAdminEmails() {
+        List<String> listEmails = new ArrayList<String>();
+        List<User> listAdmin = userService.findByUserAdmin();
+        for (User admin : listAdmin) {
+            listEmails.add(admin.getEmail());
+        }
+        return listEmails;
     }
 
 }

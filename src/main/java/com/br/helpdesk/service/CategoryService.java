@@ -1,5 +1,6 @@
 package com.br.helpdesk.service;
 
+import com.Consts;
 import com.br.helpdesk.model.Category;
 import com.br.helpdesk.repository.CategoryRepository;
 import java.util.List;
@@ -34,7 +35,14 @@ public class CategoryService{
     }
 
     public Iterable<Category> findAll() {
-        return repository.findAll();
+        List<Category> list = (List)repository.findAll();
+        for(int i = 0; i < list.size(); i++){
+            if(list.get(i).getName().equals(Consts.NO_CATEGORY_EN)){
+                list.remove(i);
+                break;
+            }
+        }
+        return list;
     }
 
     public Category findById(Long codigo) {

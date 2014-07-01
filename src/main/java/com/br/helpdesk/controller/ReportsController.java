@@ -5,6 +5,7 @@
  */
 package com.br.helpdesk.controller;
 
+import com.Consts;
 import com.br.helpdesk.model.User;
 import com.br.helpdesk.repository.CategoryRepository;
 import com.br.helpdesk.service.ReportsService;
@@ -53,7 +54,7 @@ public class ReportsController {
             @RequestParam(value = "dateTo") Date dateTo,
             @RequestParam(value = "unit") String unit,
             HttpServletResponse response) throws UnsupportedEncodingException {
-        return reportsService.getGraphic(user, 0, tickets, dateFrom, dateTo, unit, "category", response);
+        return reportsService.getGraphic(user, 0, tickets, dateFrom, dateTo, unit, Consts.CATEGORY, response);
     }
 
     /**
@@ -83,7 +84,7 @@ public class ReportsController {
     @RequestMapping(value = "/getgridconsolidatedpermonth", method = RequestMethod.GET, params = {"period"})
     public @ResponseBody
     String getGridConsolidatedPerMonth(@RequestParam(value = "period") String period, HttpServletResponse response) throws UnsupportedEncodingException {
-        return reportsService.getGridConsolidatedPerMonth(period, "category", 0, response);
+        return reportsService.getGridConsolidatedPerMonth(period, Consts.CATEGORY, 0, response);
     }
 
     /**
@@ -108,7 +109,7 @@ public class ReportsController {
             @RequestParam(value = "dateTo") Date dateTo,
             @RequestParam(value = "unit") String unit,
             HttpServletResponse response) throws UnsupportedEncodingException {
-        return reportsService.getGraphic(user, 0,  tickets, dateFrom, dateTo, unit, "client", response);
+        return reportsService.getGraphic(user, 0,  tickets, dateFrom, dateTo, unit, Consts.CLIENT, response);
     }
 
     /**
@@ -123,7 +124,7 @@ public class ReportsController {
     @RequestMapping(value = "/getgridconsolidatedpermonthclient", method = RequestMethod.GET, params = {"period"})
     public @ResponseBody
     String getGridConsolidatedPerMonthClient(@RequestParam(value = "period") String period, HttpServletResponse response) throws UnsupportedEncodingException {
-        return reportsService.getGridConsolidatedPerMonth(period, "client", 0, response);
+        return reportsService.getGridConsolidatedPerMonth(period, Consts.CLIENT, 0, response);
     }
 
     /**
@@ -164,13 +165,13 @@ public class ReportsController {
             @RequestParam(value = "dateTo") Date dateTo,
             @RequestParam(value = "unit") String unit,
             HttpServletResponse response) throws UnsupportedEncodingException {
-        return reportsService.getGraphic(user, idUser, "", dateFrom, dateTo, unit, "user", response);
+        return reportsService.getGraphic(user, idUser, "", dateFrom, dateTo, unit, Consts.USER, response);
     }
     
         @RequestMapping(value = "/getgridconsolidatedpermonthuser", method = RequestMethod.GET, params = {"period", "idUser"})
     public @ResponseBody
     String getGridConsolidatedPerUser(@RequestParam(value = "period") String period, @RequestParam(value = "idUser") long idUser, HttpServletResponse response) throws UnsupportedEncodingException {
-        return reportsService.getGridConsolidatedPerMonth(period, "user", idUser, response);
+        return reportsService.getGridConsolidatedPerMonth(period, Consts.USER, idUser, response);
     }
 
 }
