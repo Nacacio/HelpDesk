@@ -7,7 +7,7 @@
 <input type="hidden" name="client" id="client" value="<%=request.getAttribute("client")%>">
 <input type="hidden" name="email" id="email" value="<%=request.getAttribute("email")%>">
 <input type="hidden" name="name" id="name" value="<%=request.getAttribute("name")%>">
-<input type="hidden" name="userGroup" id="userGroup" value="<%=request.getAttribute("userGroup")%>">
+<input type="hidden" name="idUserGroup" id="idUserGroup" value="<%=request.getAttribute("userGroup")%>">
 <input type="hidden" name="userLogged" id="userLogged" value="<%=request.getAttribute("userLogged")%>">
 <html>
     <head>

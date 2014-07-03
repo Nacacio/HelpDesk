@@ -11,13 +11,13 @@ Ext.define('Helpdesk.view.category.CategoryGrid', {
             clicksToEdit: 2
         })
     ],
-    stores: ['Categorys'],
-    requires: ['Helpdesk.store.Categorys'],
+    stores: ['Categories'],
+    requires: ['Helpdesk.store.Categories'],
     border:0,
     cls:'grid-style-header',
     constructor: function(config) {
         this.param = config.param; // get your param value from the config object
-        config.store = Ext.create('Helpdesk.store.Categorys', {}); // Blank Configuration needs to be passed in order to trigger the constructor call of the class
+        config.store = Ext.create('Helpdesk.store.Categories', {}); // Blank Configuration needs to be passed in order to trigger the constructor call of the class
         this.callParent(arguments);
     },
     viewConfig: {

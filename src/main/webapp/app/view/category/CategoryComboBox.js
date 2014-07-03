@@ -9,7 +9,7 @@ Ext.define('Helpdesk.view.category.CategoryComboBox', {
     name: 'name',
     displayField: 'name',
     valueField: 'id',
-    store: 'Categorys',
+    store: 'Categories',
     alias: 'widget.categorycombobox',
     listeners:{
         'afterrender': function(){

@@ -6,8 +6,8 @@
 Ext.define('Helpdesk.view.priority.PriorityGrid', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.prioritygrid',
-    stores: ['Prioritys'],
-    requires: ['Helpdesk.store.Prioritys'],
+    stores: ['Priorities'],
+    requires: ['Helpdesk.store.Priorities'],
     border:0,
     cls:'grid-style-header',
     plugins: [
@@ -17,7 +17,7 @@ Ext.define('Helpdesk.view.priority.PriorityGrid', {
     ],
     constructor: function(config) {
         this.param = config.param; // get your param value from the config object
-        config.store = Ext.create('Helpdesk.store.Prioritys', {}); // Blank Configuration needs to be passed in order to trigger the constructor call of the class
+        config.store = Ext.create('Helpdesk.store.Priorities', {}); // Blank Configuration needs to be passed in order to trigger the constructor call of the class
         this.callParent(arguments);
     },
     viewConfig: {

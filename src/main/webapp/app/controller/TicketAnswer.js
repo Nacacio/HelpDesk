@@ -125,6 +125,7 @@ Ext.define('Helpdesk.controller.TicketAnswer', {
         answerStore.proxy.url = 'ticket-answer/find-by-ticket/' + answer.data.ticketId;
         answerStore.load({
             callback: function() {
+                var answersTotal = new Array();
                 var dateTemp = new Date(answer.data.ticket.startDate);
                 dateTemp = Ext.Date.format(dateTemp, translations.FORMAT_DATE_TIME);
                 panel.removeAll();
@@ -135,7 +136,7 @@ Ext.define('Helpdesk.controller.TicketAnswer', {
                 resposta.down('label#corpo').text = answer.data.description;
                 resposta.down('hiddenfield#id').text = answer.data.id;
                 resposta.down('hiddenfield#idAnswer').text = 0;
-                panel.items.add(resposta);
+                answersTotal[0] = resposta;
                 for (i = 0; i < answerStore.getCount(); i++) {
                     var answerTemp = answerStore.data.items[i].data;
                     var name = answerTemp.user.name;
@@ -148,16 +149,10 @@ Ext.define('Helpdesk.controller.TicketAnswer', {
                     resposta.down('label#corpo').text = answerTemp.description;
                     resposta.down('hiddenfield#id').text = answer.data.id;
                     resposta.down('hiddenfield#idAnswer').text = answerTemp.id;
-                    panel.items.add(resposta);
+                    answersTotal[answersTotal.length] = resposta;
                 }
-                panel.doLayout();
-                var answers = panel.items;
-                var itemsLength = answers.length;
-                if (itemsLength > 0) {
-                    answers.items[itemsLength - 1].expand(true);
-                    answers.items[itemsLength - 1].el.setStyle('margin', '0 0 10px 0');
-                }
-                scope.getTicketController().getFilesFromRecord(panel.up().up(), answer.data.ticket);
+                scope.getTicketController().resetMultiupload(panel.up().up());
+                scope.getTicketController().getFilesFromRecord(panel.up().up(), answer.data.ticket, answersTotal);
             }
         });
     }

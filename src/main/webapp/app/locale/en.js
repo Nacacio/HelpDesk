@@ -84,6 +84,8 @@ translations = {
     FROM: 'from',
     FORMAT_DATE: 'en',
     FORMAT_DATE_TIME: 'Y/m/d H:i',
+    FORMAT_JUST_DATE: 'Y/m/d',
+    FORMAT_EN: 'Y/m/d',
     //############################################## [ G ] ##############################################//
 
     GROUP: 'Grou´p',
@@ -189,7 +191,12 @@ translations = {
     REPORTS_BY_ENTERPRISE: 'Reports of tickets by enterprise',
     REPORTS_EXPORT_DATA: 'Export data to Excel (xls)',
     REGISTERED_CLIENTS: 'registered clients',
-    REQUIRED_ITENS_TICKETS: 'All required fields must be filled',
+    REQUIRED_ITENS_TICKETS: 'All required fields must be filled',    
+    REQUIRED_CLIENT: 'Select a valid client!',
+    REQUIRED_CATEGORY: 'Select a valid category!',
+    REQUIRED_STEPS: 'Describe the steps to reproduce the error!',
+    REQUIRED_SUBJECT: 'Describe the subject!',
+    REQUIRED_DESCRIPTION: 'Fill out the description!',
     //############################################## [ S ] ##############################################//
 
     SAVE: 'Save',

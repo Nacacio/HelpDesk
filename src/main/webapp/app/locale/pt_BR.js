@@ -84,6 +84,8 @@ translations = {
     FROM: 'de',
     FORMAT_DATE: 'pt-BR',
     FORMAT_DATE_TIME: 'd/m/Y H:i',    
+    FORMAT_JUST_DATE: 'd/m/Y',
+    FORMAT_EN: 'Y/m/d',
     //############################################## [ G ] ##############################################//
 
     GROUP: 'Grupo',
@@ -189,7 +191,12 @@ translations = {
     REPORTS_BY_ENTERPRISE: 'Relatórios de tickets por empresa',
     REPORTS_EXPORT_DATA: 'Exportar dados de tickets para Excel (xls)',
     REGISTERED_CLIENTS: 'clientes registrados',
-    REQUIRED_ITENS_TICKETS: 'Todos os campos obrigatórios devem ser preenchidos',
+    REQUIRED_ITENS_TICKETS: 'Todos os campos obrigatórios devem ser preenchidos',    
+    REQUIRED_CLIENT: 'Selecione um cliente válido!',
+    REQUIRED_CATEGORY: 'Selecione uma categora válida!',
+    REQUIRED_STEPS: 'Descreva os passos para reproduzir o erro!',
+    REQUIRED_SUBJECT: 'Descreva o assunto!',
+    REQUIRED_DESCRIPTION: 'Preencha a descrição!',
     //############################################## [ S ] ##############################################//
 
     SAVE: 'Salvar',

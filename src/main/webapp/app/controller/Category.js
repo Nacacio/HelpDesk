@@ -5,8 +5,8 @@
  */
 Ext.define('Helpdesk.controller.Category', {
     extend: 'Ext.app.Controller',
-    requires: ['Helpdesk.store.Categorys'],
-    stores: ['Categorys'],
+    requires: ['Helpdesk.store.Categories'],
+    stores: ['Categories'],
     views: ['category.Category'],
     init: function() {
         this.control({

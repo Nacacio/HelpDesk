@@ -530,6 +530,8 @@ public class EmailService {
             } else if (userTicket != null) {
                 if (!userAnswer.getId().equals(userTicket.getId())) {
                     listEmails.add(userTicket.getEmail());
+                } else {
+                    listEmails.addAll(getAdminEmails());
                 }
             } else if (userResponsible != null) {
                 if (userAnswer.getId().equals(userResponsible.getId())) {

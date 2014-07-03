@@ -65,7 +65,7 @@ Ext.define('Helpdesk.controller.Home', {
         var btnHome = mainHeader.down("#home");
         var btnTicket = mainHeader.down("#ticket");
         var btnReports = mainHeader.down("#reports");
-        if (Helpdesk.Globals.userLogged.userGroup.id !== 1) {
+        if (parseInt(Helpdesk.Globals.idUserGroup) !== parseInt(Helpdesk.Globals.idAdminGroup)) {
             btnHome.setVisible(false);
             btnTicket.setVisible(true);
             btnReports.setVisible(false);

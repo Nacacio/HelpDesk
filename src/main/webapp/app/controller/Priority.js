@@ -5,7 +5,7 @@
  */
 Ext.define('Helpdesk.controller.Priority', {
     extend: 'Ext.app.Controller',
-    stores: ['Prioritys'],
+    stores: ['Priorities'],
     views: ['priority.Priority'],
     init: function() {
         this.control({

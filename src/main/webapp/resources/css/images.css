@@ -126,3 +126,11 @@
 .clip {
     background-image:url('../img/icone_clip.png') !important;
 }
+
+.has_comment{
+    background-image:url('../img/has_comment.png') !important;
+}
+
+.has_attachment{
+    background-image:url('../img/has_attachment.png') !important;
+}

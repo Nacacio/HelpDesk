@@ -4,7 +4,7 @@ Ext.define('Helpdesk.controller.Dashboard', {
         'Helpdesk.store.Tickets',
         'Helpdesk.store.TicketsFromUser',
         'Helpdesk.store.TicketsStatus',
-        'Helpdesk.store.Categorys',
+        'Helpdesk.store.Categories',
         'Helpdesk.store.TicketsOngoingClient',
         'Helpdesk.store.TicketsOngoingAgent'
 
@@ -16,7 +16,7 @@ Ext.define('Helpdesk.controller.Dashboard', {
         'TicketsFromUser',
         'TicketsStatus',
         'TicketsByCategory',
-        'Categorys',
+        'Categories',
         'TicketsOngoingClient',
         'TicketsOngoingAgent'
     ],
@@ -220,7 +220,7 @@ Ext.define('Helpdesk.controller.Dashboard', {
 
         var store = this.getTicketsByCategoryStore();
         store.removeAll(true);
-        var storeCategories = this.getCategorysStore();
+        var storeCategories = this.getCategoriesStore();
         var storeTicket = this.getTicketsStore();
         storeTicket.load({
             callback: function() {

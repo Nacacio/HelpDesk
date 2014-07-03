@@ -3,17 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-Ext.define('Helpdesk.store.Prioritys', {
+Ext.define('Helpdesk.store.Categories', {
     extend: 'Helpdesk.store.BasicStore',
-    requires: ['Helpdesk.model.Priority'],
-    model: 'Helpdesk.model.Priority',
-    storeId: 'prioritys',
+    requires: ['Helpdesk.model.Category'],
+    model: 'Helpdesk.model.Category',
+    storeId: 'categories',
     autoLoad: false,
     constructor: function(config) {
         // applyIf means only copy if it doesn't exist
         Ext.applyIf(config, {
             proxy: Ext.create('Helpdesk.proxy.Base', {
-                url: 'priority'
+                url: 'category'
             })
         });
         this.callParent([config]);
