@@ -92,5 +92,5 @@ public class TicketAnswer {
     public void setDateCreation(Date dateCreation) {
         this.dateCreation = dateCreation;
     }   
-    
+
 }

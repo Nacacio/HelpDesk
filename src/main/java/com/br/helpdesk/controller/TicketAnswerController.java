@@ -9,8 +9,6 @@ import com.br.helpdesk.model.Attachments;
 import com.br.helpdesk.model.Ticket;
 import com.br.helpdesk.model.TicketAnswer;
 import com.br.helpdesk.model.User;
-import com.br.helpdesk.repository.TicketRepository;
-import com.br.helpdesk.repository.UserRepository;
 import com.br.helpdesk.service.AttachmentsService;
 import com.br.helpdesk.service.EmailService;
 import com.br.helpdesk.service.TicketAnswerService;

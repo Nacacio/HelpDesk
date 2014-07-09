@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.br.helpdesk.service;
 
 import com.br.helpdesk.model.Client;
@@ -19,31 +18,47 @@ import org.springframework.stereotype.Service;
  *
  * @author ricardo
  */
-
 @Service
 public class TicketAnswerService {
-    
+
     @Resource
     private TicketAnswerRepository repository;
-    
+
     public void setRepository(TicketAnswerRepository repository) {
         this.repository = repository;
-    }    
-    
+    }
+
     public Iterable<TicketAnswer> findAll() {
         return repository.findAll();
     }
-    
-    public TicketAnswer findOne(Long id){
+
+    public TicketAnswer findOne(Long id) {
         return repository.findOne(id);
     }
-    
-    public TicketAnswer save(TicketAnswer answer){
+
+    public TicketAnswer save(TicketAnswer answer) {
         return repository.save(answer);
     }
-    
-    public List<TicketAnswer> findAnswersByTicket(Ticket ticket){
-        return repository.getAnswersByTicket(ticket.getId());
+
+    public List<TicketAnswer> findAnswersByTicket(Ticket ticket) {
+        return repository.findAnswersByTicket(ticket.getId());
     }
-    
+
+    public TicketAnswer findLastAnswersByTicket(Ticket ticket) {
+        TicketAnswer result = null;
+        List<TicketAnswer> answers = repository.findAnswersByTicket(ticket.getId());
+        if(answers!=null && answers.size()>0){
+            for(TicketAnswer answerTemp : answers){
+                if(result==null){
+                    result = answerTemp;
+                } else {
+                    if(answerTemp.getDateCreation().getTime() >= result.getDateCreation().getTime()){
+                        result = answerTemp;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
 }
