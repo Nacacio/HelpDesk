@@ -54,8 +54,8 @@ Ext.define('Helpdesk.view.ticket.TicketAnswerPanel', {
                 {
                     xtype: 'container',
                     itemId: 'anexo',
-                    default:{
-                      class: 'shadow'      
+                    default: {
+                        class: 'shadow'
                     },
                     margin: '10 0 0 0',
                     layout: {
@@ -63,8 +63,24 @@ Ext.define('Helpdesk.view.ticket.TicketAnswerPanel', {
                     }
                 }
             ]
+        },
+        {
+            layout: 'hbox',
+            border: 0,
+            itemId: 'containerChanges',
+            hidden: true,
+            margin: '0 0 0 -30',
+            items: [
+                {
+                    xtype: 'container',
+                    itemId: 'change',
+                    margin: '10 0 0 0',
+                    layout: {
+                        type: 'vbox'
+                    }
+                }
+            ]
         }
-
     ]
 });
 

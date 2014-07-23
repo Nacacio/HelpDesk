@@ -30,6 +30,7 @@ translations = {
     CANCEL: 'Cancel',
     CAPS_LOCK_ON: "The caps lock is on",
     CATEGORY: 'Category',
+    CATEGORY_CHANGED_FROM: 'Category changed from ',
     CATEGORIES: 'Categories',
     CLICK_TO_REPORT_ERROR: 'Click here to report the error',
     CLIENT: 'Client',
@@ -78,6 +79,7 @@ translations = {
     EVOLUTION_TICKETS_BY_CATEGORY: 'Evolution tickets by category',
     EVOLUTION_TICKETS_BY_CLIENT: 'Evolution tickets by client',
     EVOLUTION_TICKETS_BY_USER: 'Evolution tickets by user',
+    ESTIMATED_TIME_CHANGED_FROM: 'Estimated time changed from ',
     //############################################## [ F ] ##############################################//
 
     FIRST_TIME_REQUESTING_SERVICE: 'Ordering Service for the first time?',
@@ -175,6 +177,7 @@ translations = {
     PROCYMO_LOGO: '/resources/img/logoProcymo.png',
     PRIORITY: 'Priority',
     PARTIAL: '(Partial)',
+    PRIORITY_CHANGED_FROM: 'Priority changed from ',
     //############################################## [ Q ] ##############################################//
 
     QUANTITY_OF_CREATED_TICKETS: 'Quantity of created tickets',
@@ -197,6 +200,7 @@ translations = {
     REQUIRED_STEPS: 'Describe the steps to reproduce the error!',
     REQUIRED_SUBJECT: 'Describe the subject!',
     REQUIRED_DESCRIPTION: 'Fill out the description!',
+    RESPONSIBLE_CHANGED_FROM: 'Responsible changed from ',
     //############################################## [ S ] ##############################################//
 
     SAVE: 'Save',
@@ -264,6 +268,8 @@ translations = {
     TICKETS_OPEN_OF_CLIENT: 'tickets opened of client',
     TICKET_CLOSED: 'Ticket closed',
     TICKET_OPENED: 'Ticket opened',
+    TICKET_REOPENED: 'Ticket reopened',
+    TICKET_PENT: 'Ticket pent',
     //############################################## [ U ] ##############################################//
 
     UPDATED_WITH_SUCCESS: 'updated with success',

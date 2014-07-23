@@ -30,6 +30,7 @@ translations = {
     CANCEL: 'Cancelar',
     CAPS_LOCK_ON: "O Caps lock está ligado",
     CATEGORY: 'Categoria',
+    CATEGORY_CHANGED_FROM: 'Categoria alterada de ',
     CATEGORIES: 'Categorias',
     CLICK_TO_REPORT_ERROR: 'Clique aqui para reportar o erro',
     CLIENT: 'Cliente',
@@ -78,6 +79,7 @@ translations = {
     EVOLUTION_TICKETS_BY_CATEGORY: 'Evolução dos tickets por categoria',
     EVOLUTION_TICKETS_BY_CLIENT: 'Evolução dos tickets pelo cliente',
     EVOLUTION_TICKETS_BY_USER: 'Evolução dos tickets pelo usuário',
+    ESTIMATED_TIME_CHANGED_FROM: 'Prazo estimado alterado de ',
     //############################################## [ F ] ##############################################//
 
     FIRST_TIME_REQUESTING_SERVICE: 'Solicitando Atendimento pela primeira vez?',
@@ -164,7 +166,7 @@ translations = {
     OPEN: 'Em aberto',
     OPEN_FROM: 'Em aberto',
     OPEN_TO: 'Em aberto',
-    OPEN_TICKET: 'Abrir ticket',
+    OPEN_TICKET: 'Abrir ticket',    
     //############################################## [ P ] ##############################################//
 
     PASSWORD: 'Senha',
@@ -175,6 +177,7 @@ translations = {
     PROCYMO_LOGO: '/resources/img/logoProcymo.png',
     PRIORITY: 'Prioridade',
     PARTIAL: '(Parcial)',
+    PRIORITY_CHANGED_FROM: 'Prioridade alterada de ',
     //############################################## [ Q ] ##############################################//
 
     QUANTITY_OF_CREATED_TICKETS: 'Quantidade de Tickets Criados',
@@ -197,6 +200,7 @@ translations = {
     REQUIRED_STEPS: 'Descreva os passos para reproduzir o erro!',
     REQUIRED_SUBJECT: 'Descreva o assunto!',
     REQUIRED_DESCRIPTION: 'Preencha a descrição!',
+    RESPONSIBLE_CHANGED_FROM: 'Responsável alterado de ',
     //############################################## [ S ] ##############################################//
 
     SAVE: 'Salvar',
@@ -265,6 +269,8 @@ translations = {
     TICKETS_OPEN_OF_CLIENT: 'tickets abertos do cliente',
     TICKET_CLOSED: 'Ticket fechado',
     TICKET_OPENED: 'Ticket aberto',
+    TICKET_REOPENED: 'Ticket reaberto',
+    TICKET_PENT: 'Ticket encerrado',
     //############################################## [ U ] ##############################################//
 
     UPDATED_WITH_SUCCESS: 'atualizado(a) com sucesso',

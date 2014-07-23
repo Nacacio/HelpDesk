@@ -162,7 +162,7 @@
     border-width: 0.1em 0px 0.1em 0px;
     border-color: #BBBBBB;    
     margin-bottom: -0.1em;    
-    z-index: 9999;//para sobrepor o botão a todos os outros elementos
+    z-index: 9999;//para sobrepor o bot�o a todos os outros elementos
 
     
     
@@ -406,7 +406,7 @@
 
 .panel-answer .x-panel-body{
     color: black;
-    background-color:#F5F5F5 ; 
+    background-color: #F5F5F5 !important; 
     font-size: 13px;
     border: 0;
     padding: 10px;

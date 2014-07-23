@@ -18,8 +18,8 @@ Ext.define('Helpdesk.controller.Ticket', {
     views: [
         'ticket.Ticket', 'ticket.NewTicket', 'ticket.TicketDetails', 'ticket.TicketAnswerPanel'
     ],
-    stores: ['Tickets', 'TicketAnswers', 'Clients', 'UsersAdmin', 'Reports'],
-    requires: ['Helpdesk.model.Ticket', 'Helpdesk.store.Tickets', 'Helpdesk.store.TicketAnswers', 'Helpdesk.store.Clients', 'Helpdesk.store.UsersAdmin', 'Helpdesk.store.Reports'],
+    stores: ['Tickets', 'TicketAnswers', 'Clients', 'UsersAdmin', 'Reports', 'ChangesTicket'],
+    requires: ['Helpdesk.model.Ticket', 'Helpdesk.store.Tickets', 'Helpdesk.store.TicketAnswers', 'Helpdesk.store.Clients', 'Helpdesk.store.UsersAdmin', 'Helpdesk.store.Reports', 'Helpdesk.store.ChangesTicket'],
     init: function() {
         this.control({
             'ticketsidemenu button': {
@@ -142,7 +142,7 @@ Ext.define('Helpdesk.controller.Ticket', {
 
             var scope = this;
 
-            var record = button.up('form#ticketMainView').getRecord();            
+            var record = button.up('form#ticketMainView').getRecord();
             record.dirty = true;
             var store = this.getTicketsStore();
             if (button.id === 'btnCloseTkt') {
@@ -233,7 +233,7 @@ Ext.define('Helpdesk.controller.Ticket', {
         record.data.stepsTicket = form.down('textarea#stepsTicket').getValue();
 
         var estimateTime = form.down('datefield#estimateTime').getValue();
-        record.data.estimateTime = estimateTime;        
+        record.data.estimateTime = estimateTime;
 
         record.dirty = true;
         var store = this.getTicketsStore();
@@ -738,14 +738,14 @@ Ext.define('Helpdesk.controller.Ticket', {
         if (ticketView !== null && record !== null) {
 
             var ticket = record.data;
-            
+
             ticketView.down('form#ticketMainView').loadRecord(record);
 
             //text titulo
             ticketView.down('text#tktTitle').setText(translations.TICKET + ' #' + ticket.id + ' - ' + ticket.title);
-            
+
             //text status
-            if (ticket.isOpen){
+            if (ticket.isOpen) {
                 ticketView.down('text#tktStatus').setText(translations.TICKET_TITLE_OPENED);
             } else {
                 ticketView.down('text#tktStatus').setText(translations.TICKET_TITLE_CLOSED);
@@ -761,12 +761,12 @@ Ext.define('Helpdesk.controller.Ticket', {
 
             //text categoria
             ticketView.down('text#tktCategory').setText(translations[ticket.categoryName]);
-            
+
             //text prioridade
             ticketView.down('text#tktPriority').setText(translations[ticket.priorityName]);
 
             //text prazo estimado
-            if (ticket.estimateTime !== null) {                
+            if (ticket.estimateTime !== null) {
                 var dateTemp = new Date(ticket.estimateTime);
                 dateTemp = Ext.Date.format(dateTemp, translations.FORMAT_JUST_DATE);
                 ticketView.down('text#tktEstimatedTime').setText(dateTemp);
@@ -780,7 +780,7 @@ Ext.define('Helpdesk.controller.Ticket', {
             } else {
                 ticketView.down('text#tktResponsible').setText(translations.NO_RESPONSIBLE);
             }
-            
+
             //text passos para reproduzir o erro
             ticketView.down('text#tktSteps').setText(ticket.stepsTicket);
 
@@ -799,7 +799,7 @@ Ext.define('Helpdesk.controller.Ticket', {
                     resposta.down('label#corpo').text = ticket.description;
                     resposta.down('hiddenfield#id').text = ticket.id;
                     resposta.down('hiddenfield#idAnswer').text = 0;
-                    
+
                     //adicionando o primeiro panel a lista de panels de respostas.
                     answersTotal[0] = resposta;
                     for (i = 0; i < answerStore.getCount(); i++) {
@@ -814,12 +814,12 @@ Ext.define('Helpdesk.controller.Ticket', {
                         resposta.down('label#corpo').text = answerTemp.description;
                         resposta.down('hiddenfield#id').text = ticket.id;
                         resposta.down('hiddenfield#idAnswer').text = answerTemp.id;
-                        
+
                         //adicionado o panel de resposta na última posição da lista.
                         answersTotal[answersTotal.length] = resposta;
                     }
                     scope.resetMultiupload(ticketView);
-                    scope.getFilesFromRecord(ticketView, ticket, answersTotal);
+                    scope.formatAnswerWithFilesAndChanges(ticketView, ticket, answersTotal);
                 }
             });
         }
@@ -916,107 +916,210 @@ Ext.define('Helpdesk.controller.Ticket', {
      * @param {type} ticketView
      * @returns {undefined}
      */
-    resetMultiupload: function(ticketView){
-                  // removendo e adicionando um novo item 'multiupload' para zerar os anexos inseridos anteriormente
-            var multiUpload = Ext.create('Helpdesk.util.MultiUpload', {
-                padding: '0 0 10 0'
-            });
-            var panel = ticketView.down('panel #panelElementsNewAnswer');
-            var i = 0;
-            var index;
-            panel.items.each(function(item) {
-                // encontrando o item 'multiupload' e setando o index para a posição certa de inseri-lo novamente
-                if (item.xtype === 'multiupload') {
-                    index = i;
-                    panel.remove(item);
-                }
-                i++;
-            });
-            ticketView.down('panel #panelElementsNewAnswer').insert(index, multiUpload);
-            ticketView.down('panel #panelElementsNewAnswer').doLayout();  
+    resetMultiupload: function(ticketView) {
+        // removendo e adicionando um novo item 'multiupload' para zerar os anexos inseridos anteriormente
+        var multiUpload = Ext.create('Helpdesk.util.MultiUpload', {
+            padding: '0 0 10 0'
+        });
+        var panel = ticketView.down('panel #panelElementsNewAnswer');
+        var i = 0;
+        var index;
+        panel.items.each(function(item) {
+            // encontrando o item 'multiupload' e setando o index para a posição certa de inseri-lo novamente
+            if (item.xtype === 'multiupload') {
+                index = i;
+                panel.remove(item);
+            }
+            i++;
+        });
+        ticketView.down('panel #panelElementsNewAnswer').insert(index, multiUpload);
+        ticketView.down('panel #panelElementsNewAnswer').doLayout();
     },
     /**
-     * Método que insere os arquivos pra download nos panels de respostas.
-     * O parâmetro 'answersTotal' são os panels já prontos com os ids e etc faltando apenas os arquivos.
-     * Ao final do método, os panels são colocados na view.
+     * Método para inserir no painel de resposta os anexos e mudanças de tickets ocorridas. 
      * 
      * @param {type} ticketView
      * @param {type} record
      * @param {type} answersTotal
      * @returns {undefined}
      */
-    getFilesFromRecord: function(ticketView, record, answersTotal) {
-        var scope = this;
+    formatAnswerWithFilesAndChanges: function(ticketView, record, answersList) {
         if (ticketView !== null && record !== null) {
-            
             var ticket = Ext.ModelManager.create(record, 'Helpdesk.model.Ticket');
-            var ticketId = ticket.data.id;
 
-            Ext.Ajax.request({
-                url: 'ticket/' + ticketId + '/files',
-                method: 'GET',
-                success: function(response, opts) {
-                    if (response.responseText !== '') {
-                        var responseJSON = Ext.decode(response.responseText);
-                        //var answersList = ticketView.down('panel#tktAnswers').items.items;                        
-                        var answersList = answersTotal;
-                        for (var i = 0; i < answersList.length; i++) {
-                            var answer = answersList[i];
-                            var idAnswer = answer.down('hiddenfield#idAnswer').text;
-                            var idTicket = answer.down('hiddenfield#id').text;
-                            var fileContainer = answer.down('container#anexo');
-                            for (var j = 0; j < responseJSON.length; j++) {
-                                var file = responseJSON[j];
-                                var fileIdTicket = file.fileTicketId;
-                                var fileIdAnswer = file.fileTicketAnswerId;
-                                var fileName = file.fileName;
-                                var fileId = file.fileId;
-                                var insertAnexo = false;
-                                if (idAnswer === 0) {
-                                    if (fileIdAnswer === '' && parseInt(fileIdTicket) === parseInt(idTicket)) {
-                                        insertAnexo = true;
-                                    }
+            // inserindo os anexos nas respostas.
+            answersList = this.getFilesFromTicket(ticket, answersList);
+
+            // inserindo as mudanças de ticket nas respostas.
+            answersList = this.getChangesFromTicket(ticket, answersList);
+
+            if (answersList !== null && answersList.length > 0) {
+                for (var i = 0; i < answersList.length; i++) {
+                    ticketView.down('panel#tktAnswers').items.add(answersList[i]);
+                }
+                ticketView.down('panel#tktAnswers').doLayout();
+                //expando panel da última resposta inserida.
+                var answers = ticketView.down('panel#tktAnswers').items;
+                var itemsLength = answers.length;
+                if (itemsLength > 0) {
+                    answers.items[itemsLength - 1].expand(true);
+                    answers.items[itemsLength - 1].el.setStyle('margin', '0 0 10px 0');
+                }
+                ticketView.down('panel#tktAnswers').doLayout();
+            }
+        }
+    },
+    /**
+     * Método que insere os anexos do ticket e das respostas nos painéis.
+     * O parâmetro 'answersList' são os paineis de respostas já prontos com os ids e faltando os arquivos.
+     * Ao final retorna todos os paineis com os arquivos anexados a eles.
+     * 
+     * @param {type} ticket
+     * @param {type} answersList
+     * @returns answersList
+     */
+    getFilesFromTicket: function(ticket, answersList) {
+        var scope = this;
+        var ticketId = ticket.data.id;
+
+        Ext.Ajax.request({
+            url: 'attachments/' + ticketId + '/attachments',
+            method: 'GET',
+            success: function(response, opts) {
+                if (response.responseText !== '') {
+                    var responseJSON = Ext.decode(response.responseText);
+                    for (var i = 0; i < answersList.length; i++) {
+                        var answer = answersList[i];
+                        var idAnswer = answer.down('hiddenfield#idAnswer').text;
+                        var idTicket = answer.down('hiddenfield#id').text;
+                        var fileContainer = answer.down('container#anexo');
+                        for (var j = 0; j < responseJSON.length; j++) {
+                            var file = responseJSON[j];
+                            var fileIdTicket = file.fileTicketId;
+                            var fileIdAnswer = file.fileTicketAnswerId;
+                            var fileName = file.fileName;
+                            var fileId = file.fileId;
+                            var insertAnexo = false;
+                            if (idAnswer === 0) {
+                                if (fileIdAnswer === '' && parseInt(fileIdTicket) === parseInt(idTicket)) {
+                                    insertAnexo = true;
                                 }
-                                else {
-                                    if (parseInt(fileIdAnswer) === parseInt(idAnswer)) {
-                                        insertAnexo = true;
-                                    }
+                            }
+                            else {
+                                if (parseInt(fileIdAnswer) === parseInt(idAnswer)) {
+                                    insertAnexo = true;
                                 }
-                                if (insertAnexo) {
-                                    var containerAnexos = answer.down('container#containerAttachments');
-                                    containerAnexos.setVisible(true);
-                                    var linkButton = {
-                                        xtype: 'button',
-                                        text: fileName,
-                                        fileId: fileId,
-                                        cls: 'btn-linkbutton-custom',
-                                        iconCls: 'clip',
-                                        listeners: {
-                                            click: function(button, e, eOpts) {
-                                                scope.downloadFile(button.fileId);
-                                            }
+                            }
+                            if (insertAnexo) {
+                                var containerAnexos = answer.down('container#containerAttachments');
+                                containerAnexos.setVisible(true);
+                                var linkButton = {
+                                    xtype: 'button',
+                                    text: fileName,
+                                    fileId: fileId,
+                                    cls: 'btn-linkbutton-custom',
+                                    iconCls: 'clip',
+                                    listeners: {
+                                        click: function(button, e, eOpts) {
+                                            scope.downloadFile(button.fileId);
                                         }
-                                    };
-                                    fileContainer.insert(linkButton);
-                                }
+                                    }
+                                };
+                                fileContainer.insert(linkButton);
                             }
                         }
                     }
                 }
-            });
-            for (var i = 0; i < answersTotal.length; i++) {
-                ticketView.down('panel#tktAnswers').items.add(answersTotal[i]);
             }
-            ticketView.down('panel#tktAnswers').doLayout();
-            //expando panel da última resposta inserida.
-            var answers = ticketView.down('panel#tktAnswers').items;
-            var itemsLength = answers.length;
-            if (itemsLength > 0) {
-                answers.items[itemsLength - 1].expand(true);
-                answers.items[itemsLength - 1].el.setStyle('margin', '0 0 10px 0');
+        });
+        return answersList;
+    },
+    /**
+     * Método que insere as mudanças do ticket nos painéis.
+     * O parâmetro 'answersList' são os paineis de respostas já prontos com os ids e faltando as mudanças.
+     * Ao final retorna todos os paineis com as mudanças já anexadas a eles.
+     * 
+     * @param {type} ticket
+     * @param {type} answersList
+     * @returns answersList
+     */
+    getChangesFromTicket: function(ticket, answersList) {
+        var scope = this;
+        var ticketId = ticket.data.id;
+        var changesTicketStore = this.getChangesTicketStore();
+        changesTicketStore.findByTicket(function(result) {
+            if (result !== null && result.length > 0) {
+                for (var i = 0; i < answersList.length; i++) {
+                    var answer = answersList[i];
+                    var idAnswer = answer.down('hiddenfield#idAnswer').text;
+                    var changesContainer = answer.down('container#change');
+                    var insertChange = false;
+                    var item;
+                    for (var j = 0; j < result.length; j++) {
+                        var change = result[j];
+                        insertChange = false;
+                        // testa se a mudança foi antes de alguma resposta e se está no painel de resposta com a descrição do ticket
+                        // ou se a mudança foi na resposta atual.
+                        if ((idAnswer === 0 && change.answer === null)
+                                || ((idAnswer !== 0 && change.answer !== null) && (parseInt(idAnswer) === (parseInt(change.answer))))) {
+                            insertChange = true;
+                        }
+                        if (insertChange) {
+                            var containerChanges = answer.down('container#containerChanges');
+                            containerChanges.setVisible(true);
+                            item = {
+                                xtype: 'panel',
+                                width: 700,
+                                height: 60,
+                                bodyStyle: {"background-color": "#EEE9E9 !important"},
+                                style: {
+                                    'border': '1px dotted #708090'
+                                },
+                                items: [
+                                    {
+                                        xtype: 'label',
+                                        text: j
+                                    }
+                                ]
+                            };
+                            changesContainer.insert(item);
+                        }
+                    }
+                }
             }
-            ticketView.down('panel#tktAnswers').doLayout();
+        }, ticketId);
+        return answersList;
+    },
+    getTextWithChangesTicket: function(change) {
+        var text = '';
+        if (change !== null) {
+            if (change.newResponsible !== null || change.olderResponsible !== null) {
+                text += translations.RESPONSIBLE_CHANGED_FROM;
+                if(change.olderResponsible !== null){
+                    text += "\""+change.olderResponsibleName+"\"";
+                } else {
+                    text += "\""+translations.NO_RESPONSIBLE+"\"";
+                }
+                text += "";
+            }
+
+            if (change.newCategory !== null || change.olderCategory !== null) {
+
+            }
+
+            if (change.newPriority !== null || change.olderPriority !== null) {
+
+            }
+
+            if (change.newEstimatedTime !== null || change.olderEstimatedTime !== null) {
+
+            }
+
+            if (change.newStateTicket !== null || change.olderStateTicket !== null) {
+
+            }
         }
+        return text;
     },
     loadStoreBasic: function(urlSimples) {
         //loadStore to GRID
@@ -1051,7 +1154,7 @@ Ext.define('Helpdesk.controller.Ticket', {
             tag: 'iframe',
             id: 'downloadIframe',
             style: 'display:none;',
-            src: 'ticket/files/' + fileId
+            src: 'attachments/attachments/' + fileId
         });
     },
     submitValues: function(multiupload) {
@@ -1062,7 +1165,7 @@ Ext.define('Helpdesk.controller.Ticket', {
             var userLogadoText = Ext.DomHelper.append(Ext.getBody(), '<input type="text" name="username" value="' + Helpdesk.Globals.user + '">');
             //Criação do form para upload de arquivos
             var formId = 'fileupload-form-' + time;
-            var formEl = Ext.DomHelper.append(Ext.getBody(), '<form id="' + formId + '" method="POST" action="ticket/files" enctype="multipart/form-data" class="x-hide-display"></form>');
+            var formEl = Ext.DomHelper.append(Ext.getBody(), '<form id="' + formId + '" method="POST" action="attachments/attachments" enctype="multipart/form-data" class="x-hide-display"></form>');
             formEl.appendChild(userLogadoText);
             Ext.each(multiupload.filesListArchive, function(fileField) {
                 formEl.appendChild(fileField);

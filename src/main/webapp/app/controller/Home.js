@@ -77,7 +77,6 @@ Ext.define('Helpdesk.controller.Home', {
             btnReports.setVisible(true);
             this.getMainHeaderSettings().setVisible(true);
         }
-
     },
     onError: function(error) {
         this.getServerError().update(error);

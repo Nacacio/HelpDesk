@@ -2,7 +2,7 @@ Ext.define('Helpdesk.controller.TicketAnswer', {
     requires: ['Helpdesk.store.TicketAnswers'],
     extend: 'Ext.app.Controller',
     stores: ['TicketAnswers'],
-    controllers: ['Ticket'],  
+    controllers: ['Ticket'],
     views: [
         'ticket.TicketDetails'
     ],
@@ -42,7 +42,7 @@ Ext.define('Helpdesk.controller.TicketAnswer', {
             var userLogadoText = Ext.DomHelper.append(Ext.getBody(), '<input type="text" name="username" value="' + Helpdesk.Globals.user + '">');
             //Criação do form para upload de arquivos
             var formId = 'fileupload-form-' + time;
-            var formEl = Ext.DomHelper.append(Ext.getBody(), '<form id="' + formId + '" method="POST" action="ticket/files" enctype="multipart/form-data" class="x-hide-display"></form>');
+            var formEl = Ext.DomHelper.append(Ext.getBody(), '<form id="' + formId + '" method="POST" action="attachments/attachments" enctype="multipart/form-data" class="x-hide-display"></form>');
             formEl.appendChild(userLogadoText);
             Ext.each(multiupload.filesListArchive, function(fileField) {
                 formEl.appendChild(fileField);
@@ -75,7 +75,7 @@ Ext.define('Helpdesk.controller.TicketAnswer', {
 
             //Clear Fields
             multiupload.filesListArchive.length = 0;
-            multiupload.fileslist.length = 0;         
+            multiupload.fileslist.length = 0;
             multiupload.doLayout();
         }
         else {
@@ -118,14 +118,14 @@ Ext.define('Helpdesk.controller.TicketAnswer', {
         }
     },
     addNewAnswerInPanel: function(answer, panel) {
-        
+
         var scope = this;
-        
+
         var answerStore = this.getTicketAnswersStore();
         answerStore.proxy.url = 'ticket-answer/find-by-ticket/' + answer.data.ticketId;
         answerStore.load({
             callback: function() {
-                var answersTotal = new Array();
+                var answersList = new Array();
                 var dateTemp = new Date(answer.data.ticket.startDate);
                 dateTemp = Ext.Date.format(dateTemp, translations.FORMAT_DATE_TIME);
                 panel.removeAll();
@@ -136,7 +136,7 @@ Ext.define('Helpdesk.controller.TicketAnswer', {
                 resposta.down('label#corpo').text = answer.data.description;
                 resposta.down('hiddenfield#id').text = answer.data.id;
                 resposta.down('hiddenfield#idAnswer').text = 0;
-                answersTotal[0] = resposta;
+                answersList[0] = resposta;
                 for (i = 0; i < answerStore.getCount(); i++) {
                     var answerTemp = answerStore.data.items[i].data;
                     var name = answerTemp.user.name;
@@ -149,10 +149,14 @@ Ext.define('Helpdesk.controller.TicketAnswer', {
                     resposta.down('label#corpo').text = answerTemp.description;
                     resposta.down('hiddenfield#id').text = answer.data.id;
                     resposta.down('hiddenfield#idAnswer').text = answerTemp.id;
-                    answersTotal[answersTotal.length] = resposta;
+                    answersList[answersList.length] = resposta;
                 }
-                scope.getTicketController().resetMultiupload(panel.up().up());
-                scope.getTicketController().getFilesFromRecord(panel.up().up(), answer.data.ticket, answersTotal);
+
+                var ticketView = panel.up().up();
+                var ticket = answer.data.ticket;
+
+                scope.getTicketController().resetMultiupload(ticketView);
+                scope.getTicketController().formatAnswerWithFilesAndChanges(ticketView, ticket, answersList);
             }
         });
     }
