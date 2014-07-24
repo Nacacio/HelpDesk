@@ -43,10 +43,10 @@ Ext.define('Helpdesk.view.reports.Reports', {
                 },
                 {
                     xtype: 'reportsbyclient'
-                },
-                {
-                    xtype: 'reportsexportdata'
                 }
+//                ,{
+//                    xtype: 'reportsexportdata'
+//                }
             ]
         }]
 });

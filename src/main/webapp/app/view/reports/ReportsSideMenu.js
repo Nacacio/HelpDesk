@@ -30,10 +30,10 @@ Ext.define('Helpdesk.view.reports.ReportsSideMenu', {
         {                    
             itemId:'buttonTicketsByClient',
             text: translations.TICKETS_BY_CLIENT
-        },
-        {                    
-            itemId:'buttonExportData',
-            text: translations.EXPORT_DATA
         }
+//        ,{                    
+//            itemId:'buttonExportData',
+//            text: translations.EXPORT_DATA
+//        }
     ]
 });

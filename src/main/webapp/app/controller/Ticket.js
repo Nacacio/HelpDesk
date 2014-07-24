@@ -891,13 +891,13 @@ Ext.define('Helpdesk.controller.Ticket', {
 
         //set prazo datefield       
         var estimatedText = ticketView.down('#tktEstimatedTime').text;
+        var estimatedDateField = ticketView.down('#estimateTime');
         if (estimatedText !== '' && estimatedText !== translations.NO_DEADLINE_DEFINED) {
-            //var estimatedDate = new Date(estimatedText);
-            var estimatedDateField = ticketView.down('#estimateTime');
+            //var estimatedDate = new Date(estimatedText);            
             //estimatedDateField.setValue(estimatedDate);
             estimatedDateField.setValue(estimatedText);
         } else {
-            estimatedDateField.setValue(null)
+            estimatedDateField.setValue(null);
         }
 
         //set steps textarea

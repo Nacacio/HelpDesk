@@ -91,10 +91,11 @@ Ext.define('Helpdesk.controller.TicketAnswer', {
         var panel = button.up('container');
         var form = panel.up('form');
         var tktDetails = form.up();
+        var tela = tktDetails.up().up().up().up();
         var panelTktAnswers = tktDetails.down('form').down('#tktAnswers');
         var txtNewAnswer = form.down('textarea#tktNewAnswer');
         if (txtNewAnswer.getValue() !== "") {
-            txtNewAnswer.setLoading(translations.SAVING_REPLY);
+            tela.setLoading(translations.SAVING_REPLY);
             var store = this.getTicketAnswersStore();
             var record = form.getRecord();
             var answer = new Helpdesk.model.TicketAnswer;
@@ -107,7 +108,7 @@ Ext.define('Helpdesk.controller.TicketAnswer', {
             store.sync({
                 callback: function(result) {
                     store.proxy.url = 'ticket-answer';
-                    txtNewAnswer.setLoading(false);
+                    tela.setLoading(false);
                     txtNewAnswer.setValue("");
                     scope.addNewAnswerInPanel(answer, panelTktAnswers);
                 }

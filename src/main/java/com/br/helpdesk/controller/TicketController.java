@@ -297,7 +297,7 @@ public class TicketController {
         emails = emailService.getListEmailsToSend(olderTicket, ticket, null);
         if (emails.size() > 0) {
             if (olderTicket != null) {
-                emailService.sendEmailEditTicket(olderTicket, olderTicket, emails);
+                emailService.sendEmailEditTicket(olderTicket, ticket, emails);
             } else {
                 emailService.sendEmailNewTicket(ticket, emails);
             }
