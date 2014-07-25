@@ -54,6 +54,7 @@ translations = {
     CREATED: 'Created',
     CLOSEDS: 'Closed',
     CLOSE_TICKET: 'Close Ticket',
+    COMMENT_INTERNAL_BY: 'Comment internal by',
     //############################################## [ D ] ##############################################//
 
     DELETE: 'Delete',

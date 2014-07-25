@@ -54,6 +54,7 @@ translations = {
     CREATED: 'Criados',
     CLOSEDS: 'Fechados',
     CLOSE_TICKET: 'Fechar Ticket',
+    COMMENT_INTERNAL_BY: 'Comentário interno por',
     //############################################## [ D ] ##############################################//
 
     DELETE: 'Remover',
@@ -83,7 +84,7 @@ translations = {
     //############################################## [ F ] ##############################################//
 
     FIRST_TIME_REQUESTING_SERVICE: 'Solicitando Atendimento pela primeira vez?',
-    FROM: 'de',
+    FROM: 'para',
     FORMAT_DATE: 'pt-BR',
     FORMAT_DATE_TIME: 'd/m/Y H:i',    
     FORMAT_JUST_DATE: 'd/m/Y',
@@ -219,8 +220,8 @@ translations = {
     SUBJECT: 'Assunto',
     SELECT_FILE: 'Selecione um arquivo...',
     SEE_TICKETS_WITHOUT_RESPONSIBLE: 'Ver tickets sem responsável',
+	SEE_TICKETS_ON_GOING:'Ver tickets em andamento',
     SEE_TICKETS_LATE: 'Ver tickets atrasados',
-    SEE_TICKETS_ON_GOING:'Ver tickets em andamento',
     SEE_TICKETS_WITHOUT_CATEGORY: 'Ver tickets sem categoria',
     SEE_FULL_REPORT: '(Ver relatório completo)',
     SEARCH: 'Busca',

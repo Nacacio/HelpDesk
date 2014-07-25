@@ -101,7 +101,6 @@ Ext.define('Helpdesk.controller.Ticket', {
         this.getCardPanel().getLayout().setActiveItem(Helpdesk.Globals.ticketview);
         this.getTicketEditContainer().getLayout().setActiveItem(Helpdesk.Globals.ticket_details_view);
         if (typeof this.getTicketPanel() !== 'undefined') {
-            console.log('here');
             if (parseInt(Helpdesk.Globals.idUserGroup) === parseInt(Helpdesk.Globals.idAdminGroup)) {
                 //Verifica se algum botão já estava marcado e busca os tickets de acordo com a seleção correspondente
                 if(this.getTicketSideMenu().down('#buttonAll').pressed){
@@ -127,7 +126,7 @@ Ext.define('Helpdesk.controller.Ticket', {
                 else{
                     this.getMyTickets();
                     this.getTicketSideMenu().down('#buttonMyTickets').toggle(true);
-                }                
+                }            
             } else {
                 this.getTicketsOpened();
                 this.getTicketSideMenu().down('#buttonOpened').toggle(true);
@@ -258,7 +257,6 @@ Ext.define('Helpdesk.controller.Ticket', {
 
         var estimateTime = form.down('datefield#estimateTime').getValue();
         record.data.estimateTime = estimateTime;
-
         record.dirty = true;
         var store = this.getTicketsStore();
         /**
@@ -271,7 +269,6 @@ Ext.define('Helpdesk.controller.Ticket', {
             record.data.responsible = null;
         }
         //---------------------------------------------------------------------
-        console.log(record.data);
         store.add(record);
         if (store.getModifiedRecords().length > 0) {
             store.sync({
@@ -746,6 +743,7 @@ Ext.define('Helpdesk.controller.Ticket', {
      */
     ticketClicked: function(grid, record, item, index, e, eOpts) {
         var ticketView = this.getTicketCardContainer().getLayout().setActiveItem(Helpdesk.Globals.ticket_details);
+       // ticketView.setLoading(translations.LOADING);
         ticketView.down('form#ticketMainView').loadRecord(Ext.create('Helpdesk.model.Ticket'));
         this.setValuesFromView(ticketView, record);
     },
@@ -872,7 +870,7 @@ Ext.define('Helpdesk.controller.Ticket', {
             //Seta a visibilidade do botão de edição do ticket
             ticketView.down('button#editTicket').hide();
             ticketView.down('panel#panelElementsNewAnswer').hide();
-        }
+        }        
     },
     /*
      * Muda CardContainer para a view de Edição do ticket.
@@ -1081,28 +1079,81 @@ Ext.define('Helpdesk.controller.Ticket', {
                     var item;
                     for (var j = 0; j < result.length; j++) {
                         var change = result[j];
+                        var ticketAnswer = change.data.ticketAnswer;
                         insertChange = false;
                         // testa se a mudança foi antes de alguma resposta e se está no painel de resposta com a descrição do ticket
                         // ou se a mudança foi na resposta atual.
-                        if ((idAnswer === 0 && change.answer === null)
-                                || ((idAnswer !== 0 && change.answer !== null) && (parseInt(idAnswer) === (parseInt(change.answer))))) {
+                        if ((idAnswer === 0 && ticketAnswer === null)
+                                || ((idAnswer !== 0 && ticketAnswer !== null) && (parseInt(idAnswer) === (parseInt(ticketAnswer.id))))) {
                             insertChange = true;
                         }
                         if (insertChange) {
                             var containerChanges = answer.down('container#containerChanges');
                             containerChanges.setVisible(true);
+                            var text = scope.getTextWithChangesTicket(change);
+                            var textResponsible = translations.COMMENT_INTERNAL_BY + " ";
+                            var responsible = change.data.userName;
+                            var date = new Date(change.data.dateCreation);
+                            date = " - " + Ext.Date.format(date, translations.FORMAT_DATE_TIME);
                             item = {
                                 xtype: 'panel',
                                 width: 700,
                                 height: 60,
-                                bodyStyle: {"background-color": "#EEE9E9 !important"},
+                                defaults: {
+                                    bodyStyle: {"background-color": "#EEE9E9 !important"}
+                                },
                                 style: {
                                     'border': '1px dotted #708090'
                                 },
+                                margin: '0 0 8 0',
                                 items: [
                                     {
-                                        xtype: 'label',
-                                        text: j
+                                        layout: {
+                                            type: 'vbox'
+                                        },
+                                        width: 700,
+                                        height: 60,
+                                        margin: '-10 0 0 -30',
+                                        defaults: {
+                                            bodyStyle: {"background-color": "#EEE9E9 !important"}
+                                        },
+                                        items: [
+                                            {
+                                                xtype: 'box',
+                                                autoEl: {html: text}
+                                            },
+                                            {
+                                                layout: {
+                                                    type: 'hbox'
+                                                },
+                                                defaults: {
+                                                    style: {
+                                                        'font-size': '11px'
+                                                    }
+                                                },
+                                                margin: '-2 0 0 -30',
+                                                items: [
+                                                    {
+                                                        xtype: 'label',
+                                                        text: textResponsible
+                                                    },
+                                                    {
+                                                        xtype: 'label',
+                                                        margin: '0 0 0 3',
+                                                        style: {
+                                                            'font-size': '11px',
+                                                            'font-weight': 'bold'
+                                                        },
+                                                        text: responsible
+                                                    },
+                                                    {
+                                                        xtype: 'label',
+                                                        margin: '0 0 0 3',
+                                                        text: date
+                                                    }
+                                                ]
+                                            }
+                                        ]
                                     }
                                 ]
                             };
@@ -1114,36 +1165,106 @@ Ext.define('Helpdesk.controller.Ticket', {
         }, ticketId);
         return answersList;
     },
-    getTextWithChangesTicket: function(change) {
+    getTextWithChangesTicket: function(param) {
         var text = '';
-        if (change !== null) {
+        if (param !== null) {
+            var change = param.data;
+            var lengthText = 0;
+
+            // formatando texto com mudança de estado ticket.
+            if (change.newStateTicket !== null) {
+                if (change.newStateTicket !== null) {
+                    if (change.newStateTicket === false) {
+                        text += translations.TICKET_CLOSED;
+                    } else {
+                        text += translations.TICKET_REOPENED;
+                    }
+                    text += ". ";
+                }
+            }
+            lengthText += text.length;
+
+            // formatando texto de mudança de responsável.
             if (change.newResponsible !== null || change.olderResponsible !== null) {
                 text += translations.RESPONSIBLE_CHANGED_FROM;
-                if(change.olderResponsible !== null){
-                    text += "\""+change.olderResponsibleName+"\"";
+                if (change.olderResponsible !== null) {
+                    text += "\"" + change.olderResponsibleName + "\" ";
                 } else {
-                    text += "\""+translations.NO_RESPONSIBLE+"\"";
+                    text += "\"" + translations.NO_RESPONSIBLE + "\" ";
                 }
-                text += "";
+                text += translations.FROM;
+                if (change.newResponsible !== null) {
+                    text += " \"" + change.newResponsibleName + "\"";
+                } else {
+                    text += " \"" + translations.NO_RESPONSIBLE + "\"";
+                }
+                text += ". ";
             }
+            lengthText += text.length;
 
+            // formatando texto de mudança de categoria
             if (change.newCategory !== null || change.olderCategory !== null) {
-
+                text += translations.CATEGORY_CHANGED_FROM;
+                if (change.olderCategory !== null) {
+                    text += "\"" + translations[change.olderCategoryName] + "\" ";
+                } else {
+                    text += "\"" + translations.NO_CATEGORY + "\" ";
+                }
+                text += translations.FROM;
+                if (change.newCategory !== null) {
+                    text += " \"" + translations[change.newCategoryName] + "\"";
+                } else {
+                    text += " \"" + translations.NO_CATEGORY + "\"";
+                }
+                text += ". ";
             }
+            lengthText += text.length;
 
+            // formatando texto de mudança de prioridade
             if (change.newPriority !== null || change.olderPriority !== null) {
-
+                text += translations.PRIORITY_CHANGED_FROM;
+                if (change.olderPriority !== null) {
+                    text += "\"" + translations[change.olderPriorityName] + "\" ";
+                } else {
+                    text += "\"" + translations.NO_PRIORITY + "\" ";
+                }
+                text += translations.FROM;
+                if (change.newPriority !== null) {
+                    text += " \"" + translations[change.newPriorityName] + "\"";
+                } else {
+                    text += " \"" + translations.NO_PRIORITY + "\"";
+                }
+                text += ". ";
             }
+            lengthText += text.length;
 
+            // formatando texto de mudança de prazo estimado.
             if (change.newEstimatedTime !== null || change.olderEstimatedTime !== null) {
-
+                text += translations.ESTIMATED_TIME_CHANGED_FROM;
+                var date;
+                if (change.olderEstimatedTime !== null) {
+                    date = new Date(change.olderEstimatedTime);
+                    date = Ext.Date.format(date, translations.FORMAT_JUST_DATE);
+                    text += "\"" + date + "\" ";
+                } else {
+                    text += "\"" + translations.NO_DEADLINE_DEFINED + "\" ";
+                }
+                text += translations.FROM;
+                if (change.newEstimatedTime !== null) {
+                    date = new Date(change.newEstimatedTime);
+                    date = Ext.Date.format(date, translations.FORMAT_JUST_DATE);
+                    text += " \"" + date + "\"";
+                } else {
+                    text += " \"" + translations.NO_DEADLINE_DEFINED + "\"";
+                }
+                text += ". ";
             }
-
-            if (change.newStateTicket !== null || change.olderStateTicket !== null) {
-
-            }
+            lengthText += text.length;
+            
+            console.log(lengthText);
         }
         return text;
+
     },
     loadStoreBasic: function(urlSimples) {
         //loadStore to GRID
@@ -1228,6 +1349,5 @@ Ext.define('Helpdesk.controller.Ticket', {
             ticketView.setLoading(translations.SAVING_TICKET);
             scope.saveTicket();
         }
-
     }
 });
