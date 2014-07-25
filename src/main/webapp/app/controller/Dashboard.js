@@ -156,49 +156,33 @@ Ext.define('Helpdesk.controller.Dashboard', {
      * @returns {undefined}
      * Sets the values from the table of users
      */
-    setInformationTable: function() {
-        var countCategory = 0;
+    setInformationTable: function() {        
         var countResp = 0;
-        var countLate = 0;
+        var countOnGoing = 0;
         var form = this.getTableTicket().down('tableticket');
         var scope = this;
-        var store = this.getTicketsStore();
-        var dataAtual = new Date();
+        var store = this.getTicketsStore();        
         store.load({
             callback: function() {
-                for (var i = 0; i < store.getCount(); i++) {                    
-                    /*if (store.data.items[i].data.category === null) {
-                        countCategory++;
-                    }*/
-                    if (store.data.items[i].data.responsible === null) {
+                for (var i = 0; i < store.getCount(); i++) {  
+                    if (store.data.items[i].data.responsible === null && store.data.items[i].data.isOpen) {
                         countResp++;
                     }
-                    if(store.data.items[i].data.estimateTime!==null){                        
-                        //New date com string como parâmetro não retorna as datas corretamente
-                        var dateParts = store.data.items[i].data.estimateTime.split('-');                        
-                        var dataLimite = new Date(dateParts[0], (dateParts[1] - 1), dateParts[2]);                       
-                        if(Ext.Date.format(dataAtual, 'Y/m/d') !== store.data.items[i].data.estimateTime.replace(/-/g,'/') && dataAtual>dataLimite){
-                            countLate++;     
-                        }                                          
+                    if(store.data.items[i].data.isOpen){                       
+                        countOnGoing++;                                                                   
                     }
-                }
-                /*if (countCategory === 0) {
-                    form.down('panel#noRespCat').update('0');
-                } else {
-                    form.down('panel#noRespCat').update(countCategory);
-                }*/
+                }                
                 if (countResp === 0) {
                     form.down('panel#noRespHtml').update('0');
                 } else {
                     form.down('panel#noRespHtml').update(countResp);
                 }
                 
-                if (countLate === 0) {
+                if (countOnGoing === 0) {
                     form.down('panel#noRespLate').update('0');
                 } else {
-                    form.down('panel#noRespLate').update(countLate);
-                }           
-
+                    form.down('panel#noRespLate').update(countOnGoing);
+                }
                 //Alimenta a store dos data grids
                 scope.setDataGridsTable(store);
             }

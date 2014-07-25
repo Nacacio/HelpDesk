@@ -210,8 +210,11 @@ Ext.define('Helpdesk.controller.Ticket', {
             ticketView.down('label#lblTicketOpen').setVisible(true);
             ticketView.down('button#btnCloseTkt').setVisible(true);
             ticketView.down('label#lblTicketClosed').setVisible(false);
-            ticketView.down('button#btnOpenTkt').setVisible(false);
+            ticketView.down('button#btnOpenTkt').setVisible(false);               
             //Seta visibilidade do botão salvar
+            if(Helpdesk.Globals.idAdminGroup === parseInt(Helpdesk.Globals.idUserGroup)){
+                ticketView.down('button#editTicket').setVisible(true);        
+            }
             ticketView.down('button#btnSaveAnswTkt').setVisible(true);
             //Seta visibildade do panel de nova resposta
             ticketView.down('panel#panelElementsNewAnswer').show();
@@ -221,6 +224,9 @@ Ext.define('Helpdesk.controller.Ticket', {
             ticketView.down('button#btnCloseTkt').setVisible(false);
             ticketView.down('label#lblTicketClosed').setVisible(true);
             ticketView.down('button#btnOpenTkt').setVisible(true);
+            if(Helpdesk.Globals.idAdminGroup === parseInt(Helpdesk.Globals.idUserGroup)){
+                ticketView.down('button#editTicket').setVisible(false);        
+            }
             //Seta visibilidade do botão salvar
             ticketView.down('button#btnSaveAnswTkt').setVisible(false);
             //Seta visibildade do panel de nova resposta
@@ -256,6 +262,10 @@ Ext.define('Helpdesk.controller.Ticket', {
         record.data.stepsTicket = form.down('textarea#stepsTicket').getValue();
 
         var estimateTime = form.down('datefield#estimateTime').getValue();
+        //Adiciona um dia a variável pois o mesmo é perdido ao passar para o java
+        if(estimateTime!==null){
+            estimateTime.setDate(estimateTime.getDate()+1);
+        }
         record.data.estimateTime = estimateTime;
         record.dirty = true;
         var store = this.getTicketsStore();
@@ -607,6 +617,7 @@ Ext.define('Helpdesk.controller.Ticket', {
             record.data.estimateTime = null;
             record.data.client = Helpdesk.Globals.userLogged.client;
         } else {
+            console.log(record.data.estimateTime);
             // categoria
             if (form.down('combobox#categoryTicket').getValue() === null) {
                 record.data.category = null;
@@ -632,6 +643,11 @@ Ext.define('Helpdesk.controller.Ticket', {
             //prazo estimado
             if (form.down('datefield#estimateTime').getValue() === null) {
                 record.data.estimateTime = null;
+            }else{
+                //Adiciona um dia a mais na variável pois o mesmo é perdido na conversão para o java               
+                var dateFormattedTemp = new Date(form.down('datefield#estimateTime').getValue());
+                dateFormattedTemp.setDate(dateFormattedTemp.getDate()+1);
+                record.data.estimateTime = dateFormattedTemp;
             }
         }
 
