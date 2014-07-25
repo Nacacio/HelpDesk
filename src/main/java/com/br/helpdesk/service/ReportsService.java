@@ -143,7 +143,7 @@ public class ReportsService {
                         yearTemp = ticketTemp.getStartDate().getYear();
                         monthTemp = ticketTemp.getStartDate().getMonth();
                         dayTemp = ticketTemp.getStartDate().getDate();
-                        
+
                         if (yearTemp == currentDay.getYear() && monthTemp == currentDay.getMonth() && dayTemp == currentDay.getDate()) {
                             if (ticketTemp.getCategory().getId().equals(categoryTemp.getId())) {
                                 quantTickets++;
@@ -286,6 +286,8 @@ public class ReportsService {
     public String getJsonGraphic(List<GraphicContainer> listGraphicContainer, String unit, String type) {
         String resultado = "";
 
+        listGraphicContainer = getByUnit(listGraphicContainer, unit);
+
         for (int i = 0; i < listGraphicContainer.size(); i++) {
             GraphicContainer temp = listGraphicContainer.get(i);
             if (i != 0) {
@@ -320,48 +322,243 @@ public class ReportsService {
     /**
      * @author andresulivam
      *
-     * Cria JSON de evolução de tickets por categoria pela periodicidade.
      *
-     * @param listGraphicCategoryContainer
+     * @param listGraphicContainer
      * @param unit
      * @return
      */
-    public String getJsonGraphicCategoryByUnit(List<GraphicContainer> listGraphicCategoryContainer, String unit) {
-        String resultado = "";
-        Format formatter = new SimpleDateFormat(Consts.SIMPLE_DATE_FORMAT);
-        Date currentDay;
-        String currentDayString;
+    public List<GraphicContainer> getByUnit(List<GraphicContainer> listGraphicContainer, String unit) {
+        List<GraphicContainer> resultado = new ArrayList<GraphicContainer>();
 
-        List<GraphicContainer> listGraphicCategoryContainerByPeriodicidade;
-        GraphicContainer graphicCategoryContainer = null;
-        List<CategoryContainer> categoryContainerList = null;
-
-        int periodo = 0;
-        String dias = "";
-        if (unit.equals(Consts.DAY)) {
-            listGraphicCategoryContainerByPeriodicidade = listGraphicCategoryContainer;
-        } else if (unit.equals(Consts.WEEK)) {
-            Calendar c = new GregorianCalendar();
-            for (GraphicContainer listTemp : listGraphicCategoryContainer) {
-                if (graphicCategoryContainer == null) {
-                    graphicCategoryContainer = new GraphicContainer();
-                    dias = listTemp.getDateString() + "/";
-                    categoryContainerList = listTemp.getListCategory();
-                }
-                c.setTime(listTemp.getDate());
-                String diaSemana = getWeekDay(c);
-                if (!diaSemana.equals("Domingo")) {
-
-                }
-            }
-            periodo = 7;
-        } else if (unit.equals(Consts.MONTH)) {
-            periodo = 30;
-        } else if (unit.equals(Consts.YEAR)) {
-            periodo = 365;
+        if (!unit.equals(Consts.DAY)) {
+            resultado = getlistGraphicContainerByUnit(listGraphicContainer, unit);
+        } else {
+            resultado = listGraphicContainer;
         }
 
         return resultado;
+    }
+
+    public List<GraphicContainer> getlistGraphicContainerByUnit(List<GraphicContainer> listGraphicContainer, String unit) {
+        List<GraphicContainer> resultado = new ArrayList<GraphicContainer>();
+
+        if (listGraphicContainer.size() > 0) {
+            // numero de dias que faltam para terminar a semana do primeiro dia da lista.
+            int days = 0;
+            int valueTofinishGroup = 0;
+
+            if (unit.equals(Consts.WEEK)) {
+                days = getLeftDaysToFinishAWeek(listGraphicContainer.get(0));
+                valueTofinishGroup = 7;
+            } else if (unit.equals(Consts.MONTH)) {
+                days = getLeftDaysToFinishAMonth(listGraphicContainer.get(0));
+            } else if (unit.equals(Consts.YEAR)) {
+                days = getLeftDaysToFinishAYear(listGraphicContainer.get(0));
+                valueTofinishGroup = 365;
+            }
+
+            GraphicContainer graphicTemp = new GraphicContainer();
+            int currentDay = 0;
+
+            List<List<CategoryContainer>> listCategoryContainers = new ArrayList<List<CategoryContainer>>();
+            List<List<ClientContainer>> listClientContainers = new ArrayList<List<ClientContainer>>();
+            int created = 0;
+            int closed = 0;
+            String day = "";
+
+            // cálculo para o primeiro grupo baseado no dia inicial da lista.
+            for (int i = 0; i < days; i++) {
+                if (i < listGraphicContainer.size()) {
+                    if (listGraphicContainer.get(i).getListCategory() != null) {
+                        listCategoryContainers.add(listGraphicContainer.get(i).getListCategory());
+                    } else if (listGraphicContainer.get(i).getListClient() != null) {
+                        listClientContainers.add(listGraphicContainer.get(i).getListClient());
+                    } else {
+                        created = listGraphicContainer.get(i).getCreated();
+                        closed = listGraphicContainer.get(i).getClosed();
+                    }
+                    day += listGraphicContainer.get(i).getDateString() + "--";
+                    graphicTemp.setDateString(listGraphicContainer.get(i).getDateString());
+                    graphicTemp.setDate(listGraphicContainer.get(i).getDate());
+                }
+                currentDay++;
+            }
+            graphicTemp.setListCategory(sumListCategoryContainer(listCategoryContainers));
+            graphicTemp.setListClient(sumListClientContainer(listClientContainers));
+            graphicTemp.setCreated(created);
+            graphicTemp.setClosed(closed);
+
+            resultado.add(graphicTemp);
+
+            listCategoryContainers = new ArrayList<List<CategoryContainer>>();
+            listClientContainers = new ArrayList<List<ClientContainer>>();
+            created = 0;
+            closed = 0;
+            day = "";
+
+            int positionTemp = 0;
+
+            // cálculo para o restante da lista.
+            if (currentDay < listGraphicContainer.size()) {
+                graphicTemp = new GraphicContainer();
+                for (int i = currentDay; i < listGraphicContainer.size(); i++) {
+                    positionTemp++;
+                    if (listGraphicContainer.get(i).getListCategory() != null) {
+                        listCategoryContainers.add(listGraphicContainer.get(i).getListCategory());
+                    } else if (listGraphicContainer.get(i).getListClient() != null) {
+                        listClientContainers.add(listGraphicContainer.get(i).getListClient());
+                    } else {
+                        created = listGraphicContainer.get(i).getCreated();
+                        closed = listGraphicContainer.get(i).getClosed();
+                    }
+                    graphicTemp.setDateString(listGraphicContainer.get(i).getDateString());
+                    graphicTemp.setDate(listGraphicContainer.get(i).getDate());
+
+                    if (unit.equals(Consts.MONTH)) {
+                        // caso seja mensal, verificar pelo último dia do mês corrente para formar o grupo.
+                        Calendar cal = Calendar.getInstance();
+                        cal.setTime(graphicTemp.getDate());
+                        int dayTemp = cal.get(Calendar.DAY_OF_MONTH);
+                        int lastDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+                        valueTofinishGroup = lastDay - dayTemp;
+                    }
+
+                    // término de 1 grupo ou a lista estiver no fim
+                    if (positionTemp == valueTofinishGroup || (i + 1) == listGraphicContainer.size()) {
+                        graphicTemp.setListCategory(sumListCategoryContainer(listCategoryContainers));
+                        graphicTemp.setListClient(sumListClientContainer(listClientContainers));
+                        graphicTemp.setCreated(created);
+                        graphicTemp.setClosed(closed);
+
+                        resultado.add(graphicTemp);
+
+                        graphicTemp = new GraphicContainer();
+                        day = "";
+                        positionTemp = 0;
+                    }
+                }
+            }
+        }
+        return resultado;
+    }
+
+    /**
+     * @author andresulivam
+     *
+     * Método que recebe uma lista de uma lista de CategoryContainer e faz a
+     * soma dos mesmos retornando somente uma lista com os valores somados.
+     *
+     * @param listCategoryContainers
+     * @return
+     */
+    public List<CategoryContainer> sumListCategoryContainer(List<List<CategoryContainer>> listCategoryContainers) {
+        List<CategoryContainer> resultado = null;
+        if (listCategoryContainers != null && listCategoryContainers.size() > 0) {
+            List<CategoryContainer> temp;
+            int quantResultado;
+            int quantTemp;
+            for (List<CategoryContainer> listTemp : listCategoryContainers) {
+
+                if (resultado == null) {
+                    // atribuindo a primeira posição da lista ao resultado.
+                    resultado = listTemp;
+                } else {
+                    // a partir da segunda posição da lista, é feito a soma das quantidades das categorias.
+                    temp = listTemp;
+                    for (CategoryContainer categoryTempResul : resultado) {
+                        quantResultado = categoryTempResul.getQuantidade();
+                        for (CategoryContainer categoryTempTemp : temp) {
+                            quantTemp = categoryTempTemp.getQuantidade();
+                            if (categoryTempResul.getCategory().getId().equals(categoryTempTemp.getCategory().getId())) {
+                                categoryTempResul.setQuantidade(quantResultado + quantTemp);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return resultado;
+    }
+
+    /**
+     * @author andresulivam Método que recebe uma lista de uma lista de
+     * CategoryContainer e faz a soma dos mesmos retornando somente uma lista
+     * com os valores somados.
+     *
+     * @param listClientContainers
+     * @return
+     */
+    public List<ClientContainer> sumListClientContainer(List<List<ClientContainer>> listClientContainers) {
+        List<ClientContainer> resultado = null;
+        if (listClientContainers != null && listClientContainers.size() > 0) {
+            List<ClientContainer> temp;
+            int quantResultado;
+            int quantTemp;
+            for (List<ClientContainer> listTemp : listClientContainers) {
+
+                if (resultado == null) {
+                    // atribuindo a primeira posição da lista ao resultado.
+                    resultado = listTemp;
+                } else {
+                    // a partir da segunda posição da lista, é feito a soma das quantidades dos clientes.
+                    temp = listTemp;
+                    for (ClientContainer clientTempResul : resultado) {
+                        quantResultado = clientTempResul.getQuantidade();
+                        for (ClientContainer clientTempTemp : temp) {
+                            quantTemp = clientTempTemp.getQuantidade();
+                            if (clientTempResul.getClient().getId().equals(clientTempTemp.getClient().getId())) {
+                                clientTempResul.setQuantidade(quantResultado + quantTemp);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return resultado;
+    }
+
+    /**
+     * Retorna quantos dias faltam para terminar a semana corrente da data do
+     * graphicContainer.
+     *
+     * @param graphicContainer
+     * @return
+     */
+    public int getLeftDaysToFinishAWeek(GraphicContainer graphicContainer) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(graphicContainer.getDate());
+        int day = cal.get(Calendar.DAY_OF_WEEK);
+        return 7 - day;
+    }
+
+    /**
+     * Retorna quantos dias faltam para terminar a semana corrente da data do
+     * graphicContainer.
+     *
+     * @param graphicContainer
+     * @return
+     */
+    public int getLeftDaysToFinishAMonth(GraphicContainer graphicContainer) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(graphicContainer.getDate());
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+        int lastDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+        return lastDay - day;
+    }
+
+    /**
+     * Retorna quantos dias faltam para terminar a semana corrente da data do
+     * graphicContainer.
+     *
+     * @param graphicContainer
+     * @return
+     */
+    public int getLeftDaysToFinishAYear(GraphicContainer graphicContainer) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(graphicContainer.getDate());
+        int day = cal.get(Calendar.DAY_OF_YEAR);
+        int lastDay = cal.getActualMaximum(Calendar.DAY_OF_YEAR);
+        return lastDay - day;
     }
 
     /**
