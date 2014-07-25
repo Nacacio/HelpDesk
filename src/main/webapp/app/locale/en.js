@@ -220,6 +220,7 @@ translations = {
     SELECT_FILE: 'Select a file...',
     SEE_TICKETS_WITHOUT_RESPONSIBLE: 'See tickets without responsible',
     SEE_TICKETS_LATE: 'See late tickets',
+    SEE_TICKETS_ON_GOING:'See on going tickets',
     SEE_TICKETS_WITHOUT_CATEGORY: 'See tickets without category',
     SEE_FULL_REPORT: '(See full report)',
     SEARCH: 'Search',
