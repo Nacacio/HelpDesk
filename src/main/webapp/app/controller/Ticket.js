@@ -101,9 +101,33 @@ Ext.define('Helpdesk.controller.Ticket', {
         this.getCardPanel().getLayout().setActiveItem(Helpdesk.Globals.ticketview);
         this.getTicketEditContainer().getLayout().setActiveItem(Helpdesk.Globals.ticket_details_view);
         if (typeof this.getTicketPanel() !== 'undefined') {
+            console.log('here');
             if (parseInt(Helpdesk.Globals.idUserGroup) === parseInt(Helpdesk.Globals.idAdminGroup)) {
-                this.getMyTickets();
-                this.getTicketSideMenu().down('#buttonMyTickets').toggle(true);
+                //Verifica se algum botão já estava marcado e busca os tickets de acordo com a seleção correspondente
+                if(this.getTicketSideMenu().down('#buttonAll').pressed){
+                    this.getAllTickets();
+                    this.getTicketSideMenu().down('#buttonAll').toggle(true);
+                }               
+                else if(this.getTicketSideMenu().down('#buttonMyTickets').pressed){
+                    this.getMyTickets();
+                    this.getTicketSideMenu().down('#buttonMyTickets').toggle(true);
+                }                
+                else if(this.getTicketSideMenu().down('#buttonWithoutResponsible').pressed){
+                    this.getTicketsWithoutResponsible();
+                    this.getTicketSideMenu().down('#buttonWithoutResponsible').toggle(true);
+                }                
+                else if(this.getTicketSideMenu().down('#buttonOpened').pressed){
+                    this.getTicketsOpened();
+                    this.getTicketSideMenu().down('#buttonOpened').toggle(true);
+                }                
+                else if(this.getTicketSideMenu().down('#buttonClosed').pressed){
+                    this.getTicketsClosed();
+                    this.getTicketSideMenu().down('#buttonClosed').toggle(true);
+                }               
+                else{
+                    this.getMyTickets();
+                    this.getTicketSideMenu().down('#buttonMyTickets').toggle(true);
+                }                
             } else {
                 this.getTicketsOpened();
                 this.getTicketSideMenu().down('#buttonOpened').toggle(true);

@@ -220,6 +220,7 @@ translations = {
     SELECT_FILE: 'Selecione um arquivo...',
     SEE_TICKETS_WITHOUT_RESPONSIBLE: 'Ver tickets sem responsável',
     SEE_TICKETS_LATE: 'Ver tickets atrasados',
+    SEE_TICKETS_ON_GOING:'Ver tickets em andamento',
     SEE_TICKETS_WITHOUT_CATEGORY: 'Ver tickets sem categoria',
     SEE_FULL_REPORT: '(Ver relatório completo)',
     SEARCH: 'Busca',

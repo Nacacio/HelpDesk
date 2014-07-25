@@ -59,8 +59,6 @@ Ext.define('Helpdesk.controller.Dashboard', {
             this.getTicketsWithoutResponsible();
         } else if (button.itemId === 'btnDashboardLate') {
             this.getTicketsOpened();
-        } else if (button.itemId === 'btnDashboardNoCat') {
-            this.getAllTickets();
         }
     },
     removeSelection: function() {
@@ -73,29 +71,56 @@ Ext.define('Helpdesk.controller.Dashboard', {
     getTicketsWithoutResponsible: function() {
         var myscope = this;
 
-        myscope.getTicketPanel().getStore().proxy.url = 'ticket/withoutresponsible';
+        myscope.getTicketPanel().getStore().proxy.url = 'ticket/withoutresponsible-paging';
+        myscope.getTicketSide().down('button#buttonWithoutResponsible').toggle(true);
         myscope.getTicketPanel().getStore().load({
             params: {
-                user: Helpdesk.Globals.user
+                user: Helpdesk.Globals.user,
+                start: 0,
+                limit: Helpdesk.Globals.pageSizeGrid
             },
-            callback: function(success) {
-                console.log(success);
-                myscope.getTicketSide().down('button#buttonWithoutResponsible').toggle(true);
+            callback: function() {                
                 myscope.backToDefaultStore(myscope);
+                
+                //loadStore to toolbar
+                var toolbar = myscope.getTicketPanel().getDockedItems()[1];
+                toolbar.getStore().proxy.url = 'ticket/withoutresponsible';;
+                toolbar.getStore().load({
+                    params: {
+                        user: Helpdesk.Globals.user
+                    },
+                    callback: function() {
+                        toolbar.getStore().proxy.url = 'ticket';
+                    }
+                });
             }
         });
     },
     getTicketsOpened: function() {
         var myscope = this;
 
-        myscope.getTicketPanel().getStore().proxy.url = 'ticket/opened';
+        myscope.getTicketPanel().getStore().proxy.url = 'ticket/opened-paging';
+        myscope.getTicketSide().down('button#buttonOpened').toggle(true);
         myscope.getTicketPanel().getStore().load({
             params: {
-                user: Helpdesk.Globals.user
+                user: Helpdesk.Globals.user,
+                start: 0,
+                limit: Helpdesk.Globals.pageSizeGrid
             },
-            callback: function() {
-                myscope.getTicketSide().down('button#buttonOpened').toggle(true);
+            callback: function() {                
                 myscope.backToDefaultStore(myscope);
+                
+                //loadStore to toolbar
+                var toolbar = myscope.getTicketPanel().getDockedItems()[1];
+                toolbar.getStore().proxy.url = 'ticket/opened';
+                toolbar.getStore().load({
+                    params: {
+                        user: Helpdesk.Globals.user
+                    },
+                    callback: function() {
+                        toolbar.getStore().proxy.url = 'ticket';
+                    }
+                });
             }
         });
     },
@@ -133,31 +158,46 @@ Ext.define('Helpdesk.controller.Dashboard', {
      */
     setInformationTable: function() {
         var countCategory = 0;
-        var countUser = 0;
+        var countResp = 0;
+        var countLate = 0;
         var form = this.getTableTicket().down('tableticket');
         var scope = this;
         var store = this.getTicketsStore();
+        var dataAtual = new Date();
         store.load({
             callback: function() {
-                for (var i = 0; i < store.getCount(); i++) {
-                    if (store.data.items[i].data.category === null) {
+                for (var i = 0; i < store.getCount(); i++) {                    
+                    /*if (store.data.items[i].data.category === null) {
                         countCategory++;
+                    }*/
+                    if (store.data.items[i].data.responsible === null) {
+                        countResp++;
                     }
-                    if (store.data.items[i].data.user === null) {
-                        countUser++;
+                    if(store.data.items[i].data.estimateTime!==null){                        
+                        //New date com string como parâmetro não retorna as datas corretamente
+                        var dateParts = store.data.items[i].data.estimateTime.split('-');                        
+                        var dataLimite = new Date(dateParts[0], (dateParts[1] - 1), dateParts[2]);                       
+                        if(Ext.Date.format(dataAtual, 'Y/m/d') !== store.data.items[i].data.estimateTime.replace(/-/g,'/') && dataAtual>dataLimite){
+                            countLate++;     
+                        }                                          
                     }
                 }
-                if (countCategory === 0) {
+                /*if (countCategory === 0) {
                     form.down('panel#noRespCat').update('0');
                 } else {
                     form.down('panel#noRespCat').update(countCategory);
-                }
-                if (countUser === 0) {
+                }*/
+                if (countResp === 0) {
                     form.down('panel#noRespHtml').update('0');
                 } else {
-                    form.down('panel#noRespHtml').update(countUser);
+                    form.down('panel#noRespHtml').update(countResp);
                 }
-                form.down('panel#noRespLate').update('0');
+                
+                if (countLate === 0) {
+                    form.down('panel#noRespLate').update('0');
+                } else {
+                    form.down('panel#noRespLate').update(countLate);
+                }           
 
                 //Alimenta a store dos data grids
                 scope.setDataGridsTable(store);

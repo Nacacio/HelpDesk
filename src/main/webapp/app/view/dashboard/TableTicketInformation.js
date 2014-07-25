@@ -22,50 +22,52 @@ Ext.define('Helpdesk.view.dashboard.TableTicketInformation', {
         
         //No Responsible Tickets
         {
-            html: translations.NO_RESPONSIBLE+': '           
+            html: translations.NO_RESPONSIBLE+': ',
+            padding:'30 0 0 0'
         },
         {
             xtype:'panel',
-            itemId:'noRespHtml'            
+            itemId:'noRespHtml',
+            padding:'30 0 0 0'
         },
         {
-            xtype:'button',
-            text:translations.SEE_TICKETS_WITHOUT_RESPONSIBLE,
-            baseCls:'dashbord-links-buttons',
-            itemId:'btnDashboardNoResp',
-            width:235
+            xtype:'panel',
+            padding:'30 0 0 0',
+            items:[
+                {
+                    xtype:'button',
+                    text:translations.SEE_TICKETS_WITHOUT_RESPONSIBLE,
+                    baseCls:'dashbord-links-buttons',
+                    itemId:'btnDashboardNoResp',
+                    width:235,
+                    padding:'20 0 0 0'
+                }
+            ]
         },
         
         // Tickets late
         {
-            html: translations.LATE+': '
+            html: translations.ON_GOING+': ',
+            padding:'30 0 0 0'
         },
         {
             xtype:'panel',
-            itemId:'noRespLate'            
-        },
-        {
-            xtype:'button',
-            text:translations.SEE_TICKETS_LATE,
-            baseCls:'dashbord-links-buttons',
-            itemId:'btnDashboardLate',
-            width:235
-        },        
-        // Tickets without a cayegory
-        {
-            html: translations.NO_CATEGORY+': '
+            itemId:'noRespLate',
+            padding:'30 0 0 0'
         },
         {
             xtype:'panel',
-            itemId:'noRespCat'           
-        },
-        {            
-            xtype:'button',
-            text:translations.SEE_TICKETS_WITHOUT_CATEGORY,
-            baseCls:'dashbord-links-buttons',   
-            itemId:'btnDashboardNoCat',
-            width:235
+            padding:'30 0 0 0',
+            items:[
+                {
+                    xtype:'button',
+                    text:translations.SEE_TICKETS_ON_GOING,
+                    baseCls:'dashbord-links-buttons',
+                    itemId:'btnDashboardLate',
+                    width:235                    
+                }     
+            ]
         }
-        
+          
     ]    
 });
