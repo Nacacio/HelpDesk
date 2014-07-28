@@ -349,6 +349,9 @@ public class ReportsService {
             // numero de dias que faltam para terminar a semana do primeiro dia da lista.
             int days = 0;
             int valueTofinishGroup = 0;
+            String dateResult = "";
+            String dayInicial = "";
+            String dayLast = "";
 
             if (unit.equals(Consts.WEEK)) {
                 days = getLeftDaysToFinishAWeek(listGraphicContainer.get(0));
@@ -367,11 +370,23 @@ public class ReportsService {
             List<List<ClientContainer>> listClientContainers = new ArrayList<List<ClientContainer>>();
             int created = 0;
             int closed = 0;
+            int testPosition = 0;
 
             if (days > 0) {
                 // cálculo para o primeiro grupo baseado no dia inicial da lista.
                 for (int i = 0; i < days; i++) {
                     if (i < listGraphicContainer.size()) {
+
+                        testPosition = i;
+
+                        if (testPosition == 0) {
+                            dayInicial = listGraphicContainer.get(i).getDateString();
+                            dayInicial = dayInicial.replaceAll("-", "/");
+                        } else if (testPosition == (days - 1)) {
+                            dayLast = listGraphicContainer.get(i).getDateString();
+                            dayLast = dayLast.replaceAll("-", "/");
+                        }
+
                         if (listGraphicContainer.get(i).getListCategory() != null) {
                             listCategoryContainers.add(listGraphicContainer.get(i).getListCategory());
                         } else if (listGraphicContainer.get(i).getListClient() != null) {
@@ -380,12 +395,28 @@ public class ReportsService {
                             created = listGraphicContainer.get(i).getCreated();
                             closed = listGraphicContainer.get(i).getClosed();
                         }
-                        graphicTemp.setDateString(listGraphicContainer.get(i).getDateString());
-                        graphicTemp.setDate(listGraphicContainer.get(i).getDate());
+
+                        if (!dayLast.equals("") && !dayInicial.equals("") || (testPosition == (days-1) && !dayInicial.equals(""))) {
+                            if (unit.equals(Consts.WEEK)) {
+                                dateResult += dayInicial;
+                                dateResult += "~";
+                                dateResult += dayLast.split("/")[2];
+                            } else if (unit.equals(Consts.MONTH)) {
+                                dateResult = dayInicial.split("/")[0] +"/"+ dayInicial.split("/")[1];
+                            } else if (unit.equals(Consts.YEAR)) {
+                                dateResult = dayInicial.split("/")[0];
+                            }
+                            graphicTemp.setDateString(dateResult);
+                        }
                     }
                     currentDay++;
                 }
             } else {
+                dayInicial = listGraphicContainer.get(days).getDateString();
+                dayLast = listGraphicContainer.get(days).getDateString();
+                dateResult += dayInicial + "~" + dayLast.split("-")[2];
+                dateResult = dateResult.replaceAll("-", "/");
+
                 if (listGraphicContainer.get(days).getListCategory() != null) {
                     listCategoryContainers.add(listGraphicContainer.get(days).getListCategory());
                 } else if (listGraphicContainer.get(days).getListClient() != null) {
@@ -394,8 +425,8 @@ public class ReportsService {
                     created = listGraphicContainer.get(days).getCreated();
                     closed = listGraphicContainer.get(days).getClosed();
                 }
-                graphicTemp.setDateString(listGraphicContainer.get(days).getDateString());
-                graphicTemp.setDate(listGraphicContainer.get(days).getDate());
+                graphicTemp.setDateString(dateResult);
+                currentDay++;
             }
 
             graphicTemp.setListCategory(sumListCategoryContainer(listCategoryContainers));
@@ -405,11 +436,9 @@ public class ReportsService {
 
             resultado.add(graphicTemp);
 
-            listCategoryContainers = new ArrayList<List<CategoryContainer>>();
-            listClientContainers = new ArrayList<List<ClientContainer>>();
-            created = 0;
-            closed = 0;
-
+            dayInicial = "";
+            dateResult = "";
+            testPosition = 0;
             int positionTemp = 0;
             int month = 0;
             int dayTemp = 0;
@@ -427,8 +456,18 @@ public class ReportsService {
                     valueTofinishGroup = (lastDay - dayTemp) + 1;
                     month = cal.get(Calendar.MONTH);
                 }
-                for (int i = currentDay; i < listGraphicContainer.size(); i++) {
 
+                for (int i = currentDay; i < listGraphicContainer.size(); i++) {                    
+                    
+                    if (testPosition == 0) {
+                        dayInicial = listGraphicContainer.get(i).getDateString();
+                        dayInicial = dayInicial.replaceAll("-", "/");
+                    } else if ((testPosition +1) == valueTofinishGroup || (i + 1) == listGraphicContainer.size()) {
+                        dayLast = listGraphicContainer.get(i).getDateString();
+                        dayLast = dayLast.replaceAll("-", "/");                        
+                    }
+                    testPosition++;
+                    
                     if (unit.equals(Consts.MONTH)) {
                         // verifica se trocou o mês corrente comparado ao mês anterior e atualiza o valor de dias para completar o mês
                         Calendar cal = Calendar.getInstance();
@@ -450,18 +489,33 @@ public class ReportsService {
                         created = listGraphicContainer.get(i).getCreated();
                         closed = listGraphicContainer.get(i).getClosed();
                     }
-                    graphicTemp.setDateString(listGraphicContainer.get(i).getDateString());
-                    graphicTemp.setDate(listGraphicContainer.get(i).getDate());
 
                     // término de 1 grupo ou a lista estiver no fim
                     if (positionTemp == valueTofinishGroup || (i + 1) == listGraphicContainer.size()) {
+                        if (!dayLast.equals("") && !dayInicial.equals("")) {
+                            if (unit.equals(Consts.WEEK)) {
+                                dateResult += dayInicial;
+                                dateResult += "~";
+                                dateResult += dayLast.split("/")[2];
+                            } else if (unit.equals(Consts.MONTH)) {
+                                dateResult = dayInicial.split("/")[0] +"/"+ dayInicial.split("/")[1];
+                            } else if (unit.equals(Consts.YEAR)) {
+                                dateResult = dayInicial.split("/")[0];
+                            }
+                            graphicTemp.setDateString(dateResult);
+                        }
+
                         graphicTemp.setListCategory(sumListCategoryContainer(listCategoryContainers));
                         graphicTemp.setListClient(sumListClientContainer(listClientContainers));
                         graphicTemp.setCreated(created);
                         graphicTemp.setClosed(closed);
 
                         resultado.add(graphicTemp);
-
+                        
+                        testPosition = 0;
+                        created = 0;
+                        closed = 0;
+                        dateResult = "";
                         graphicTemp = new GraphicContainer();
                         positionTemp = 0;
                         listCategoryContainers = new ArrayList<List<CategoryContainer>>();
