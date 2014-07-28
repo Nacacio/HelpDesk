@@ -24,6 +24,12 @@ Ext.define('Helpdesk.view.ticket.TicketAnswerPanel', {
                     panel.el.setStyle('margin', '0 0 0 0');
                 }
             });
+        },
+        collapse: function() {
+            this.doLayout();
+        },
+        expand: function() {
+            this.doLayout();
         }
     },
     items: [

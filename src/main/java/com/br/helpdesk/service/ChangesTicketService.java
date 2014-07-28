@@ -226,17 +226,20 @@ public class ChangesTicketService {
      * @return
      */
     public boolean hasChange(ChangesTicket changesTicket) {
-
-        return changesTicket.getNewCategory() != null
-                || changesTicket.getOlderCategory() != null
-                || changesTicket.getNewEstimatedTime() != null
-                || changesTicket.getOlderEstimatedTime() != null
-                || changesTicket.getNewPriority() != null
-                || changesTicket.getOlderPriority() != null
-                || changesTicket.getNewResponsible() != null
-                || changesTicket.getOlderResponsible() != null
-                || changesTicket.isNewStateTicket() != null
-                || changesTicket.isOlderStateTicket();
+        if(changesTicket == null)
+            return false;
+        else{
+            return changesTicket.getNewCategory() != null
+                    || changesTicket.getOlderCategory() != null
+                    || changesTicket.getNewEstimatedTime() != null
+                    || changesTicket.getOlderEstimatedTime() != null
+                    || changesTicket.getNewPriority() != null
+                    || changesTicket.getOlderPriority() != null
+                    || changesTicket.getNewResponsible() != null
+                    || changesTicket.getOlderResponsible() != null
+                    || changesTicket.isNewStateTicket() != null
+                    || changesTicket.isOlderStateTicket() != null;
+        }
     }
 
 }

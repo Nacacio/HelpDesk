@@ -1005,6 +1005,7 @@ Ext.define('Helpdesk.controller.Ticket', {
                 }
                 ticketView.down('panel#tktAnswers').doLayout();
             }
+            
         }
     },
     /**
@@ -1107,71 +1108,10 @@ Ext.define('Helpdesk.controller.Ticket', {
                             var containerChanges = answer.down('container#containerChanges');
                             containerChanges.setVisible(true);
                             var text = scope.getTextWithChangesTicket(change);
-                            var textResponsible = translations.COMMENT_INTERNAL_BY + " ";
-                            var responsible = change.data.userName;
-                            var date = new Date(change.data.dateCreation);
-                            date = " - " + Ext.Date.format(date, translations.FORMAT_DATE_TIME);
                             item = {
-                                xtype: 'panel',
-                                width: 700,
-                                height: 60,
-                                defaults: {
-                                    bodyStyle: {"background-color": "#EEE9E9 !important"}
-                                },
-                                style: {
-                                    'border': '1px dotted #708090'
-                                },
-                                margin: '0 0 8 0',
-                                items: [
-                                    {
-                                        layout: {
-                                            type: 'vbox'
-                                        },
-                                        width: 700,
-                                        height: 60,
-                                        margin: '-10 0 0 -30',
-                                        defaults: {
-                                            bodyStyle: {"background-color": "#EEE9E9 !important"}
-                                        },
-                                        items: [
-                                            {
-                                                xtype: 'box',
-                                                autoEl: {html: text}
-                                            },
-                                            {
-                                                layout: {
-                                                    type: 'hbox'
-                                                },
-                                                defaults: {
-                                                    style: {
-                                                        'font-size': '11px'
-                                                    }
-                                                },
-                                                margin: '-2 0 0 -30',
-                                                items: [
-                                                    {
-                                                        xtype: 'label',
-                                                        text: textResponsible
-                                                    },
-                                                    {
-                                                        xtype: 'label',
-                                                        margin: '0 0 0 3',
-                                                        style: {
-                                                            'font-size': '11px',
-                                                            'font-weight': 'bold'
-                                                        },
-                                                        text: responsible
-                                                    },
-                                                    {
-                                                        xtype: 'label',
-                                                        margin: '0 0 0 3',
-                                                        text: date
-                                                    }
-                                                ]
-                                            }
-                                        ]
-                                    }
-                                ]
+                                xtype: 'box',
+                                html: text,
+                                cls: 'box-ticket-changes'
                             };
                             changesContainer.insert(item);
                         }
@@ -1182,6 +1122,10 @@ Ext.define('Helpdesk.controller.Ticket', {
         return answersList;
     },
     getTextWithChangesTicket: function(param) {
+        var textResponsible = translations.COMMENT_INTERNAL_BY + " ";
+        var responsible = param.data.userName;
+        var changeDate = new Date(param.data.dateCreation);
+        changeDate = " - " + Ext.Date.format(changeDate, translations.FORMAT_DATE_TIME);
         var text = '';
         if (param !== null) {
             var change = param.data;
@@ -1275,10 +1219,11 @@ Ext.define('Helpdesk.controller.Ticket', {
                 }
                 text += ". ";
             }
-            lengthText += text.length;
-            
-            console.log(lengthText);
         }
+        
+        text += "<br />";
+        text += "<pre>"+textResponsible + "<b>"+responsible+"</b>" + changeDate+"</pre>";
+        
         return text;
 
     },

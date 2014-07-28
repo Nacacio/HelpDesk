@@ -63,10 +63,16 @@ public class Consts {
     public static String NO_ESTIMATED_TIME = "Sem prazo estimado";
     public static String NO_PRIORITY = "Sem prioridade";
     public static String NO_RESPONSIBLE = "Sem responsável";
+    public static String NO_STEPS = "Sem Passos para Reprodução";
 
     public static String ENTITY_DEPENDECY = "Entidade possui dependencias e não pode ser deletada";
     public static String ENTITY_NOT_FOUND = "Entidade não encontrada";
 
     public static String REPLY_ABOVE_THIS_LINE = "##Responda acima desta linha##";
 
+    public static Integer TICKET_NEW = 0;
+    public static Integer TICKET_EDIT = 1;
+    public static Integer TICKET_NEW_ANSWER = 2;
+    public static Integer TICKET_CLOSE = 3;
+    public static Integer TICKET_OPEN = 4;
 }

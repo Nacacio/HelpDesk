@@ -8,7 +8,8 @@
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context-3.1.xsd
         http://www.springframework.org/schema/mvc
-        http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd ">
+        http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd 
+       http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.2.xsd" xmlns:task="http://www.springframework.org/schema/task">
 
     <mvc:annotation-driven />
         
@@ -38,4 +39,8 @@
         <!-- one of the properties available; the maximum file size in bytes -->
         <property name="maxUploadSize" value="1000000000"/>
     </bean>
+    
+    <task:scheduler id="taskScheduler" />
+    <task:executor id="taskExecutor" pool-size="1" />
+    <task:annotation-driven executor="taskExecutor" scheduler="taskScheduler" />
 </beans>

@@ -5,6 +5,7 @@
  */
 package com.br.helpdesk.controller;
 
+import com.Consts;
 import com.br.helpdesk.model.Attachments;
 import com.br.helpdesk.model.Ticket;
 import com.br.helpdesk.model.TicketAnswer;
@@ -131,10 +132,10 @@ public class TicketAnswerController {
             file.delete();
         }
         
-        emails = emailService.getListEmailsToSend(ticket, null, answer);
+        emails = emailService.getListEmailsToSend(null, null, answer);
         
         if(emails.size()>0){
-            emailService.sendEmailNewAnswer(answer, userAnswer, emails);
+            emailService.sendEmail(null,null,answer, userAnswer, emails,Consts.TICKET_NEW_ANSWER);
         }
 
         return answer;

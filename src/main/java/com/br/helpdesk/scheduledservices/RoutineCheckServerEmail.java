@@ -16,7 +16,7 @@ public class RoutineCheckServerEmail {
     @Autowired
     private EmailService emailService;
 
-    @Scheduled(cron = "0 0/5 * * * ?")
+    @Scheduled(fixedDelay=(1000*60)*1)
     public void checkServerEmails() {
         emailService.readEmails();
     }

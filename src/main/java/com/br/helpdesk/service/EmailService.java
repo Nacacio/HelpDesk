@@ -194,15 +194,45 @@ public class EmailService {
         return session;
     }
 
-    public void sendEmailNewTicket(Ticket ticket, List<String> listEmailsTo) {
+    public void sendEmail(Ticket ticket, Ticket newTicket, TicketAnswer answer, User userAnswer, List<String> listEmailsTo, Integer sendType){
         Session session = getSession();
         String emails = getCorrectAdress(listEmailsTo);
         try {
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(configEmail.getUser()));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(emails));
-            message.setSubject(ticket.getTitle() + " #" + ticket.getId());
-            message.setContent(contentNewTicket(ticket.getTitle(), ticket.getCategory().getName(), ticket.getDescription(), ticket.getStepsTicket()), "text/html; charset=utf-8");
+            Long ticketId = 0L;
+            String ticketTitle = "";
+            String subjectString = "";
+            String contentString = "";
+            if(ticket != null){
+                ticketId = ticket.getId();
+                ticketTitle = ticket.getTitle();
+            }
+            
+            if(sendType == Consts.TICKET_NEW){
+                subjectString = "Novo Ticket #"+ticketId+"#: "+ticketTitle;
+                contentString = contentNewTicket(ticket);
+            }
+            else if(sendType == Consts.TICKET_EDIT){
+                subjectString = "Atualização do Ticket #"+ticketId+"#: "+ticketTitle;
+                contentString = contentEditTicket(ticket, newTicket);
+            }
+            else if(sendType == Consts.TICKET_NEW_ANSWER){
+                subjectString = "Nova Resposta ao Ticket #"+answer.getTicket().getId()+"#: "+answer.getTicket().getTitle();
+                contentString = contentNewAnswer(answer, userAnswer.getName());
+            }
+            else if(sendType == Consts.TICKET_CLOSE){
+                subjectString = "Encerramento do Ticket #"+ticketId+"#: "+ticketTitle;
+                contentString = contentCloseTicket(ticketId, ticketTitle);
+            }
+            else if(sendType == Consts.TICKET_OPEN){
+                subjectString = "Reabertura do Ticket #"+ticketId+"#: "+ticketTitle;
+                contentString = contentOpenTicket(ticketId, ticketTitle);
+            }
+            message.setSubject(subjectString);
+            message.setContent(contentString, "text/html; charset=utf-8");
+            
             Transport.send(message);
 
         } catch (MessagingException e) {
@@ -210,38 +240,12 @@ public class EmailService {
         }
     }
 
-    public void sendEmailEditTicket(Ticket olderTicket, Ticket newTicket, List<String> listEmailsTo) {
-        Session session = getSession();
-        String emails = getCorrectAdress(listEmailsTo);
-        try {
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(configEmail.getUser()));
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(emails));
-            message.setSubject(olderTicket.getTitle() + " #" + olderTicket.getId());
-            message.setContent(contentEditTicket(olderTicket, newTicket), "text/html; charset=utf-8");
-            Transport.send(message);
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void sendEmailNewAnswer(TicketAnswer answer, User userAnswer, List<String> listEmailsTo) {
-        Session session = getSession();
-        String emails = getCorrectAdress(listEmailsTo);
-        try {
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(configEmail.getUser()));
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(emails));
-            message.setSubject(answer.getTicket().getTitle() + " #" + answer.getTicket().getId());
-            message.setContent(contentNewAnswer(answer.getTicket().getId(), answer.getTicket().getDescription(), answer.getDescription(), userAnswer.getName()), "text/html; charset=utf-8");
-            Transport.send(message);
-
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private String contentNewTicket(String assunto, String categoria, String observacoes, String passos) {
+    private String contentNewTicket(Ticket ticket) {
+        String assunto = ticket.getTitle();
+        String categoria = ticket.getCategory().getName();
+        String observacoes = ticket.getDescription();
+        String passos = ticket.getStepsTicket();
+        
         String html = Consts.REPLY_ABOVE_THIS_LINE+"<!DOCTYPE html>"
                 + "<html>"
                 + "<head>"
@@ -298,6 +302,8 @@ public class EmailService {
         String newPriority = Consts.NO_PRIORITY;
         String olderResponsible = Consts.NO_RESPONSIBLE;
         String newResponsible = Consts.NO_RESPONSIBLE;
+        String olderSteps = Consts.NO_STEPS;
+        String newSteps = Consts.NO_STEPS;
 
         if (olderTicket.getCategory() != null) {
             olderCategoryName = olderTicket.getCategory().getName();
@@ -311,6 +317,9 @@ public class EmailService {
         if (olderTicket.getResponsible() != null) {
             olderResponsible = olderTicket.getResponsible().getName();
         }
+        if(olderTicket.getStepsTicket() != null){
+            olderSteps = olderTicket.getStepsTicket();
+        }
 
         if (newTicket.getCategory() != null) {
             newCategoryName = newTicket.getCategory().getName();
@@ -323,6 +332,9 @@ public class EmailService {
         }
         if (newTicket.getResponsible() != null) {
             newResponsible = newTicket.getResponsible().getName();
+        }
+        if(newTicket.getStepsTicket() != null){
+            newSteps = newTicket.getStepsTicket();
         }
 
         String html = "<!DOCTYPE html>"
@@ -387,6 +399,17 @@ public class EmailService {
                 + "<th><pre>" + newResponsible + "</pre></th>"
                 + "</tr>"
                 + "</table>"
+                + "<HR>"
+                + "<table>"
+                + "<tr>"
+                + "<th><h3>PASSOS PARA REPRODUÇÃO ANTIGO:&nbsp;</h3></th>"
+                + "<th><pre>" + olderSteps + "</pre></th>"
+                + "</tr>"
+                + "<tr>"
+                + "<th><h3>PASSOS PARA REPRODUÇÃO NOVO:&nbsp;</h3></th>"
+                + "<th><pre>" + newSteps + "</pre></th>"
+                + "</tr>"
+                + "</table>"
                 + "<h4>"
                 + "Cymo Tecnologia em Gestão"
                 + "</h4>"
@@ -396,7 +419,10 @@ public class EmailService {
         return html;
     }
 
-    private String contentNewAnswer(long idTicket, String nameTicket, String description, String userName) {
+    private String contentNewAnswer(TicketAnswer answer, String userName) {
+        long idTicket = answer.getTicket().getId(); 
+        String nameTicket = answer.getTicket().getDescription(); 
+        String description = answer.getDescription();
         String html = Consts.REPLY_ABOVE_THIS_LINE+"<!DOCTYPE html>"
                 + "<html>"
                 + "<head>"
@@ -435,6 +461,58 @@ public class EmailService {
         return html;
     }
 
+    private String contentCloseTicket(long idTicket, String nameTicket) {
+        String html = Consts.REPLY_ABOVE_THIS_LINE+"<!DOCTYPE html>"
+                + "<html>"
+                + "<head>"
+                + "<meta charset='UTF-8\'>"
+                + "<style>"
+                + "h1{font-weight: bold;}"
+                + "pre{color:black;font-size: 15px;font-weight: normal;}"
+                + "</style>"
+                + "</head>"
+                + "<body>"
+                + "<h1> TICKET ENCERRADO </h1>"
+                + "<table>"
+                + "<tr>"
+                + "<th><h3>TICKET #" + idTicket + "#: " + nameTicket + "</h3></th>"
+                + "</tr>"
+                + "</table>"
+                + "<br>"
+                + "<h4>"
+                + "Cymo Tecnologia em Gestão"
+                + "</h4>"
+                + "</body>"
+                + "</html>";
+        return html;
+    }
+    
+    private String contentOpenTicket(long idTicket, String nameTicket) {
+        String html = Consts.REPLY_ABOVE_THIS_LINE+"<!DOCTYPE html>"
+                + "<html>"
+                + "<head>"
+                + "<meta charset='UTF-8\'>"
+                + "<style>"
+                + "h1{font-weight: bold;}"
+                + "pre{color:black;font-size: 15px;font-weight: normal;}"
+                + "</style>"
+                + "</head>"
+                + "<body>"
+                + "<h1> TICKET REABERTO </h1>"
+                + "<table>"
+                + "<tr>"
+                + "<th><h3>TICKET #" + idTicket + "#: " + nameTicket + "</h3></th>"
+                + "</tr>"
+                + "</table>"
+                + "<br>"
+                + "<h4>"
+                + "Cymo Tecnologia em Gestão"
+                + "</h4>"
+                + "</body>"
+                + "</html>";
+        return html;
+    }
+    
     public String getCorrectAdress(List<String> listEmails) {
         String emails = "";
         for (int i = 0; i < listEmails.size(); i++) {
@@ -492,6 +570,7 @@ public class EmailService {
                             String body = getText(mp.getBodyPart(i));
                             String[] split = body.split("##Responda acima desta linha##");
                             String answer = split[0];
+                            answer = answer.trim();
                             if (!answer.equals("") && !email.equals("")) {
                                 User user = userService.findByEmail(email);
                                 if (user != null) {
@@ -507,57 +586,105 @@ public class EmailService {
         }
     }
 
-    public List<String> getListEmailsToSend(Ticket olderTicket, Ticket newTicket, TicketAnswer ticketAnswer) {
+//    public List<String> getListEmailsToSend(Ticket olderTicket, Ticket newTicket, TicketAnswer ticketAnswer) {
+//        List<String> listEmails = new ArrayList<String>();
+//        User userTicket;
+//        User userResponsible;
+//        User userAnswer;
+//
+//        if (ticketAnswer != null) {
+//            userAnswer = ticketAnswer.getUser();
+//            userTicket = olderTicket.getUser();
+//            userResponsible = olderTicket.getResponsible();
+//
+//            if (userTicket != null && userResponsible != null) {
+//                if (userAnswer.getId().equals(userTicket.getId())) {
+//                    listEmails.add(userResponsible.getEmail());
+//                } else if (userAnswer.getId().equals(userResponsible.getId())) {
+//                    listEmails.add(userTicket.getEmail());
+//                } else {
+//                    listEmails.add(userResponsible.getEmail());
+//                    listEmails.add(userTicket.getEmail());
+//                }
+//            } else if (userTicket != null) {
+//                if (!userAnswer.getId().equals(userTicket.getId())) {
+//                    listEmails.add(userTicket.getEmail());
+//                } else {
+//                    listEmails.addAll(getAdminEmails());
+//                }
+//            } else if (userResponsible != null) {
+//                if (userAnswer.getId().equals(userResponsible.getId())) {
+//                    listEmails.add(userResponsible.getEmail());
+//                }
+//            }
+//        } else {
+//            if (olderTicket == null) {
+//                if (newTicket.getResponsible() == null) {
+//                    listEmails.addAll(getAdminEmails());
+//                } else {
+//                    listEmails.add(newTicket.getResponsible().getEmail());
+//                }
+//            } else {
+//                if (newTicket.getResponsible() != null) {
+//                    listEmails.add(newTicket.getResponsible().getEmail());
+//                }
+//                if (olderTicket.getResponsible() != null) {
+//                    listEmails.add(olderTicket.getResponsible().getEmail());
+//                }
+//            }
+//        }
+//
+//        return listEmails;
+//    }
+    public List<String> getListEmailsToSend(Ticket ticket, Ticket newTicket, TicketAnswer ticketAnswer) {
         List<String> listEmails = new ArrayList<String>();
+        User userAnswer;
         User userTicket;
         User userResponsible;
-        User userAnswer;
-
-        if (ticketAnswer != null) {
-            userAnswer = ticketAnswer.getUser();
-            userTicket = olderTicket.getUser();
-            userResponsible = olderTicket.getResponsible();
-
-            if (userTicket != null && userResponsible != null) {
-                if (userAnswer.getId().equals(userTicket.getId())) {
-                    listEmails.add(userResponsible.getEmail());
-                } else if (userAnswer.getId().equals(userResponsible.getId())) {
-                    listEmails.add(userTicket.getEmail());
-                } else {
-                    listEmails.add(userResponsible.getEmail());
-                    listEmails.add(userTicket.getEmail());
-                }
-            } else if (userTicket != null) {
-                if (!userAnswer.getId().equals(userTicket.getId())) {
-                    listEmails.add(userTicket.getEmail());
-                } else {
-                    listEmails.addAll(getAdminEmails());
-                }
-            } else if (userResponsible != null) {
-                if (userAnswer.getId().equals(userResponsible.getId())) {
-                    listEmails.add(userResponsible.getEmail());
-                }
+        User userTicketNew;
+        User userResponsibleNew;
+        
+        if (ticket != null) {
+            userTicket = ticket.getUser();
+            userResponsible = ticket.getResponsible();
+            
+            listEmails.add(userTicket.getEmail());
+            if(userResponsible == null){
+                listEmails.addAll(getAdminEmails());
             }
-        } else {
-            if (olderTicket == null) {
-                if (newTicket.getResponsible() == null) {
-                    listEmails.addAll(getAdminEmails());
-                } else {
-                    listEmails.add(newTicket.getResponsible().getEmail());
-                }
-            } else {
-                if (newTicket.getResponsible() != null) {
-                    listEmails.add(newTicket.getResponsible().getEmail());
-                }
-                if (olderTicket.getResponsible() != null) {
-                    listEmails.add(olderTicket.getResponsible().getEmail());
-                }
+            else{
+                listEmails.add(userResponsible.getEmail());
+            }  
+        }
+        if (newTicket != null) {
+            userTicketNew = newTicket.getUser();
+            userResponsibleNew = newTicket.getResponsible();
+            
+            listEmails.add(userTicketNew.getEmail());
+            if(userResponsibleNew == null){
+                listEmails.addAll(getAdminEmails());
+            }
+            else{
+                listEmails.add(userResponsibleNew.getEmail());
             }
         }
-
+        else if (ticketAnswer != null) {
+            userAnswer = ticketAnswer.getUser();
+            userTicket = ticketAnswer.getTicket().getUser();
+            userResponsible = ticketAnswer.getTicket().getResponsible();
+            
+            listEmails.add(userAnswer.getEmail());
+            listEmails.add(userTicket.getEmail());
+            if(userResponsible == null){
+                listEmails.addAll(getAdminEmails());
+            }
+            else{
+                listEmails.add(userResponsible.getEmail());
+            }            
+        }
+        
         return listEmails;
     }
-
     /**
      * @author andresulivam
      *
