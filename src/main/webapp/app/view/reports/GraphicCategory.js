@@ -39,16 +39,15 @@ Ext.define('Helpdesk.view.reports.GraphicCategory', {
             setTitle: translations.QUANTITY_OF_CREATED_TICKETS,
             minorTickSteps: 1,
             grid: true
-        }, 
+        },
         {
             id: 'axeCategory',
             type: 'Category',
-            dateFormat: translations.DATE_FORMAT,
             minorTickSteps: 1,
             position: 'bottom',
             fields: ['date'],
-            label   : {
-             rotation:{degrees:290}
+            label: {
+                rotation: {degrees: 280}
             }
         }
     ]

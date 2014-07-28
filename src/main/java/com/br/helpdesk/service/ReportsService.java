@@ -69,10 +69,10 @@ public class ReportsService {
      */
     public String getGraphic(String username, long idUser, String tickets, Date dateFrom, Date dateTo, String unit, String type, HttpServletResponse response) throws UnsupportedEncodingException {
         String resultado = "";
-        if (type.equals(Consts.CLIENT)) {
-            resultado = getGraphicClient(username, tickets, dateFrom, dateTo, unit);
-        } else if (type.equals(Consts.CATEGORY)) {
+        if (type.equals(Consts.CATEGORY)) {
             resultado = getGraphicCategory(username, tickets, dateFrom, dateTo, unit);
+        } else if (type.equals(Consts.CLIENT)) {
+            resultado = getGraphicClient(username, tickets, dateFrom, dateTo, unit);
         } else if (type.equals(Consts.USER)) {
             resultado = getGraphicUser(idUser, dateFrom, dateTo, unit);
         }
@@ -119,7 +119,7 @@ public class ReportsService {
 
         listCategory = (List) categoryService.findAll();
 
-        for (long i = (dateFrom.getTime() + 86400000); i < (dateTo.getTime() + 86400000); i += 86400000) {
+        for (long i = dateFrom.getTime(); i < (dateTo.getTime() + 86400000); i += 86400000) {
 
             if (listGraphicContainer == null) {
                 listGraphicContainer = new ArrayList<GraphicContainer>();
@@ -215,7 +215,7 @@ public class ReportsService {
 
         listClient = (List) clientService.findAll();
 
-        for (long i = (dateFrom.getTime() + 86400000); i < (dateTo.getTime() + 86400000); i += 86400000) {
+        for (long i = dateFrom.getTime(); i < (dateTo.getTime() + 86400000); i += 86400000) {
 
             if (listGraphicContainer == null) {
                 listGraphicContainer = new ArrayList<GraphicContainer>();
@@ -295,21 +295,24 @@ public class ReportsService {
             }
             resultado += "{\"date\":\"" + temp.getDateString() + "\",";
             if (type.equals(Consts.CATEGORY)) {
-                for (int j = 0; j < temp.getListCategory().size(); j++) {
-                    CategoryContainer categoryTemp = temp.getListCategory().get(j);
-                    if (j != 0) {
-                        resultado += ",";
+                if (temp.getListCategory() != null && temp.getListCategory().size() > 0) {
+                    for (int j = 0; j < temp.getListCategory().size(); j++) {
+                        CategoryContainer categoryTemp = temp.getListCategory().get(j);
+                        if (j != 0) {
+                            resultado += ",";
+                        }
+                        resultado += "\"" + categoryTemp.getCategory().getName() + "\":" + categoryTemp.getQuantidade() + "";
                     }
-                    resultado += "\"" + categoryTemp.getCategory().getName() + "\":" + categoryTemp.getQuantidade() + "";
                 }
-
             } else if (type.equals(Consts.CLIENT)) {
-                for (int j = 0; j < temp.getListClient().size(); j++) {
-                    ClientContainer clientTemp = temp.getListClient().get(j);
-                    if (j != 0) {
-                        resultado += ",";
+                if (temp.getListClient() != null && temp.getListClient().size() > 0) {
+                    for (int j = 0; j < temp.getListClient().size(); j++) {
+                        ClientContainer clientTemp = temp.getListClient().get(j);
+                        if (j != 0) {
+                            resultado += ",";
+                        }
+                        resultado += "\"" + clientTemp.getClient().getName() + "\":" + clientTemp.getQuantidade() + "";
                     }
-                    resultado += "\"" + clientTemp.getClient().getName() + "\":" + clientTemp.getQuantidade() + "";
                 }
             } else if (type.equals(Consts.USER)) {
                 resultado += "\"created\":" + temp.getCreated() + ",\"closed\":" + temp.getClosed() + "";
@@ -351,7 +354,7 @@ public class ReportsService {
                 days = getLeftDaysToFinishAWeek(listGraphicContainer.get(0));
                 valueTofinishGroup = 7;
             } else if (unit.equals(Consts.MONTH)) {
-                days = getLeftDaysToFinishAMonth(listGraphicContainer.get(0));
+                days = getLeftDaysToFinishAMonth(listGraphicContainer.get(0)) + 1;
             } else if (unit.equals(Consts.YEAR)) {
                 days = getLeftDaysToFinishAYear(listGraphicContainer.get(0));
                 valueTofinishGroup = 365;
@@ -364,25 +367,37 @@ public class ReportsService {
             List<List<ClientContainer>> listClientContainers = new ArrayList<List<ClientContainer>>();
             int created = 0;
             int closed = 0;
-            String day = "";
 
-            // cálculo para o primeiro grupo baseado no dia inicial da lista.
-            for (int i = 0; i < days; i++) {
-                if (i < listGraphicContainer.size()) {
-                    if (listGraphicContainer.get(i).getListCategory() != null) {
-                        listCategoryContainers.add(listGraphicContainer.get(i).getListCategory());
-                    } else if (listGraphicContainer.get(i).getListClient() != null) {
-                        listClientContainers.add(listGraphicContainer.get(i).getListClient());
-                    } else {
-                        created = listGraphicContainer.get(i).getCreated();
-                        closed = listGraphicContainer.get(i).getClosed();
+            if (days > 0) {
+                // cálculo para o primeiro grupo baseado no dia inicial da lista.
+                for (int i = 0; i < days; i++) {
+                    if (i < listGraphicContainer.size()) {
+                        if (listGraphicContainer.get(i).getListCategory() != null) {
+                            listCategoryContainers.add(listGraphicContainer.get(i).getListCategory());
+                        } else if (listGraphicContainer.get(i).getListClient() != null) {
+                            listClientContainers.add(listGraphicContainer.get(i).getListClient());
+                        } else {
+                            created = listGraphicContainer.get(i).getCreated();
+                            closed = listGraphicContainer.get(i).getClosed();
+                        }
+                        graphicTemp.setDateString(listGraphicContainer.get(i).getDateString());
+                        graphicTemp.setDate(listGraphicContainer.get(i).getDate());
                     }
-                    day += listGraphicContainer.get(i).getDateString() + "--";
-                    graphicTemp.setDateString(listGraphicContainer.get(i).getDateString());
-                    graphicTemp.setDate(listGraphicContainer.get(i).getDate());
+                    currentDay++;
                 }
-                currentDay++;
+            } else {
+                if (listGraphicContainer.get(days).getListCategory() != null) {
+                    listCategoryContainers.add(listGraphicContainer.get(days).getListCategory());
+                } else if (listGraphicContainer.get(days).getListClient() != null) {
+                    listClientContainers.add(listGraphicContainer.get(days).getListClient());
+                } else {
+                    created = listGraphicContainer.get(days).getCreated();
+                    closed = listGraphicContainer.get(days).getClosed();
+                }
+                graphicTemp.setDateString(listGraphicContainer.get(days).getDateString());
+                graphicTemp.setDate(listGraphicContainer.get(days).getDate());
             }
+
             graphicTemp.setListCategory(sumListCategoryContainer(listCategoryContainers));
             graphicTemp.setListClient(sumListClientContainer(listClientContainers));
             graphicTemp.setCreated(created);
@@ -394,14 +409,38 @@ public class ReportsService {
             listClientContainers = new ArrayList<List<ClientContainer>>();
             created = 0;
             closed = 0;
-            day = "";
 
             int positionTemp = 0;
+            int month = 0;
+            int dayTemp = 0;
+            int lastDay = 0;
 
             // cálculo para o restante da lista.
             if (currentDay < listGraphicContainer.size()) {
                 graphicTemp = new GraphicContainer();
+                if (unit.equals(Consts.MONTH)) {
+                    // caso seja mensal, verifica o número de dias que falta no mês subsequente ao primeiro grupo criado anteriormente
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(listGraphicContainer.get(currentDay).getDate());
+                    dayTemp = cal.get(Calendar.DAY_OF_MONTH);
+                    lastDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+                    valueTofinishGroup = (lastDay - dayTemp) + 1;
+                    month = cal.get(Calendar.MONTH);
+                }
                 for (int i = currentDay; i < listGraphicContainer.size(); i++) {
+
+                    if (unit.equals(Consts.MONTH)) {
+                        // verifica se trocou o mês corrente comparado ao mês anterior e atualiza o valor de dias para completar o mês
+                        Calendar cal = Calendar.getInstance();
+                        cal.setTime(listGraphicContainer.get(i).getDate());
+                        int monthTemp = cal.get(Calendar.MONTH);
+                        if (monthTemp != month) {
+                            month = monthTemp;
+                            dayTemp = cal.get(Calendar.DAY_OF_MONTH);
+                            lastDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+                            valueTofinishGroup = (lastDay - dayTemp) + 1;
+                        }
+                    }
                     positionTemp++;
                     if (listGraphicContainer.get(i).getListCategory() != null) {
                         listCategoryContainers.add(listGraphicContainer.get(i).getListCategory());
@@ -414,15 +453,6 @@ public class ReportsService {
                     graphicTemp.setDateString(listGraphicContainer.get(i).getDateString());
                     graphicTemp.setDate(listGraphicContainer.get(i).getDate());
 
-                    if (unit.equals(Consts.MONTH)) {
-                        // caso seja mensal, verificar pelo último dia do mês corrente para formar o grupo.
-                        Calendar cal = Calendar.getInstance();
-                        cal.setTime(graphicTemp.getDate());
-                        int dayTemp = cal.get(Calendar.DAY_OF_MONTH);
-                        int lastDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-                        valueTofinishGroup = lastDay - dayTemp;
-                    }
-
                     // término de 1 grupo ou a lista estiver no fim
                     if (positionTemp == valueTofinishGroup || (i + 1) == listGraphicContainer.size()) {
                         graphicTemp.setListCategory(sumListCategoryContainer(listCategoryContainers));
@@ -433,8 +463,9 @@ public class ReportsService {
                         resultado.add(graphicTemp);
 
                         graphicTemp = new GraphicContainer();
-                        day = "";
                         positionTemp = 0;
+                        listCategoryContainers = new ArrayList<List<CategoryContainer>>();
+                        listClientContainers = new ArrayList<List<ClientContainer>>();
                     }
                 }
             }
@@ -532,7 +563,7 @@ public class ReportsService {
     }
 
     /**
-     * Retorna quantos dias faltam para terminar a semana corrente da data do
+     * Retorna quantos dias faltam para terminar o mês corrente da data do
      * graphicContainer.
      *
      * @param graphicContainer
@@ -949,7 +980,7 @@ public class ReportsService {
         ticketsCreated = ticketService.findBetweenStartDate(dateFrom, dateTo);
         ticketsClosed = ticketService.findBetweenEndDate(dateFrom, dateTo);
 
-        for (long i = (dateFrom.getTime() + 86400000); i < (dateTo.getTime() + 86400000); i += 86400000) {
+        for (long i = dateFrom.getTime(); i < (dateTo.getTime() + 86400000); i += 86400000) {
             if (listGraphicContainer == null) {
                 listGraphicContainer = new ArrayList<GraphicContainer>();
             }
@@ -980,7 +1011,6 @@ public class ReportsService {
                     if (yearTemp == currentDay.getYear() && monthTemp == currentDay.getMonth() && dayTemp == currentDay.getDate()) {
                         quantTickets++;
                     }
-                    quantTickets++;
                 }
             }
             graphicContainer.setClosed(quantTickets);

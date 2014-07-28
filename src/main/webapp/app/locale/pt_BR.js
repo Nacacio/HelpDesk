@@ -84,7 +84,7 @@ translations = {
     //############################################## [ F ] ##############################################//
 
     FIRST_TIME_REQUESTING_SERVICE: 'Solicitando Atendimento pela primeira vez?',
-    FROM: 'para',
+    FROM: 'de',
     FORMAT_DATE: 'pt-BR',
     FORMAT_DATE_TIME: 'd/m/Y H:i',    
     FORMAT_JUST_DATE: 'd/m/Y',

@@ -38,12 +38,11 @@ Ext.define('Helpdesk.view.reports.GraphicUser', {
             grid: true
         }, {
             id: 'axeCategory',
-            type: 'Time',
-            dateFormat: translations.DATE_FORMAT,
+            type: 'Category',
             position: 'bottom',
             fields: ['date'],
             label: {
-                rotation: {degrees: 290}
+                rotation: {degrees: 280}
             }
         }],
     series: [{

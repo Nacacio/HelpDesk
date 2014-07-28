@@ -44,13 +44,12 @@ Ext.define('Helpdesk.view.reports.GraphicClient', {
         }, 
         {
             id: 'axeCategory',
-            type: 'Time',
-            dateFormat: translations.DATE_FORMAT,
+            type: 'Category',
             minorTickSteps: 1,
             position: 'bottom',
             fields: ['date'],
             label   : {
-             rotation:{degrees:290}
+             rotation:{degrees:280}
             }
         }
     ]
