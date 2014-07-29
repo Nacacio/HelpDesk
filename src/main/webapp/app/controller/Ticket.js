@@ -797,7 +797,7 @@ Ext.define('Helpdesk.controller.Ticket', {
             ticketView.down('text#tktBy').setText(ticket.userName);
 
             //formata data Inicial do ticket
-            var dateInicial = new Date(ticket.startDate);
+            var dateInicial = new Date(ticket.startDate);            
             dateInicial = Ext.Date.format(dateInicial, translations.FORMAT_DATE_TIME);
             ticketView.down('text#tktAt').setText(dateInicial);
 
@@ -808,9 +808,16 @@ Ext.define('Helpdesk.controller.Ticket', {
             ticketView.down('text#tktPriority').setText(translations[ticket.priorityName]);
 
             //text prazo estimado
-            if (ticket.estimateTime !== null) {
-                var dateTemp = new Date(ticket.estimateTime);
+            if (ticket.estimateTime !== null) {                
+                var dateTemp;
+                if (ticket.estimateTime.toString().indexOf('-') >= 0) {
+                    var splitedDate = ticket.estimateTime.split('-');                
+                    dateTemp = new Date(splitedDate[0],splitedDate[1]-1,splitedDate[2]);    
+                }else{
+                    dateTemp = new Date(ticket.estimateTime);
+                }                                
                 dateTemp = Ext.Date.format(dateTemp, translations.FORMAT_JUST_DATE);
+                console.log(dateTemp);
                 ticketView.down('text#tktEstimatedTime').setText(dateTemp);
             } else {
                 ticketView.down('text#tktEstimatedTime').setText(translations.NO_DEADLINE_DEFINED);
@@ -1206,8 +1213,11 @@ Ext.define('Helpdesk.controller.Ticket', {
             if (change.newEstimatedTime !== null || change.olderEstimatedTime !== null) {
                 text += translations.ESTIMATED_TIME_CHANGED_FROM;
                 var date;
-                if (change.olderEstimatedTime !== null) {
-                    date = new Date(change.olderEstimatedTime);
+                if (change.olderEstimatedTime !== null) { 
+                    
+                    var dateSpplited = change.olderEstimatedTime.split('-');
+                    date = new Date(dateSpplited[0],dateSpplited[1]-1,dateSpplited[2]);
+                    //date = new Date(change.olderEstimatedTime);                   
                     date = Ext.Date.format(date, translations.FORMAT_JUST_DATE);
                     text += "\"" + date + "\" ";
                 } else {
@@ -1215,7 +1225,10 @@ Ext.define('Helpdesk.controller.Ticket', {
                 }
                 text += translations.FROM;
                 if (change.newEstimatedTime !== null) {
-                    date = new Date(change.newEstimatedTime);
+                    
+                    var dateSpplited = change.newEstimatedTime.split('-');
+                    date = new Date(dateSpplited[0],dateSpplited[1]-1,dateSpplited[2]);                    
+                    //date = new Date(change.newEstimatedTime);                    
                     date = Ext.Date.format(date, translations.FORMAT_JUST_DATE);
                     text += " \"" + date + "\"";
                 } else {
