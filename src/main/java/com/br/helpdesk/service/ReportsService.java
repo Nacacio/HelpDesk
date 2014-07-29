@@ -392,13 +392,13 @@ public class ReportsService {
                         } else if (listGraphicContainer.get(i).getListClient() != null) {
                             listClientContainers.add(listGraphicContainer.get(i).getListClient());
                         } else {
-                            created = listGraphicContainer.get(i).getCreated();
-                            closed = listGraphicContainer.get(i).getClosed();
+                            created += listGraphicContainer.get(i).getCreated();
+                            closed += listGraphicContainer.get(i).getClosed();
                         }
 
-                        if (!dayLast.equals("") && !dayInicial.equals("") || (testPosition == (days-1) && !dayInicial.equals(""))) {
-                            if (unit.equals(Consts.WEEK)) {
-                                dateResult += dayInicial;
+                        if (!dayLast.equals("") || !dayInicial.equals("")) {
+                            if (unit.equals(Consts.WEEK) && (testPosition == (days - 1))) {
+                                dateResult = dayInicial;
                                 dateResult += "~";
                                 dateResult += dayLast.split("/")[2];
                             } else if (unit.equals(Consts.MONTH)) {
@@ -422,8 +422,8 @@ public class ReportsService {
                 } else if (listGraphicContainer.get(days).getListClient() != null) {
                     listClientContainers.add(listGraphicContainer.get(days).getListClient());
                 } else {
-                    created = listGraphicContainer.get(days).getCreated();
-                    closed = listGraphicContainer.get(days).getClosed();
+                    created += listGraphicContainer.get(days).getCreated();
+                    closed += listGraphicContainer.get(days).getClosed();
                 }
                 graphicTemp.setDateString(dateResult);
                 currentDay++;
@@ -436,9 +436,12 @@ public class ReportsService {
 
             resultado.add(graphicTemp);
 
+            dayLast = "";
             dayInicial = "";
             dateResult = "";
             testPosition = 0;
+            created = 0;
+            closed = 0;
             int positionTemp = 0;
             int month = 0;
             int dayTemp = 0;
@@ -486,15 +489,15 @@ public class ReportsService {
                     } else if (listGraphicContainer.get(i).getListClient() != null) {
                         listClientContainers.add(listGraphicContainer.get(i).getListClient());
                     } else {
-                        created = listGraphicContainer.get(i).getCreated();
-                        closed = listGraphicContainer.get(i).getClosed();
+                        created += listGraphicContainer.get(i).getCreated();
+                        closed += listGraphicContainer.get(i).getClosed();
                     }
 
                     // término de 1 grupo ou a lista estiver no fim
                     if (positionTemp == valueTofinishGroup || (i + 1) == listGraphicContainer.size()) {
-                        if (!dayLast.equals("") && !dayInicial.equals("")) {
+                        if (!dayLast.equals("") || !dayInicial.equals("")) {
                             if (unit.equals(Consts.WEEK)) {
-                                dateResult += dayInicial;
+                                dateResult = dayInicial;
                                 dateResult += "~";
                                 dateResult += dayLast.split("/")[2];
                             } else if (unit.equals(Consts.MONTH)) {
