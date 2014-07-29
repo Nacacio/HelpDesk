@@ -90,7 +90,7 @@ public class PriorityIntegrationTest {
     
     @Test
     public void testFindByNameContainingNotFound() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/priority").param("name", "NAO_EXISTE_ENTIDADE_COM_ESSE_NOME"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/prioritys").param("name", "NAO_EXISTE_ENTIDADE_COM_ESSE_NOME"))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());//verifica se o retorno � entityNotFound    
     }
     

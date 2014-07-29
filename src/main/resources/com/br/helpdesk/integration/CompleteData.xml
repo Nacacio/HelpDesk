@@ -12,11 +12,11 @@
     <User_Group id="4" name="Cliente 3"/>
     <User_Group id="5" name="EXISTE_ENTIDADE_COM_ESSE_NOME"/>
     
-    <User id="1" email="asulivam@gmail.com" name="Rafael Carvalhaes" username="rafaelpossas" password="1234" client_id="1" isEnabled="true" user_group_id="1"/>
-    <User id="2" email="asulivam@gmail.com" name="André Nacácio" username="andrenacacio" password="1234" client_id="1" isEnabled="true" user_group_id="1"/>
-    <User id="3" email="asulivam@gmail.com" name="André Sulivam" username="andresulivam" password="1234" client_id="1" isEnabled="true" user_group_id="1"/>
-    <User id="4" email="asulivam@gmail.com" name="Ricardo Damasceno" username="ricardodamasceno" password="1234" client_id="1" isEnabled="true" user_group_id="1"/>
-    <User id="5" email='sulivam2005@hotmail.com' name="EXISTE_ENTIDADE_COM_ESSE_NOME" username="user" password="1234" client_id="1" isEnabled="true" user_group_id="2"/>
+    <User id="1" email="ricardo@gmail" name="Rafael Carvalhaes" username="rafaelpossas" password="1234" client_id="1" isEnabled="true" user_group_id="1"/>
+    <User id="2" email="ricardodamascenno1@gmail.com" name="André Nacácio" username="andrenacacio" password="1234" client_id="1" isEnabled="true" user_group_id="1"/>
+    <User id="3" email="ricardodamascenno2@gmail.com" name="André Sulivam" username="andresulivam" password="1234" client_id="1" isEnabled="true" user_group_id="1"/>
+    <User id="4" email="ricardodamascenno3@gmail.com" name="Ricardo Damasceno" username="ricardodamasceno" password="1234" client_id="1" isEnabled="true" user_group_id="1"/>
+    <User id="5" email='ricardodamascenno4@gmail.com' name="EXISTE_ENTIDADE_COM_ESSE_NOME" username="user" password="1234" client_id="1" isEnabled="true" user_group_id="2"/>
     
     <Category id="1" name="Bug"/>
     <Category id="2" name="Dúvida"/>
@@ -46,5 +46,5 @@
             user_id="1" start_date="2014-10-10" end_date="2014-10-10" steps_ticket="EXISTE_ENTIDADE_COM_ESSE_NOME" 
             category_id="2" client_id="1" priority_id="3" estimate_time="2014-10-10" responsible_id="1"/>
     
-    <Config_email id="1" folder="Inbox" imap="imap.gmail.com" imaps="imaps" password="26240241" port="465" smtp="smtp.gmail.com" user="andresulivam@gmail.com" />
+    <Config_email id="1" folder="Inbox" imap="imap.gmail.com" imaps="imaps" password="streetcar" port="465" smtp="smtp.gmail.com" user="ricardoskacore@gmail.com" />
 </dataset>

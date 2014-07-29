@@ -6,8 +6,11 @@ import com.br.helpdesk.repository.CategoryRepository;
 import com.br.helpdesk.repository.ClientRepository;
 import com.br.helpdesk.repository.TicketRepository;
 import com.br.helpdesk.repository.UserRepository;
+import com.br.helpdesk.service.AttachmentsService;
 import com.br.helpdesk.service.CategoryService;
 import com.br.helpdesk.service.ClientService;
+import com.br.helpdesk.service.EmailService;
+import com.br.helpdesk.service.PriorityService;
 import com.br.helpdesk.service.TicketService;
 import com.br.helpdesk.service.UserService;
 import com.br.helpdesk.util.TestUtil;
@@ -81,9 +84,18 @@ public class TicketIntegrationTest {
     
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private AttachmentsService attachmentsService;
         
     @InjectMocks
     private TicketController controller;
+    
+    @Autowired
+    private PriorityService priorityService;
+    
+    @Autowired
+    private EmailService emailService;
     
     
     /**
@@ -100,6 +112,10 @@ public class TicketIntegrationTest {
         service.setRepository(repository);
         controller.setService(service);
         controller.setUserService(userService);
+        controller.setFileService(attachmentsService);
+        controller.setPriorityService(priorityService);
+        controller.setCategoryService(serviceCategory);
+        controller.setEmailService(emailService);
         mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
     }
     
@@ -266,41 +282,36 @@ public class TicketIntegrationTest {
     
     @Test
     public void testeSaveTicket() throws Exception{
-        Category category = serviceCategory.findById(1L);
-                
-        Client client = serviceClient.findById(1L);
-        
-        User user = userService.findById(1L);
-        
+        Category category = serviceCategory.findById(1L);               
+        Client client = serviceClient.findById(1L);        
+        User user = userService.findById(1L);        
         Ticket newTicket = new Ticket();
         
         newTicket.setCategory(category);
         newTicket.setClient(client);
-        newTicket.setUser(user);
-        
+        newTicket.setUser(user);        
         newTicket.setStepsTicket("Passos para Reprodução");
         newTicket.setDescription("Description");
-        newTicket.setTitle("Assunto");
-        
+        newTicket.setTitle("Assunto");        
         newTicket.setIsOpen(true);        
-        
-        newTicket.setStartDate(new Date());
-        
+        newTicket.setStartDate(new Date());        
         newTicket.setPriority(null);        
         newTicket.setEstimateTime(null);
         newTicket.setEndDate(null);
         newTicket.setResponsible(null);
         
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/ticket")
-                .content(TestUtil.convertObjectToJsonBytes(newTicket))
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/ticket")                
+                .content(TestUtil.convertObjectToJsonBytes(newTicket))          
+                .param("user", user.getUserName())
                 .contentType(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.status().isOk())//verifica se esta chamando corretamente a url
                 .andExpect(MockMvcResultMatchers.content().contentType(TestUtil.APPLICATION_JSON_UTF8))//verifica se esta retornando um JSON na codifica��o UTF8
+                
                 .andReturn();// retorna um objeto de tipo MvcResult
         
         String contentString = mvcResult.getResponse().getContentAsString();//recebe o retorno da fun��o
         JSONObject jsonObject = new JSONObject(contentString);//transforma o JSON String para JsonArray
         
-        assertThat(jsonObject.getInt("id"), is(6));
+        assertThat(jsonObject.getInt("id"), is(6));        
     }
 }

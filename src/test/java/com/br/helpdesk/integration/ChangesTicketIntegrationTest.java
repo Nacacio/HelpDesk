@@ -67,6 +67,13 @@ public class ChangesTicketIntegrationTest {
 
     @InjectMocks
     private ChangesTicketController controller;
+    
+    @Autowired
+    private ClientService serviceClient;
+    
+    @Autowired
+    private UserGroupService serviceUserGroup;
+    
 
     /**
      * @author Andre - Cria o servico e o repositorio reais, - Cria um mock do
@@ -83,8 +90,9 @@ public class ChangesTicketIntegrationTest {
     /**
      * @author Andre
      * @throws Exception
+     * Método não existe mais 
      */
-    @Test
+    /*@Test
     public void testGetAllChanges() throws Exception {
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/changes-ticket"))
                 .andExpect(MockMvcResultMatchers.status().isOk())//verifica se esta chamando corretamente a url
@@ -95,102 +103,104 @@ public class ChangesTicketIntegrationTest {
         JSONArray jsonArray = new JSONArray(contentString);//transforma o JSON String para JsonArray
 
         assertThat(jsonArray.length(), is(5));
+    }*/
+
+    /**
+     * @author Andre
+     * @throws Exception
+     * Método não existe mais 
+     */
+    /*@Test
+    public void testSaveChangesTicket() throws Exception {
+        Client client = serviceClient.findById(1L);
+
+        UserGroup userGroup = serviceUserGroup.findById(1L);
+
+        User newUser = new User();
+        newUser.setEmail("email");
+        newUser.setIsEnabled(true);
+        newUser.setName("New User");
+        newUser.setPassword("pass");
+        newUser.setUserName("login");
+        newUser.setClient(client);
+        newUser.setUserGroup(userGroup);
+
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.put("/changes-ticket")
+                .content(TestUtil.convertObjectToJsonBytes(newUser))
+                .contentType(TestUtil.APPLICATION_JSON_UTF8))
+                .andExpect(MockMvcResultMatchers.status().isOk())//verifica se esta chamando corretamente a url
+                .andExpect(MockMvcResultMatchers.content().contentType(TestUtil.APPLICATION_JSON_UTF8))//verifica se esta retornando um JSON na codifica��o UTF8
+                .andReturn();// retorna um objeto de tipo MvcResult 
+
+        String contentString = mvcResult.getResponse().getContentAsString();//recebe o retorno da fun��o
+        JSONObject jsonObject = new JSONObject(contentString);//transforma o JSON String para JsonArray
+
+        assertThat(jsonObject.getInt("id"), is(6));
+    }*/
+
+    //Testes já são realizados no arquivo de User
+    @Test
+    public void testDeleteEntityNotFound() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.delete("/user/{id}", 50L))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());//verifica se o retorno é entityNotFound    
     }
 
-//    /**
-//     * @author Andre
-//     * @throws Exception
-//     */
-//    @Test
-//    public void testSaveChangesTicket() throws Exception {
-//        Client client = serviceClient.findById(1L);
-//
-//        UserGroup userGroup = serviceUserGroup.findById(1L);
-//
-//        User newUser = new User();
-//        newUser.setEmail("email");
-//        newUser.setIsEnabled(true);
-//        newUser.setName("New User");
-//        newUser.setPassword("pass");
-//        newUser.setUserName("login");
-//        newUser.setClient(client);
-//        newUser.setUserGroup(userGroup);
-//
-//        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.put("/changes-ticket")
-//                .content(TestUtil.convertObjectToJsonBytes(newUser))
-//                .contentType(TestUtil.APPLICATION_JSON_UTF8))
-//                .andExpect(MockMvcResultMatchers.status().isOk())//verifica se esta chamando corretamente a url
-//                .andExpect(MockMvcResultMatchers.content().contentType(TestUtil.APPLICATION_JSON_UTF8))//verifica se esta retornando um JSON na codifica��o UTF8
-//                .andReturn();// retorna um objeto de tipo MvcResult 
-//
-//        String contentString = mvcResult.getResponse().getContentAsString();//recebe o retorno da fun��o
-//        JSONObject jsonObject = new JSONObject(contentString);//transforma o JSON String para JsonArray
-//
-//        assertThat(jsonObject.getInt("id"), is(6));
-//    }
-//
-//    @Test
-//    public void testDeleteEntityNotFound() throws Exception {
-//        mockMvc.perform(MockMvcRequestBuilders.delete("/user/{id}", 50L))
-//                .andExpect(MockMvcResultMatchers.status().isNotFound());//verifica se o retorno é entityNotFound    
-//    }
-//
-//    @Test
-//    public void testDeleteEntityDependency() throws Exception {
-//        mockMvc.perform(MockMvcRequestBuilders.delete("/user/{id}", 1L))
-//                .andExpect(MockMvcResultMatchers.status().isForbidden());//verifica se o retorno é forbidden    
-//    }
-//
-//    @Test
-//    public void testDeleteEntity() throws Exception {
-//        mockMvc.perform(MockMvcRequestBuilders.delete("/user/{id}", 5L))
-//                .andExpect(MockMvcResultMatchers.status().isOk());//verifica se o retorno é entityNotFound    
-//    }
-//
-//    /**
-//     * @author Andre
-//     * @throws Exception
-//     */
-//    @Test
-//    public void testGetByUserName() throws Exception {
-//        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/user/{username}", "user"))
-//                .andExpect(MockMvcResultMatchers.status().isOk())//verifica se esta chamando corretamente a url
-//                .andExpect(MockMvcResultMatchers.content().contentType(TestUtil.APPLICATION_JSON_UTF8))//verifica se esta retornando um JSON na codifica��o UTF8
-//                .andReturn();// retorna um objeto de tipo MvcResult 
-//
-//        String contentString = mvcResult.getResponse().getContentAsString();//recebe o retorno da fun��o
-//        JSONObject json = new JSONObject(contentString);//transforma o JSON String para JsonArray
-//
-//        assertThat(json, is(not(IsNull.nullValue())));
-//        assertThat(json.getInt("id"), is(5));
-//    }
-//
-//    @Test
-//    public void testGetById() throws Exception {
-//        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/user/id/{id}", "5"))
-//                .andExpect(MockMvcResultMatchers.status().isOk())//verifica se esta chamando corretamente a url
-//                .andExpect(MockMvcResultMatchers.content().contentType(TestUtil.APPLICATION_JSON_UTF8))//verifica se esta retornando um JSON na codifica��o UTF8
-//                .andReturn();// retorna um objeto de tipo MvcResult 
-//
-//        String contentString = mvcResult.getResponse().getContentAsString();//recebe o retorno da fun��o
-//        JSONObject json = new JSONObject(contentString);//transforma o JSON String para JsonArray
-//
-//        assertThat(json, is(not(IsNull.nullValue())));
-//        assertThat(json.getInt("id"), is(5));
-//    }
-//
-//    @Test
-//    public void testGetByEmail() throws Exception {
-//        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/user/email/{email}", "sulivam2005@gmail"))
-//                .andExpect(MockMvcResultMatchers.status().isOk())//verifica se esta chamando corretamente a url
-//                .andExpect(MockMvcResultMatchers.content().contentType(TestUtil.APPLICATION_JSON_UTF8))//verifica se esta retornando um JSON na codifica��o UTF8
-//                .andReturn();// retorna um objeto de tipo MvcResult 
-//
-//        String contentString = mvcResult.getResponse().getContentAsString();//recebe o retorno da fun��o
-//        JSONObject json = new JSONObject(contentString);//transforma o JSON String para JsonArray
-//
-//        assertThat(json, is(not(IsNull.nullValue())));
-//        assertThat(json.getInt("id"), is(5));
-//    }
+    /*@Test
+    public void testDeleteEntityDependency() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.delete("/user/{id}", 1L))
+                .andExpect(MockMvcResultMatchers.status().isForbidden());//verifica se o retorno é forbidden    
+    }
+
+    @Test
+    public void testDeleteEntity() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.delete("/user/{id}", 5L))
+                .andExpect(MockMvcResultMatchers.status().isOk());//verifica se o retorno é entityNotFound    
+    }*/
+
+    /**
+     * @author Andre
+     * @throws Exception
+     */
+    /*@Test
+    public void testGetByUserName() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/user/{username}", "user"))
+                .andExpect(MockMvcResultMatchers.status().isOk())//verifica se esta chamando corretamente a url
+                .andExpect(MockMvcResultMatchers.content().contentType(TestUtil.APPLICATION_JSON_UTF8))//verifica se esta retornando um JSON na codifica��o UTF8
+                .andReturn();// retorna um objeto de tipo MvcResult 
+
+        String contentString = mvcResult.getResponse().getContentAsString();//recebe o retorno da fun��o
+        JSONObject json = new JSONObject(contentString);//transforma o JSON String para JsonArray
+
+        assertThat(json, is(not(IsNull.nullValue())));
+        assertThat(json.getInt("id"), is(5));
+    }
+
+    @Test
+    public void testGetById() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/user/id/{id}", "5"))
+                .andExpect(MockMvcResultMatchers.status().isOk())//verifica se esta chamando corretamente a url
+                .andExpect(MockMvcResultMatchers.content().contentType(TestUtil.APPLICATION_JSON_UTF8))//verifica se esta retornando um JSON na codifica��o UTF8
+                .andReturn();// retorna um objeto de tipo MvcResult 
+
+        String contentString = mvcResult.getResponse().getContentAsString();//recebe o retorno da fun��o
+        JSONObject json = new JSONObject(contentString);//transforma o JSON String para JsonArray
+
+        assertThat(json, is(not(IsNull.nullValue())));
+        assertThat(json.getInt("id"), is(5));
+    }
+
+    @Test
+    public void testGetByEmail() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/user/email/{email}", "sulivam2005@gmail"))
+                .andExpect(MockMvcResultMatchers.status().isOk())//verifica se esta chamando corretamente a url
+                .andExpect(MockMvcResultMatchers.content().contentType(TestUtil.APPLICATION_JSON_UTF8))//verifica se esta retornando um JSON na codifica��o UTF8
+                .andReturn();// retorna um objeto de tipo MvcResult 
+
+        String contentString = mvcResult.getResponse().getContentAsString();//recebe o retorno da fun��o
+        JSONObject json = new JSONObject(contentString);//transforma o JSON String para JsonArray
+
+        assertThat(json, is(not(IsNull.nullValue())));
+        assertThat(json.getInt("id"), is(5));
+    }*/
 
 }
