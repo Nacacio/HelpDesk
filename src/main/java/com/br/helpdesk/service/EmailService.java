@@ -527,12 +527,13 @@ public class EmailService {
     /**
      * Method reads emails from the IMAP or POP3 server.
      */
-    public void readEmails() {
+    public void readEmails() throws MessagingException {
         // Create the session        
         Session session = getSession();
+        Store store = null;
         try {
             // Set the store depending on the parameter flag value
-            Store store = session.getStore(configEmail.getImaps());
+            store = session.getStore(configEmail.getImaps());
             // Set the server depending on the parameter flag value            
             //VALORES DO SERVIDOR
             store.connect(configEmail.getImap(), configEmail.getUser(), configEmail.getPassword());
@@ -581,7 +582,11 @@ public class EmailService {
                     }
                 }
             }
+            store.close();
         } catch (Exception e) {
+            if(store != null){
+                store.close();
+            }
             e.printStackTrace();
         }
     }

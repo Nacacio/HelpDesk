@@ -33,6 +33,7 @@ Ext.define('Helpdesk.view.ticket.Ticket', {
            border: 0,
            layout: 'card',
            padding: '20 20 20 20',
+           autoScroll:true,
            items:[{
                    xtype: 'container',
                    itemId:'maincontainer',

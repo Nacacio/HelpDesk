@@ -55,6 +55,8 @@ translations = {
     CLOSEDS: 'Fechados',
     CLOSE_TICKET: 'Fechar Ticket',
     COMMENT_INTERNAL_BY: 'Comentário interno por',
+    CLOSING_TICKET: 'Encerrando Ticket...',
+    
     //############################################## [ D ] ##############################################//
 
     DELETE: 'Remover',
@@ -202,6 +204,8 @@ translations = {
     REQUIRED_SUBJECT: 'Descreva o assunto!',
     REQUIRED_DESCRIPTION: 'Preencha a descrição!',
     RESPONSIBLE_CHANGED_FROM: 'Responsável alterado de ',
+    REOPENING_TICKET: 'Reabrindo Ticket ...',
+    
     //############################################## [ S ] ##############################################//
 
     SAVE: 'Salvar',

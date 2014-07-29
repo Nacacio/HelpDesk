@@ -55,6 +55,8 @@ translations = {
     CLOSEDS: 'Closed',
     CLOSE_TICKET: 'Close Ticket',
     COMMENT_INTERNAL_BY: 'Comment internal by',
+    CLOSING_TICKET: 'Closing Ticket...',
+    
     //############################################## [ D ] ##############################################//
 
     DELETE: 'Delete',
@@ -202,6 +204,8 @@ translations = {
     REQUIRED_SUBJECT: 'Describe the subject!',
     REQUIRED_DESCRIPTION: 'Fill out the description!',
     RESPONSIBLE_CHANGED_FROM: 'Responsible changed from ',
+    REOPENING_TICKET: 'Reopening Ticket ...',
+    
     //############################################## [ S ] ##############################################//
 
     SAVE: 'Save',

@@ -86,10 +86,11 @@ Ext.define('Helpdesk.controller.Login', {
         form.submit({
             method: 'POST',
             success: function(obj, action) {
-                Ext.get(form.getEl()).unmask(); // Remove a máscara de carregamento                
+                formTopElement.unmask(); // Remove máscara de carregamento  
                 window.location.href = "../" + homeURL;
             },
             failure: function(form, action) {
+                formTopElement.unmask(); // Remove máscara de carregamento  
                 var obj = Ext.JSON.decode(action.response.responseText);
                 if (action.failureType === 'server') {
                     var translatedError = "";
@@ -110,7 +111,7 @@ Ext.define('Helpdesk.controller.Login', {
                     Ext.Msg.alert(translations.ERROR, translations.CONNECTING_ERROR);
 
                 }
-                formTopElement.unmask(); // Remove máscara de carregamento                
+                              
                 form.reset();
             }
         });

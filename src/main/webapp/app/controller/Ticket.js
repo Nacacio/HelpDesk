@@ -162,20 +162,24 @@ Ext.define('Helpdesk.controller.Ticket', {
     //Fecha ou abre o ticket
     setStatusTicket: function(button) {
         if (button.id === 'btnCloseTkt' || button.id === 'btnOpenTkt') {
-
             var scope = this;
-
+            var mainView = this.getTicketView();
+            
+            
             var record = button.up('form#ticketMainView').getRecord();
             record.dirty = true;
             var store = this.getTicketsStore();
             if (button.id === 'btnCloseTkt') {
+                mainView.setLoading(translations.CLOSING_TICKET);
                 store.proxy.url = 'ticket/close-ticket';
             } else if (button.id === 'btnOpenTkt') {
+                mainView.setLoading(translations.REOPENING_TICKET);
                 store.proxy.url = 'ticket/open-ticket';
             }
             store.add(record);
             store.sync({
                 callback: function() {
+                    mainView.setLoading(false);
                     store.proxy.url = 'ticket';
                     scope.setSideMenuButtonText();
 

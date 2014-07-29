@@ -6,6 +6,7 @@
 package com.br.helpdesk.scheduledservices;
 
 import com.br.helpdesk.service.EmailService;
+import javax.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -16,8 +17,8 @@ public class RoutineCheckServerEmail {
     @Autowired
     private EmailService emailService;
 
-    @Scheduled(fixedDelay=(1000*60)*1)
-    public void checkServerEmails() {
+    @Scheduled(fixedDelay=(1000*60)*5)
+    public void checkServerEmails() throws MessagingException {
         emailService.readEmails();
     }
 
