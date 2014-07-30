@@ -210,7 +210,7 @@ Ext.define('Helpdesk.controller.Dashboard', {
                     for (var k = 0; k < ticketsStore.getCount(); k++) {
                         ticketTemp = ticketsStore.data.items[k].data;
                         if (ticketTemp.isOpen === true) {
-                            if (userTemp.userGroup.id === 1) {
+                            if (userTemp.userGroup.id === parseInt(Helpdesk.Globals.idAdminGroup)) {
                                 if (ticketTemp.responsible !== null && ticketTemp.responsible.id === userTemp.id) {
                                     countAgent++;
                                 }
@@ -223,11 +223,11 @@ Ext.define('Helpdesk.controller.Dashboard', {
                     }
                     var object = new Helpdesk.model.TicketsByUser();
                     object.data.user = userTemp.name;
-                    if (userTemp.userGroup.id === 1) {
+                    if (userTemp.userGroup.id === parseInt(Helpdesk.Globals.idAdminGroup)) {
                         object.data.ticketCount = countAgent;
                         scope.getTableTicket().down('datagridagent').getStore().add(object);
                     }
-                    if (userTemp.userGroup.id === 2 && countClient > 0) {
+                    else if (countClient > 0) {
                         object.data.ticketCount = countClient;
                         scope.getTableTicket().down('datagridclient').getStore().add(object);
                     }
@@ -282,7 +282,7 @@ Ext.define('Helpdesk.controller.Dashboard', {
         store.load({
             callback: function() {
                 for (var i = 0; i < store.getCount(); i++) {
-                    if (store.data.items[i].data.userGroup.id === 1) {
+                    if (store.data.items[i].data.userGroup.id === parseInt(Helpdesk.Globals.idAdminGroup)) {
                         count++;
                     }
                 }
