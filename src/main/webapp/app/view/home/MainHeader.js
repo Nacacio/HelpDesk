@@ -8,7 +8,7 @@ Ext.define('Helpdesk.view.home.MainHeader', {
     requires: ['Helpdesk.Globals'],
     alias: 'widget.mainheader', // #2
     itemId: 'main-nav-toolbar',
-    height: 60, // #3
+    height: 75, // #3
     layout: {
         type: 'hbox',
         align: 'bottom'
@@ -24,9 +24,9 @@ Ext.define('Helpdesk.view.home.MainHeader', {
             xtype: "image",
             src: homeURL + translations.PROCYMO_LOGO,
             border: 0,
-            style: 'margin-right: 30px;',
-            height: 50,
-            width: 200
+            style: 'margin-right: 50px; margin-left: 10px;',
+            height: 65,
+            width: 196
         },
         {
             xtype: 'button',
