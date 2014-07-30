@@ -33,8 +33,7 @@ Ext.define('Helpdesk.view.user.UserForm', {
                 },
                 {
                     xtype: 'hiddenfield',
-                    fieldLabel: translations.IS_ENABLE,
-                    name: 'isEnabled'
+                    id: 'hiddenpassword'
                 },
                 {
                     fieldLabel: translations.NAME,
