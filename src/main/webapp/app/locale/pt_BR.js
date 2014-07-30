@@ -19,6 +19,7 @@ translations = {
     ATTACHMENT_FILE: 'Anexar arquivos...',
     ALREADY_ADDED: ' já foi adicionado!',
     AGENT: 'Agente',
+    ACTIVE: 'Ativo',
     //############################################## [ B ] ##############################################//
 
     BACK: 'Voltar',
@@ -56,6 +57,7 @@ translations = {
     CLOSE_TICKET: 'Fechar Ticket',
     COMMENT_INTERNAL_BY: 'Comentário interno por',
     CLOSING_TICKET: 'Encerrando Ticket...',
+    CHECK_ADDED_INFORMATIONS: 'Verifique as informações adicionadas!',
     
     //############################################## [ D ] ##############################################//
 
@@ -68,12 +70,14 @@ translations = {
     DATE: 'Dia',
     DATE_FORMAT: 'M d',
     DATE_SIMPLIFIED: 'd/m',
+    DISABLE: 'Desabilitado',
     //############################################## [ E ] ##############################################//
 
     EDIT: 'Editar',
     EMAIL: 'E-Mail',
     ENGLISH: 'Inglês',
     ENTER: 'Entrar',
+    ENABLE: 'Habilitado',
     ERROR: 'Erro',
     ESTIMATED_TIME: 'Prazo Estimado',
     ENTERPRISE: "Empresa",
@@ -154,6 +158,7 @@ translations = {
     NEW_CLIENT: 'Novo Cliente',
     NEW: 'Novo',
     NAME_CLIENT: 'Nome do Cliente',
+    NO: 'Não',
     NO_RESPONSIBLE: 'Sem responsável',
     NEWS: 'Novidades',
     NO_CATEGORY: 'Sem categoria',
@@ -224,7 +229,7 @@ translations = {
     SUBJECT: 'Assunto',
     SELECT_FILE: 'Selecione um arquivo...',
     SEE_TICKETS_WITHOUT_RESPONSIBLE: 'Ver tickets sem responsável',
-	SEE_TICKETS_ON_GOING:'Ver tickets em andamento',
+    SEE_TICKETS_ON_GOING:'Ver tickets em andamento',
     SEE_TICKETS_LATE: 'Ver tickets atrasados',
     SEE_TICKETS_WITHOUT_CATEGORY: 'Ver tickets sem categoria',
     SEE_FULL_REPORT: '(Ver relatório completo)',
@@ -303,7 +308,8 @@ translations = {
     //############################################## [ Y ] ##############################################//
 
     YOUR_SESSION_WILL_EXPIRE: 'Sua sessão irá expirar em ',
-    YEAR: 'Ano'
+    YEAR: 'Ano',
+    YES: 'Sim'
 
             //############################################## [ Z ] ##############################################// 
 

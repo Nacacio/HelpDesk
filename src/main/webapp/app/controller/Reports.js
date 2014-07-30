@@ -310,7 +310,7 @@ Ext.define('Helpdesk.controller.Reports', {
                         radius: 7
                     },
                     axis: 'left',
-                    title: translations[fields[i]],
+                    title: fields[i],
                     xField: 'date',
                     yField: fields[i],
                     tips: {
@@ -427,9 +427,7 @@ Ext.define('Helpdesk.controller.Reports', {
         var openTo = 0;
 
         for (var i = 0; i < jsonObj.length; i++) {
-            if (type === 'category') {
-                jsonObj[i].name = translations[jsonObj[i].name];
-            } else if (type === 'user') {
+            if (type === 'user') {
                 var date = '';
                 var dateFormatted = '';
                 if (jsonObj[i].name === 'OPEN_FROM') {

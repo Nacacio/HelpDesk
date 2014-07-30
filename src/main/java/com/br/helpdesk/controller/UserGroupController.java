@@ -47,12 +47,11 @@ public class UserGroupController {
     public UserGroupController(UserGroupService service){
         this.service = service;
     }
-          @RequestMapping(method = RequestMethod.GET)
+    
+    @RequestMapping(method = RequestMethod.GET)
     public @ResponseBody Iterable<UserGroup> findAll() {
         return service.findAll();
     }
-    
-
     
     @RequestMapping(method = RequestMethod.GET, params={"name"})
     public @ResponseBody List<UserGroup> findByName(@RequestParam(value = "name") String name){

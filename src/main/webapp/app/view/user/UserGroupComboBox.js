@@ -10,6 +10,11 @@ Ext.define('Helpdesk.view.user.UserGroupComboBox', {
     displayField: 'name',
     valueField: 'id',
     store: 'UserGroups',
-    alias: 'widget.usergroupcombobox'
+    alias: 'widget.usergroupcombobox',
+    listeners:{
+        'afterrender': function(){
+            this.store.load();
+        }
+    }
 });
 

@@ -39,13 +39,10 @@ public class ClientController {
         this.clientService = service;
     }
     
-    
     @RequestMapping(method = RequestMethod.GET)
     public @ResponseBody Iterable<Client> findAll() {
         return clientService.findAll();
     }
-    
-
     
     @RequestMapping(method = RequestMethod.GET, params={"name"})
     public @ResponseBody List<Client> findByName(@RequestParam(value = "name") String name){

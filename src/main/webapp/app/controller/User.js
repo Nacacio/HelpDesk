@@ -15,7 +15,7 @@ Ext.define('Helpdesk.controller.User', {
     extend: 'Ext.app.Controller',
     requires: ['Helpdesk.store.Users', 'Helpdesk.util.Dialogs'],
     stores: ['Users'],
-    views: ['user.Users', 'Helpdesk.view.user.Profile'],
+    views: ['user.Users', 'Helpdesk.view.user.Profile', 'Helpdesk.view.user.UsersList', 'Helpdesk.view.user.UserForm'],
     init: function() {
         this.control({
             'users button#add': {
@@ -30,13 +30,15 @@ Ext.define('Helpdesk.controller.User', {
             'profile button#save': {
                 click: this.onButtonClickSave
             },
+            '#userGrid': {
+                itemdblclick: this.onUserDblClick
+            },
             'profile button#cancel': {
                 click: this.onButtonClickCancel
             },
             'profile filefield': {
                 change: this.onFilefieldChange
             }
-
         });
     },
     refs: [
@@ -55,6 +57,10 @@ Ext.define('Helpdesk.controller.User', {
         {
             ref: 'userPicture',
             selector: 'profile > userform image'
+        },
+        {
+            ref: 'userForm',
+            selector: 'users'
         }
     ],
     list: function() {
@@ -68,21 +74,17 @@ Ext.define('Helpdesk.controller.User', {
     onButtonClickAdd: function(button, e, options) {
         var win = Ext.create('Helpdesk.view.user.Profile');
         win.setTitle(translations.ADD_NEW_USER);
-        win.down('form').loadRecord(Ext.create('Helpdesk.model.User'));
+        var form = win.down('form');
+        form.loadRecord(Ext.create('Helpdesk.model.User'));        
+        var checkState = form.down('checkbox#checkState');
+        checkState.setValue(true);
         win.show();
     },
-    onButtonClickEdit: function(button, e, options) {
+    onButtonClickEdit: function(button, e, options) {        
         var grid = this.getUsersList(); // #1
         var record = grid.getSelectionModel().getSelection();
         if (record[0]) { // #2
-            var editWindow = Ext.create('Helpdesk.view.user.Profile');
-            editWindow.down('form').loadRecord(record[0]); // #3
-            if (record[0].get('picture')) { //#4
-                var img = editWindow.down('image');
-                img.setSrc('resources/profileImages/' + record[0].get('picture'));
-            }
-            editWindow.setTitle(record[0].get('name')); // #5
-            editWindow.show();
+            this.openTitleWindowEditUser(record[0]);
         }
     },
     onButtonClickCancel: function(button, e, options) {
@@ -92,18 +94,67 @@ Ext.define('Helpdesk.controller.User', {
     onButtonClickSave: function(button, e, options) {
         var win = button.up('window');
         var form = win.down('form');
-        var record = form.getRecord();
-        var values = form.getValues();
-        record.set(values);
-        this.getUsersStore().add(record);
-        if (this.getUsersStore().getModifiedRecords().length > 0) {
-            win.close();            
-            this.getUsersStore().sync();            
-            this.getUsersStore().load();
-            this.getUsersList().getStore().load();
-        } else {
-            Ext.Msg.alert(translations.INFORMATION, translations.NOTHING_TO_SAVE);
+
+        //verificando se todos os campos obrigatórios estão preenchidos.
+        var check = false;
+
+        //verificando se os campos de nome do usuário, username, password, confirmPassword e email são validos
+        if (form.down('textfield#nameUser').value !== '' &&
+                form.down('textfield#userNameUser').value !== '' &&
+                form.down('textfield#firstPass').value !== '' &&
+                form.down('textfield#confirmPasswordUser').value !== '' &&
+                form.down('textfield#emailUser').value !== '') {
+            check = true;            
         }
+
+        //verificando o campo usergroup
+        if (check) {
+            check = false;
+            if (form.down('usergroupcombobox#userGroupComboboxUser').getValue() !== null) {
+                var groupTemp = form.down('usergroupcombobox#userGroupComboboxUser');
+                if (groupTemp.valueModels !== null) {
+                    var isModel = groupTemp.valueModels[0] instanceof Helpdesk.model.UserGroup;
+                    if (isModel) {
+                        check = true;
+                    }
+                }
+            }
+        }
+
+        if (check) {
+            check = false;
+            if (form.down('clientcombobox#clientComboboxUser').getValue() !== null) {
+                var clientTemp = form.down('clientcombobox#clientComboboxUser');
+                if (clientTemp.valueModels !== null) {
+                    var isModel = clientTemp.valueModels[0] instanceof Helpdesk.model.Client;
+                    if (isModel) {
+                        check = true;
+                    }
+                }
+            }
+        }
+
+        if (check) {
+            var record = form.getRecord();
+            var values = form.getValues();
+            record.set(values);
+
+            var checkState = form.down('checkbox#checkState');           
+            record.data.isEnabled = checkState.value;
+            
+            this.getUsersStore().add(record);
+            if (this.getUsersStore().getModifiedRecords().length > 0) {
+                win.close();
+                this.getUsersStore().sync();
+                this.getUsersStore().load();
+                this.getUsersList().getStore().load();
+            } else {
+                Ext.Msg.alert(translations.INFORMATION, translations.NOTHING_TO_SAVE);
+            }
+        } else {
+            Ext.Msg.alert(translations.INFORMATION, translations.CHECK_ADDED_INFORMATIONS);
+        }
+
     },
     onFilefieldChange: function(filefield, value, options) {
 
@@ -132,6 +183,47 @@ Ext.define('Helpdesk.controller.User', {
                 store.sync();
             }
         });
+    },
+    onUserDblClick: function(grid, record, item, index, e, eOpts) {
+        if(record!==null){
+            this.openTitleWindowEditUser(record);
+        }
+    },
+    openTitleWindowEditUser: function(record) {
+        if (record !== null) { // #2
+            var editWindow = Ext.create('Helpdesk.view.user.Profile');
+            var form = editWindow.down('form');
+            form.loadRecord(record); // #3
+            
+            //set value usergroupcombobox
+            var userGroupCombo = form.down('usergroupcombobox#userGroupComboboxUser');
+            var userGroupStore = userGroupCombo.store;
+            var userGroupIndex = Ext.StoreMgr.lookup(userGroupStore).findExact('name', record.data.userGroupName);
+            var userGroupRecord = Ext.StoreMgr.lookup(userGroupStore).getAt(userGroupIndex);
+            userGroupCombo.setValue(userGroupRecord);
+            
+            //set value clientcombobox
+            var clientCombo = form.down('clientcombobox#clientComboboxUser');
+            var clientStore = clientCombo.store;
+            var clientIndex = Ext.StoreMgr.lookup(clientStore).findExact('name', record.data.clientName);
+            var clientRecord = Ext.StoreMgr.lookup(clientStore).getAt(clientIndex);
+            clientCombo.setValue(clientRecord);
+            
+            var checkState = form.down('checkbox#checkState');
+
+            if(record.get('isEnabled') === false){
+                checkState.setValue(false);
+            } else {
+                checkState.setValue(true);
+            }           
+
+            if (record.get('picture')) { //#4
+                var img = editWindow.down('image');
+                img.setSrc('resources/profileImages/' + record.get('picture'));
+            }
+            editWindow.setTitle(record.get('name')); // #5
+            editWindow.show();
+        }
     }
-    
+
 });

@@ -10,5 +10,10 @@ Ext.define('Helpdesk.view.client.ClientComboBox',{
     displayField: 'name',
     valueField: 'id',
     store: 'Clients',
-    alias: 'widget.clientcombobox' 
+    alias: 'widget.clientcombobox',
+    listeners:{
+        'afterrender': function(){
+            this.store.load();
+        }
+    }
 });

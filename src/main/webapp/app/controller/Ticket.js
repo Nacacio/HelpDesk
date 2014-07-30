@@ -802,10 +802,10 @@ Ext.define('Helpdesk.controller.Ticket', {
             ticketView.down('text#tktAt').setText(dateInicial);
 
             //text categoria
-            ticketView.down('text#tktCategory').setText(translations[ticket.categoryName]);
+            ticketView.down('text#tktCategory').setText(ticket.categoryName);
 
             //text prioridade
-            ticketView.down('text#tktPriority').setText(translations[ticket.priorityName]);
+            ticketView.down('text#tktPriority').setText(ticket.priorityName);
 
             //text prazo estimado
             if (ticket.estimateTime !== null) {                
@@ -817,7 +817,6 @@ Ext.define('Helpdesk.controller.Ticket', {
                     dateTemp = new Date(ticket.estimateTime);
                 }                                
                 dateTemp = Ext.Date.format(dateTemp, translations.FORMAT_JUST_DATE);
-                console.log(dateTemp);
                 ticketView.down('text#tktEstimatedTime').setText(dateTemp);
             } else {
                 ticketView.down('text#tktEstimatedTime').setText(translations.NO_DEADLINE_DEFINED);
@@ -1177,13 +1176,13 @@ Ext.define('Helpdesk.controller.Ticket', {
             if (change.newCategory !== null || change.olderCategory !== null) {
                 text += translations.CATEGORY_CHANGED_FROM;
                 if (change.olderCategory !== null) {
-                    text += "\"" + translations[change.olderCategoryName] + "\" ";
+                    text += "\"" + change.olderCategoryName + "\" ";
                 } else {
                     text += "\"" + translations.NO_CATEGORY + "\" ";
                 }
                 text += translations.FROM;
                 if (change.newCategory !== null) {
-                    text += " \"" + translations[change.newCategoryName] + "\"";
+                    text += " \"" + change.newCategoryName + "\"";
                 } else {
                     text += " \"" + translations.NO_CATEGORY + "\"";
                 }
@@ -1195,13 +1194,13 @@ Ext.define('Helpdesk.controller.Ticket', {
             if (change.newPriority !== null || change.olderPriority !== null) {
                 text += translations.PRIORITY_CHANGED_FROM;
                 if (change.olderPriority !== null) {
-                    text += "\"" + translations[change.olderPriorityName] + "\" ";
+                    text += "\"" + change.olderPriorityName + "\" ";
                 } else {
                     text += "\"" + translations.NO_PRIORITY + "\" ";
                 }
                 text += translations.FROM;
                 if (change.newPriority !== null) {
-                    text += " \"" + translations[change.newPriorityName] + "\"";
+                    text += " \"" + change.newPriorityName + "\"";
                 } else {
                     text += " \"" + translations.NO_PRIORITY + "\"";
                 }
@@ -1280,7 +1279,7 @@ Ext.define('Helpdesk.controller.Ticket', {
             src: 'attachments/attachments/' + fileId
         });
     },
-    submitValues: function(multiupload) {
+        submitValues: function(multiupload) {
         var scope = this;
         var ticketView = scope.getTicketView();
         if (multiupload.filesListArchive.length > 0) {

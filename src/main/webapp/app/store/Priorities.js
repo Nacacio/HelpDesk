@@ -18,6 +18,5 @@ Ext.define('Helpdesk.store.Priorities', {
         });
         this.callParent([config]);
     }
-
 });
 

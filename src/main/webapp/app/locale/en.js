@@ -19,6 +19,7 @@ translations = {
     ATTACHMENT_FILE: 'Attachments files...',
     ALREADY_ADDED: ' already added!',
     AGENT: 'Agent',
+    ACTIVE: 'Active',
     //############################################## [ B ] ##############################################//
 
     BACK: 'Back',
@@ -56,6 +57,7 @@ translations = {
     CLOSE_TICKET: 'Close Ticket',
     COMMENT_INTERNAL_BY: 'Comment internal by',
     CLOSING_TICKET: 'Closing Ticket...',
+    CHECK_ADDED_INFORMATIONS: 'Check the added informations!',
     
     //############################################## [ D ] ##############################################//
 
@@ -68,12 +70,14 @@ translations = {
     DATE: 'Day',
     DATE_FORMAT: 'd M',
     DATE_SIMPLIFIED: 'm/d',
+    DISABLE: 'Disable',
     //############################################## [ E ] ##############################################//
 
     EDIT: 'Edit',
     EMAIL: 'E-Mail',
     ENGLISH: 'English',
     ENTER: 'Enter',
+    ENABLE: 'Enable',
     ERROR: 'Error',
     ESTIMATED_TIME: 'Estimated Time',
     ENTERPRISE: 'Enterprise',
@@ -154,6 +158,7 @@ translations = {
     NEW_CLIENT: 'New client',
     NEW: 'New',
     NAME_CLIENT: 'Name of client',
+    NO: 'No',
     NO_RESPONSIBLE: 'No responsible',
     NEWS: 'News',
     NO_CATEGORY: 'No category',
@@ -302,7 +307,8 @@ translations = {
     //############################################## [ Y ] ##############################################//
 
     YOUR_SESSION_WILL_EXPIRE: 'Your session will expire in ',
-    YEAR: 'Year'
+    YEAR: 'Year',
+    YES: 'Yes'
 
             //############################################## [ Z ] ##############################################// 
 

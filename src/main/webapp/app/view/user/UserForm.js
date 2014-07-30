@@ -6,6 +6,7 @@
 Ext.define('Helpdesk.view.user.UserForm', {
     extend: 'Ext.form.Panel',
     alias: 'widget.userform',
+    id: 'userForm',
     requires: ['Helpdesk.util.Util', 'Helpdesk.view.user.UserGroupComboBox','Helpdesk.view.client.ClientComboBox'],
     bodyPadding: 5,
     layout: {
@@ -38,23 +39,38 @@ Ext.define('Helpdesk.view.user.UserForm', {
                 {
                     fieldLabel: translations.NAME,
                     maxLength: 100,
+                    id: 'nameUser',
                     name: 'name'
                 },
                 {
                     fieldLabel: translations.USER,
+                    id: 'userNameUser',
                     name: 'userName'
                 },
                 {
+                    inputType: 'password',
                     fieldLabel: translations.PASSWORD,
+                    id: 'firstPass',
                     name: 'password'
+                },                
+                {
+                    id: 'confirmPasswordUser',
+                    inputType: 'password',
+                    fieldLabel: translations.PASSWORD_CHECK,
+                    labelWidth: 110,
+                    vtype: 'password',
+                    name: 'confirmPassword',
+                    initialPassField: 'firstPass'
                 },
                 {
                     fieldLabel: translations.EMAIL,
                     maxLength: 100,
+                    id: 'emailUser',
                     name: 'email'
                 },
                 {
                     xtype: 'usergroupcombobox',
+                    id: 'userGroupComboboxUser',
                     listeners: {
                         select: function(combo, records, eOpts) {
                             var form = this.up('form');
@@ -62,13 +78,13 @@ Ext.define('Helpdesk.view.user.UserForm', {
                             var userGroup = Helpdesk.util.Util.copy(records[0]);
                             record.set('userGroup', userGroup);
                             form.updateRecord(record);
-
                         }
                     }
 
                 },
                 {
                     xtype: 'clientcombobox',
+                    id: 'clientComboboxUser',
                     listeners: {
                         select: function(combo, records, eOpts) {
                             var form = this.up('form');
@@ -76,10 +92,15 @@ Ext.define('Helpdesk.view.user.UserForm', {
                             var client = Helpdesk.util.Util.copy(records[0]);
                             record.set('client', client);
                             form.updateRecord(record);
-
                         }
                     }
 
+                },
+                {                    
+                    xtype: 'checkbox',
+                    fieldLabel: translations.ACTIVE,
+                    beforeLabelTextTpl: '',
+                    id: 'checkState'
                 },
                 {
                     xtype: 'filefield',

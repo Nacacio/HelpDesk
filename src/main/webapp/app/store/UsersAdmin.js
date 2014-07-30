@@ -5,12 +5,9 @@
  */
 Ext.define('Helpdesk.store.UsersAdmin', {
     extend: 'Ext.data.Store',
+    requires: ['Helpdesk.model.User'],
     model: 'Helpdesk.model.User',
-    autoLoad: false,
-    requires: [
-        'Helpdesk.model.User'
-    ],
-    
+    autoLoad: false,        
     constructor: function(config) {
         // applyIf means only copy if it doesn't exist
         Ext.applyIf(config, {

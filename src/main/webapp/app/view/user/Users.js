@@ -16,7 +16,8 @@ Ext.define('Helpdesk.view.user.Users', {
     border:0,
     items: [
         {
-            xtype: 'userslist'
+            xtype: 'userslist',
+            id: 'userGrid'
         }
     ],
     dockedItems: [

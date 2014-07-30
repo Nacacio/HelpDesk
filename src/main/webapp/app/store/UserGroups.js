@@ -8,7 +8,7 @@ Ext.define('Helpdesk.store.UserGroups', {
     requires: ['Helpdesk.model.UserGroup'],
     model: 'Helpdesk.model.UserGroup',
     storeId: 'usergroups',
-    autoLoad: false,
+    autoLoad: false,    
     constructor: function(config) {
         // applyIf means only copy if it doesn't exist
         Ext.applyIf(config, {
@@ -18,6 +18,5 @@ Ext.define('Helpdesk.store.UserGroups', {
         });
         this.callParent([config]);
     }
-
 });
 
