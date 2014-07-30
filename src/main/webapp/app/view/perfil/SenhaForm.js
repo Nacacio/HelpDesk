@@ -46,6 +46,7 @@ Ext.define('Helpdesk.view.perfil.SenhaForm', {
         {
             fieldLabel: translations.PASSWORD_CHECK, 
             name:'password_check',
+            itemId:'passCheck',
             inputType: 'password',
             vtype: 'password',
             initialPassField: 'pass', // id of the initial password field

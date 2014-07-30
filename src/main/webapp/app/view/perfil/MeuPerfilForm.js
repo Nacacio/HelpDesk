@@ -22,7 +22,8 @@ Ext.define('Helpdesk.view.perfil.MeuPerfilForm', {
             fieldLabel: translations.NAME,
             name: 'name',
             value: Helpdesk.Globals.userLogged.name,
-            width: 500
+            width: 500,
+            itemId:'nameProfile'
         },     
         {
             fieldLabel: translations.EMAIL,
@@ -32,7 +33,8 @@ Ext.define('Helpdesk.view.perfil.MeuPerfilForm', {
             minLength: 0,
             value: Helpdesk.Globals.email,
             width: 500,
-            padding: '10 0 20 0'
+            padding: '10 0 20 0',
+            itemId:'emailProfile'
         },
         {
             xtype: "button",

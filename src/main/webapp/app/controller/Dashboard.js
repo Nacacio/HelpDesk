@@ -227,7 +227,7 @@ Ext.define('Helpdesk.controller.Dashboard', {
                         object.data.ticketCount = countAgent;
                         scope.getTableTicket().down('datagridagent').getStore().add(object);
                     }
-                    if (userTemp.userGroup.id === 2) {
+                    if (userTemp.userGroup.id === 2 && countClient > 0) {
                         object.data.ticketCount = countClient;
                         scope.getTableTicket().down('datagridclient').getStore().add(object);
                     }

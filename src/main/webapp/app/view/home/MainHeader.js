@@ -69,7 +69,8 @@ Ext.define('Helpdesk.view.home.MainHeader', {
                     xtype: 'label',
                     text: Helpdesk.Globals.email,
                     margin: '3 15 0 0',
-                    cls: 'font_style_header'
+                    cls: 'font_style_header',
+                    itemId:'emailMainHeader'
                 },
                 {
                     xtype: 'button',
