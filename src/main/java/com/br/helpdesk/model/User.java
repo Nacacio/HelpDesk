@@ -21,6 +21,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
@@ -43,7 +44,9 @@ public class User implements Serializable{
     @Column(name = "USERNAME",unique = true)
     private String userName;
 
+    
     @Basic
+    @JsonIgnore
     @Column(name = "PASSWORD",nullable = false)
     private String password;
     
@@ -113,6 +116,7 @@ public class User implements Serializable{
     /**
      * @return the password
      */
+    @JsonIgnore
     public String getPassword() {
         return password;
     }
@@ -120,6 +124,7 @@ public class User implements Serializable{
     /**
      * @param password the password to set
      */
+    @JsonIgnore
     public void setPassword(String password) {
         this.password = password;
     }

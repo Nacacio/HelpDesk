@@ -39,7 +39,7 @@ Ext.define('Helpdesk.controller.TicketAnswer', {
 
         if (multiupload.filesListArchive.length > 0) {
             var time = new Date().getTime();
-            var userLogadoText = Ext.DomHelper.append(Ext.getBody(), '<input type="text" name="username" value="' + Helpdesk.Globals.user + '">');
+            var userLogadoText = Ext.DomHelper.append(Ext.getBody(), '<input type="text" name="username" value="' + Helpdesk.Globals.userLogged.userName + '">');
             //Criação do form para upload de arquivos
             var formId = 'fileupload-form-' + time;
             var formEl = Ext.DomHelper.append(Ext.getBody(), '<form id="' + formId + '" method="POST" action="attachments/attachments" enctype="multipart/form-data" class="x-hide-display"></form>');

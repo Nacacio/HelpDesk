@@ -251,7 +251,7 @@ Ext.define('Helpdesk.controller.Reports', {
         var reportsStore = reportsGraphicCategory.getStore();
         reportsGraphicCategory.surface.removeAll();
         reportsGraphicCategory.setLoading(translations.LOADING);
-        reportsStore.getGraphicCategory(this.callbackGraphicCategory, Helpdesk.Globals.user, this, tickets, dateFieldFrom.value, dateFieldTo.value, unit);
+        reportsStore.getGraphicCategory(this.callbackGraphicCategory, Helpdesk.Globals.userLogged.userName, this, tickets, dateFieldFrom.value, dateFieldTo.value, unit);
     },
     /**
      * @author andresulivam
@@ -664,7 +664,7 @@ Ext.define('Helpdesk.controller.Reports', {
         var reportsGraphicUser = graphicUserPanel.down('graphicuser');
         var reportsStore = reportsGraphicUser.getStore();
 
-        reportsStore.getGraphicUser(this.callbackGraphicUser, Helpdesk.Globals.user, this, idUser, dateFieldFrom.value, dateFieldTo.value, unit);
+        reportsStore.getGraphicUser(this.callbackGraphicUser, Helpdesk.Globals.userLogged.userName, this, idUser, dateFieldFrom.value, dateFieldTo.value, unit);
     },
     /**
      * @author andresulivam
@@ -726,7 +726,7 @@ Ext.define('Helpdesk.controller.Reports', {
         var reportsStore = reportsGraphicClient.getStore();
         reportsGraphicClient.surface.removeAll();
         reportsGraphicClient.setLoading(translations.LOADING);
-        reportsStore.getGraphicClient(this.callbackGraphicClient, Helpdesk.Globals.user, this, tickets, dateFieldFrom.value, dateFieldTo.value, unit);
+        reportsStore.getGraphicClient(this.callbackGraphicClient, Helpdesk.Globals.userLogged.userName, this, tickets, dateFieldFrom.value, dateFieldTo.value, unit);
     },
     /**
      * @author andresulivam

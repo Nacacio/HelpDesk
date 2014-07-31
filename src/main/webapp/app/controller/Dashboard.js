@@ -75,7 +75,7 @@ Ext.define('Helpdesk.controller.Dashboard', {
         myscope.getTicketSide().down('button#buttonWithoutResponsible').toggle(true);
         myscope.getTicketPanel().getStore().load({
             params: {
-                user: Helpdesk.Globals.user,
+                user: Helpdesk.Globals.userLogged.userName,
                 start: 0,
                 limit: Helpdesk.Globals.pageSizeGrid
             },
@@ -87,7 +87,7 @@ Ext.define('Helpdesk.controller.Dashboard', {
                 toolbar.getStore().proxy.url = 'ticket/withoutresponsible';;
                 toolbar.getStore().load({
                     params: {
-                        user: Helpdesk.Globals.user
+                        user: Helpdesk.Globals.userLogged.userName
                     },
                     callback: function() {
                         toolbar.getStore().proxy.url = 'ticket';
@@ -103,7 +103,7 @@ Ext.define('Helpdesk.controller.Dashboard', {
         myscope.getTicketSide().down('button#buttonOpened').toggle(true);
         myscope.getTicketPanel().getStore().load({
             params: {
-                user: Helpdesk.Globals.user,
+                user: Helpdesk.Globals.userLogged.userName,
                 start: 0,
                 limit: Helpdesk.Globals.pageSizeGrid
             },
@@ -115,7 +115,7 @@ Ext.define('Helpdesk.controller.Dashboard', {
                 toolbar.getStore().proxy.url = 'ticket/opened';
                 toolbar.getStore().load({
                     params: {
-                        user: Helpdesk.Globals.user
+                        user: Helpdesk.Globals.userLogged.userName
                     },
                     callback: function() {
                         toolbar.getStore().proxy.url = 'ticket';
@@ -130,7 +130,7 @@ Ext.define('Helpdesk.controller.Dashboard', {
         myscope.getTicketPanel().getStore().proxy.url = 'ticket/all';
         myscope.getTicketPanel().getStore().load({
             params: {
-                user: Helpdesk.Globals.user
+                user: Helpdesk.Globals.userLogged.userName
             },
             callback: function() {
                 myscope.getTicketSide().down('button#buttonAll').toggle(true);
@@ -210,7 +210,7 @@ Ext.define('Helpdesk.controller.Dashboard', {
                     for (var k = 0; k < ticketsStore.getCount(); k++) {
                         ticketTemp = ticketsStore.data.items[k].data;
                         if (ticketTemp.isOpen === true) {
-                            if (userTemp.userGroup.id === parseInt(Helpdesk.Globals.idAdminGroup)) {
+                            if (userTemp.userGroup.id == Helpdesk.Globals.idAdminGroup) {
                                 if (ticketTemp.responsible !== null && ticketTemp.responsible.id === userTemp.id) {
                                     countAgent++;
                                 }
@@ -223,7 +223,7 @@ Ext.define('Helpdesk.controller.Dashboard', {
                     }
                     var object = new Helpdesk.model.TicketsByUser();
                     object.data.user = userTemp.name;
-                    if (userTemp.userGroup.id === parseInt(Helpdesk.Globals.idAdminGroup)) {
+                    if (userTemp.userGroup.id == Helpdesk.Globals.idAdminGroup) {
                         object.data.ticketCount = countAgent;
                         scope.getTableTicket().down('datagridagent').getStore().add(object);
                     }
@@ -282,7 +282,7 @@ Ext.define('Helpdesk.controller.Dashboard', {
         store.load({
             callback: function() {
                 for (var i = 0; i < store.getCount(); i++) {
-                    if (store.data.items[i].data.userGroup.id === parseInt(Helpdesk.Globals.idAdminGroup)) {
+                    if (store.data.items[i].data.userGroup.id == Helpdesk.Globals.idAdminGroup) {
                         count++;
                     }
                 }
@@ -347,7 +347,7 @@ Ext.define('Helpdesk.controller.Dashboard', {
         var ticketsStore = this.getTicketsStore();
         ticketsStore.load({
             /*params:{
-             user: Helpdesk.Globals.user
+             user: Helpdesk.Globals.userLogged.userName
              },*/
             callback: function() {
                 for (var k = 0; k < ticketsStore.getCount(); k++) {

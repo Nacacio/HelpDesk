@@ -5,16 +5,9 @@
  */
 
 Ext.define('Helpdesk.Globals',{
-   singleton: true,
+    singleton: true,
     
     idAdminGroup: 1,
-    
-    name: document.getElementById("name").value,
-    email: document.getElementById("email").value,
-    client: document.getElementById("client").value,
-    user: document.getElementById("user").value,
-    //id do grupo do usuário logado
-    idUserGroup: document.getElementById("idUserGroup").value,    
     userLogged: Ext.decode(document.getElementById("userLogged").value),
     
     //Views

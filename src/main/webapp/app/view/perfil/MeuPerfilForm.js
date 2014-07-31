@@ -31,7 +31,7 @@ Ext.define('Helpdesk.view.perfil.MeuPerfilForm', {
             name: 'email',
             vtype: 'email',
             minLength: 0,
-            value: Helpdesk.Globals.email,
+            value: Helpdesk.Globals.userLogged.email,
             width: 500,
             padding: '10 0 20 0',
             itemId:'emailProfile'

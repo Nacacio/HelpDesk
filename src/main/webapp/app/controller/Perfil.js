@@ -55,7 +55,7 @@ Ext.define('Helpdesk.controller.Perfil', {
         var store = this.getUsersStore();
         var myScope = this;
         
-        store.proxy.url = 'user/'+Helpdesk.Globals.user;
+        store.proxy.url = 'user/'+Helpdesk.Globals.userLogged.userName;
         store.load({
             callback:function(){
                store.proxy.url = 'user';
@@ -93,7 +93,7 @@ Ext.define('Helpdesk.controller.Perfil', {
         var values = form.getValues();        
         var store = this.getUsersStore();        
         
-        store.proxy.url = 'user/'+Helpdesk.Globals.user;
+        store.proxy.url = 'user/'+Helpdesk.Globals.userLogged.userName;
         store.load({
             callback:function(){
                store.proxy.url = 'user';

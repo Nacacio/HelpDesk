@@ -15,6 +15,7 @@ import org.springframework.data.repository.CrudRepository;
 public interface UserRepository extends CrudRepository<User,Long> {
     User findByUserName(String username);
     User findByEmail(String email);
+    User findByName(String name);
     
     @Query("Select u FROM User u WHERE u.userGroup.id=1")
     public List<User> findByUserAdmin();    

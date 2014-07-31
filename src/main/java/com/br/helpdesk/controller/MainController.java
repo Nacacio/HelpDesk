@@ -87,13 +87,9 @@ public class MainController {
         ModelAndView modelAndView = new ModelAndView(Consts.HOME);
         User user = userRepository.findByUserName(auth.getName());
         JSONObject jsObject = new JSONObject(user);
+        jsObject.remove("password");
         
-        modelAndView.addObject(Consts.USER, auth.getName());
         modelAndView.addObject(Consts.LOGGED, true);
-        modelAndView.addObject(Consts.CLIENT, user.getClient().getId());
-        modelAndView.addObject(Consts.EMAIL, user.getEmail());
-        modelAndView.addObject(Consts.NAME, user.getName());
-        modelAndView.addObject(Consts.USER_GROUP, user.getUserGroup().getId());
         modelAndView.addObject(Consts.USER_LOGGED, jsObject.toString().replace("\"", "\'"));
         
         return modelAndView;

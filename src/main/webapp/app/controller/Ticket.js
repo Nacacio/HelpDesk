@@ -101,7 +101,7 @@ Ext.define('Helpdesk.controller.Ticket', {
         this.getCardPanel().getLayout().setActiveItem(Helpdesk.Globals.ticketview);
         this.getTicketEditContainer().getLayout().setActiveItem(Helpdesk.Globals.ticket_details_view);
         if (typeof this.getTicketPanel() !== 'undefined') {
-            if (parseInt(Helpdesk.Globals.idUserGroup) === parseInt(Helpdesk.Globals.idAdminGroup)) {
+            if (Helpdesk.Globals.userLogged.userGroup.id == Helpdesk.Globals.idAdminGroup) {
                 //Verifica se algum botão já estava marcado e busca os tickets de acordo com a seleção correspondente
                 if(this.getTicketSideMenu().down('#buttonAll').pressed){
                     this.getAllTickets();
@@ -216,7 +216,7 @@ Ext.define('Helpdesk.controller.Ticket', {
             ticketView.down('label#lblTicketClosed').setVisible(false);
             ticketView.down('button#btnOpenTkt').setVisible(false);               
             //Seta visibilidade do botão salvar
-            if(Helpdesk.Globals.idAdminGroup === parseInt(Helpdesk.Globals.idUserGroup)){
+            if(Helpdesk.Globals.idAdminGroup == Helpdesk.Globals.userLogged.userGroup.id){
                 ticketView.down('button#editTicket').setVisible(true);        
             }
             ticketView.down('button#btnSaveAnswTkt').setVisible(true);
@@ -228,7 +228,7 @@ Ext.define('Helpdesk.controller.Ticket', {
             ticketView.down('button#btnCloseTkt').setVisible(false);
             ticketView.down('label#lblTicketClosed').setVisible(true);
             ticketView.down('button#btnOpenTkt').setVisible(true);
-            if(Helpdesk.Globals.idAdminGroup === parseInt(Helpdesk.Globals.idUserGroup)){
+            if(Helpdesk.Globals.idAdminGroup == Helpdesk.Globals.userLogged.userGroup.id){
                 ticketView.down('button#editTicket').setVisible(false);        
             }
             //Seta visibilidade do botão salvar
@@ -323,7 +323,7 @@ Ext.define('Helpdesk.controller.Ticket', {
         myscope.getTicketPanel().getStore().proxy.url = this.getProxy() + '-paging';
         myscope.getTicketPanel().getStore().load({
             params: {
-                user: Helpdesk.Globals.user,
+                user: Helpdesk.Globals.userLogged.userName,
                 start: start,
                 limit: limit
             },
@@ -364,7 +364,7 @@ Ext.define('Helpdesk.controller.Ticket', {
             storeTemp.proxy.url = this.getProxy();
             storeTemp.load({
                 params: {
-                    user: Helpdesk.Globals.user
+                    user: Helpdesk.Globals.userLogged.userName
                 },
                 callback: function() {
                     field.up('container#maincontainer').down('#ticketgrid').setLoading(false);
@@ -400,7 +400,7 @@ Ext.define('Helpdesk.controller.Ticket', {
             store.proxy.url = this.getProxy();
             store.load({
                 params: {
-                    user: Helpdesk.Globals.user,
+                    user: Helpdesk.Globals.userLogged.userName,
                     start: 0,
                     limit: Helpdesk.Globals.pageSizeGrid
                 },
@@ -551,7 +551,7 @@ Ext.define('Helpdesk.controller.Ticket', {
             method: 'GET',
             async: false,
             params: {
-                user: Helpdesk.Globals.user
+                user: Helpdesk.Globals.userLogged.userName
             },
             success: function(o) {
                 var decodedString = Ext.decode(o.responseText);
@@ -567,7 +567,7 @@ Ext.define('Helpdesk.controller.Ticket', {
                 buttonClosed.setText(translations.CLOSED + ((decodedString.fechados === '0') ? (" ") : (" (" + decodedString.fechados + ")")));
                 buttonMyTickets.setText(translations.MY_TICKETS + ((decodedString.mytickets === '0') ? (" ") : (" (" + decodedString.mytickets + ")")));
                 buttonWithoutResponsible.setText(translations.WITHOUT_RESPONSIBLE + ((decodedString.withoutresponsible === '0') ? (" ") : (" (" + decodedString.withoutresponsible + ")")));
-                if (parseInt(Helpdesk.Globals.idUserGroup) === parseInt(Helpdesk.Globals.idAdminGroup)) {//superusuario
+                if (Helpdesk.Globals.userLogged.userGroup.id == Helpdesk.Globals.idAdminGroup) {//superusuario
                     buttonAll.setVisible(true);
                     buttonOpened.setVisible(true);
                     buttonClosed.setVisible(true);
@@ -615,7 +615,7 @@ Ext.define('Helpdesk.controller.Ticket', {
         record.data.user = Helpdesk.Globals.userLogged;
         record.data.isOpen = true;
 
-        if (parseInt(Helpdesk.Globals.idUserGroup) !== parseInt(Helpdesk.Globals.idAdminGroup)) {
+        if (Helpdesk.Globals.userLogged.userGroup.id != Helpdesk.Globals.idAdminGroup) {
             record.data.responsible = null;
             record.data.priority = null;
             record.data.estimateTime = null;
@@ -677,7 +677,7 @@ Ext.define('Helpdesk.controller.Ticket', {
             }
             if (check) {
                 //testando se o usuário é usuário admin para validar o cliente selecionado.
-                if (parseInt(record.data.user.userGroup.id) === parseInt(Helpdesk.Globals.idAdminGroup)) {
+                if (record.data.user.userGroup.id == Helpdesk.Globals.idAdminGroup) {
                     check = false;
                     //verificando se o cliente selecionado é válido.
                     if (form.down('combobox#clientName').getValue() !== null) {
@@ -700,7 +700,7 @@ Ext.define('Helpdesk.controller.Ticket', {
                         form.getForm().reset();
                         scope.getTicketCardContainer().getLayout().setActiveItem(Helpdesk.Globals.ticket_datagrid);
                         scope.setSideMenuButtonText();
-                        if (parseInt(Helpdesk.Globals.idUserGroup) === parseInt(Helpdesk.Globals.idAdminGroup)) {
+                        if (Helpdesk.Globals.userLogged.userGroup.id == Helpdesk.Globals.idAdminGroup) {
                             scope.getMyTickets();
                             scope.getTicketSideMenu().down('#buttonMyTickets').toggle(true);
                         } else {
@@ -1249,7 +1249,7 @@ Ext.define('Helpdesk.controller.Ticket', {
         myscope.getTicketPanel().getStore().proxy.url = 'ticket/' + urlSimples + '-paging';
         myscope.getTicketPanel().getStore().load({
             params: {
-                user: Helpdesk.Globals.user,
+                user: Helpdesk.Globals.userLogged.userName,
                 start: 0,
                 limit: Helpdesk.Globals.pageSizeGrid
             },
@@ -1261,7 +1261,7 @@ Ext.define('Helpdesk.controller.Ticket', {
                 toolbar.getStore().proxy.url = 'ticket/' + urlSimples;
                 toolbar.getStore().load({
                     params: {
-                        user: Helpdesk.Globals.user
+                        user: Helpdesk.Globals.userLogged.userName
                     },
                     callback: function() {
                         toolbar.getStore().proxy.url = 'ticket';
@@ -1284,7 +1284,7 @@ Ext.define('Helpdesk.controller.Ticket', {
         var ticketView = scope.getTicketView();
         if (multiupload.filesListArchive.length > 0) {
             var time = new Date().getTime();
-            var userLogadoText = Ext.DomHelper.append(Ext.getBody(), '<input type="text" name="username" value="' + Helpdesk.Globals.user + '">');
+            var userLogadoText = Ext.DomHelper.append(Ext.getBody(), '<input type="text" name="username" value="' + Helpdesk.Globals.userLogged.userName + '">');
             //Criação do form para upload de arquivos
             var formId = 'fileupload-form-' + time;
             var formEl = Ext.DomHelper.append(Ext.getBody(), '<form id="' + formId + '" method="POST" action="attachments/attachments" enctype="multipart/form-data" class="x-hide-display"></form>');

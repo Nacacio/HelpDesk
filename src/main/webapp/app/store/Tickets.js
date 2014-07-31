@@ -16,7 +16,7 @@ Ext.define('Helpdesk.store.Tickets', {
             proxy: Ext.create('Helpdesk.proxy.Base', {
                 url: 'ticket',
                 extraParams:{
-                    user:  Helpdesk.Globals.user
+                    user:  Helpdesk.Globals.userLogged.userName
                 }
             })
         });
