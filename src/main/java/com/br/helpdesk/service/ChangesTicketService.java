@@ -12,6 +12,8 @@ import com.br.helpdesk.model.Ticket;
 import com.br.helpdesk.model.TicketAnswer;
 import com.br.helpdesk.model.User;
 import com.br.helpdesk.repository.ChangesTicketRepository;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;
@@ -181,12 +183,18 @@ public class ChangesTicketService {
 
         Date olderValue = olderTicket.getEstimateTime();
         Date newValue = newTicket.getEstimateTime();
+        DateFormat df = new SimpleDateFormat("MM/dd/yyyy");           
 
-        if ((olderValue == null && newValue != null)
+        /*if ((olderValue == null && newValue != null)
                 || (olderValue != null && newValue == null)
-                || ((olderValue != null && newValue != null) && (olderValue.getTime() != newValue.getTime()))) {
+                || ((olderValue != null && newValue != null) && (olderValue.getTime() != newValue.getTime()))) {*/
+        if(newValue!= null && olderValue != null && !df.format(olderValue).equals(df.format(newValue))){            
+            //Adiciona os valores se as datas forem diferentes
             changesTicket.setOlderEstimatedTime(olderValue);
-            changesTicket.setNewEstimatedTime(newValue);
+            changesTicket.setNewEstimatedTime(newValue);            
+        }else if(newValue==null && olderValue!=null || newValue!=null && olderValue==null){
+            changesTicket.setOlderEstimatedTime(olderValue);
+            changesTicket.setNewEstimatedTime(newValue); 
         }
         return changesTicket;
     }

@@ -95,6 +95,7 @@ translations = {
     FORMAT_DATE_TIME: 'd/m/Y H:i',    
     FORMAT_JUST_DATE: 'd/m/Y',
     FORMAT_EN: 'Y/m/d',
+    FOR:'para',
     //############################################## [ G ] ##############################################//
 
     GROUP: 'Grupo',

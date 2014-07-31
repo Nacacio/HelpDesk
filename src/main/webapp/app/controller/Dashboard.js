@@ -230,7 +230,7 @@ Ext.define('Helpdesk.controller.Dashboard', {
                     else if (countClient > 0) {
                         object.data.ticketCount = countClient;
                         scope.getTableTicket().down('datagridclient').getStore().add(object);
-                    }
+                    }                    
                 }
             }
         });

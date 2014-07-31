@@ -265,10 +265,10 @@ Ext.define('Helpdesk.controller.Ticket', {
         record.data.responsible = this.getRecordFromComboBox(form.down('combobox#responsibleTicket').getStore(), form.down('combobox#responsibleTicket').getValue());
         record.data.stepsTicket = form.down('textarea#stepsTicket').getValue();
 
-        var estimateTime = form.down('datefield#estimateTime').getValue();
+        var estimateTime = form.down('datefield#estimateTime').getValue();        
         //Adiciona um dia a variável pois o mesmo é perdido ao passar para o java
         if(estimateTime!==null){
-            estimateTime.setDate(estimateTime.getDate()+1);
+            estimateTime.setDate(estimateTime.getDate()+1);            
         }
         record.data.estimateTime = estimateTime;
         record.dirty = true;
@@ -1162,7 +1162,7 @@ Ext.define('Helpdesk.controller.Ticket', {
                 } else {
                     text += "\"" + translations.NO_RESPONSIBLE + "\" ";
                 }
-                text += translations.FROM;
+                text += translations.FOR;
                 if (change.newResponsible !== null) {
                     text += " \"" + change.newResponsibleName + "\"";
                 } else {
@@ -1180,7 +1180,7 @@ Ext.define('Helpdesk.controller.Ticket', {
                 } else {
                     text += "\"" + translations.NO_CATEGORY + "\" ";
                 }
-                text += translations.FROM;
+                text += translations.FOR;
                 if (change.newCategory !== null) {
                     text += " \"" + change.newCategoryName + "\"";
                 } else {
@@ -1198,7 +1198,7 @@ Ext.define('Helpdesk.controller.Ticket', {
                 } else {
                     text += "\"" + translations.NO_PRIORITY + "\" ";
                 }
-                text += translations.FROM;
+                text += translations.FOR;
                 if (change.newPriority !== null) {
                     text += " \"" + change.newPriorityName + "\"";
                 } else {
@@ -1222,7 +1222,7 @@ Ext.define('Helpdesk.controller.Ticket', {
                 } else {
                     text += "\"" + translations.NO_DEADLINE_DEFINED + "\" ";
                 }
-                text += translations.FROM;
+                text += translations.FOR;
                 if (change.newEstimatedTime !== null) {
                     
                     var dateSpplited = change.newEstimatedTime.split('-');
