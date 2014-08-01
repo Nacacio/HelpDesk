@@ -91,28 +91,45 @@ Ext.define('Helpdesk.controller.User', {
         var win = button.up('window');
         var form = win.down('form');
 
+        //var imageprofile = form.down('multiupload#imgprofile');
+       // console.log(imageprofile);
+       // this.submitImageProfile(imageprofile);
+        this.saveUser(button);
+
+    },
+    submitImageProfile: function(filefield) {
+        var scope = this;
+        console.log(filefield.getValue());
+
+    },
+    saveUser: function(button) {
+        var win = button.up('window');
+        var form = win.down('form');
+
         //verificando se todos os campos obrigatórios estão preenchidos.
         var check = false;
 
-        var newpassword = form.down('textfield#firstPass').value;
+        var password = form.down('textfield#firstPass').value;
         var confirmpassword = form.down('textfield#confirmPasswordUser').value;
-        var olderpassword = form.down('hiddenfield#hiddenpassword').value;
-
-        //verificando se já existia senha para o usuário 
-        if (olderpassword !== '') {
-            // se a senha não foi alterada.
-            if (olderpassword === newpassword) {
+        var hiddenid = form.down('hiddenfield#hiddenid').value;
+       
+        // verificando se o usuário é um usuário já cadastrado no sistema.
+        if(hiddenid !== ''){
+            // nova senha não inserida.
+            if(password === ''){
                 check = true;
             } else {
-                // caso tenha sido alterada, é necessário validar com a confirmação de senha
-                if ((newpassword !== '' && confirmpassword !== '') &&
-                        (newpassword === confirmpassword)) {
+                // se foi digitado uma senha nova, verificar pela confirmação.
+                if(confirmpassword !== '' && password === confirmpassword){
                     check = true;
                 }
+            } 
+        } else {
+            // verificar campo de senha e de confirmação de senha
+            if(password!== '' && confirmpassword!=='' &&
+                    password===confirmpassword){
+                check = true;
             }
-            // testando se os campos de senha estão vazios
-        } else if (newpassword !== '' && confirmpassword !== '') {
-            check = true;
         }
 
         if (check) {
@@ -151,17 +168,15 @@ Ext.define('Helpdesk.controller.User', {
             var record = form.getRecord();
             var values = form.getValues();
             record.set(values);
-
+            
             var checkState = form.down('checkbox#checkState');
             record.data.isEnabled = checkState.value;
 
             this.getUsersStore().add(record);
             this.getUsersStore().sync();
-            this.getUsersStore().load();
-            this.getUsersList().getStore().removeAll();
-            this.getUsersList().getStore().load();
-
-            win.close();
+            this.getUsersStore().load();  
+            this.getUsersList().getStore().load();            
+                        
         } else {
             Ext.Msg.alert(translations.INFORMATION, translations.CHECK_ADDED_INFORMATIONS);
         }
@@ -205,9 +220,6 @@ Ext.define('Helpdesk.controller.User', {
             var editWindow = Ext.create('Helpdesk.view.user.Profile');
             var form = editWindow.down('form');
             form.loadRecord(record);
-
-            var hiddenpassword = form.down('hiddenfield#hiddenpassword');
-            hiddenpassword.setValue(record.get('password'));
 
             //set value usergroupcombobox
             var userGroupCombo = form.down('usergroupcombobox#userGroupComboboxUser');

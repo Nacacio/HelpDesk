@@ -103,18 +103,27 @@ public class TicketController {
         this.changesTicketController = controller;
     }
 
+    /**
+     * FindAll sem registro de qual usuário fez a requisição.
+     * @return 
+     */
     @RequestMapping(method = RequestMethod.GET)
     public @ResponseBody
     List<Ticket> getAllTickets() {
         return ticketService.findAll();
     }
 
+    /**
+     * FindAll com registro do usuário que fez a requisição.
+     * @param username
+     * @return 
+     */
     @RequestMapping(value = "/all", method = RequestMethod.GET, params = {"user"})
     public @ResponseBody
     List<Ticket> getAllTicketsByUser(@RequestParam(value = "user") String username) {
         User user = this.userService.findByUserName(username);
         if (user.getUserGroup().getId() == Consts.ADMIN_GROUP_ID) {//SUPERUSER
-            return ticketService.findAll();
+            return ticketService.findAll(user);
         } else {
             return ticketService.findByUser(user);
         }
@@ -152,7 +161,7 @@ public class TicketController {
         PageRequest pageRequest = getPageRequest(limit, start);
 
         if (user.getUserGroup().getId() == Consts.ADMIN_GROUP_ID) {//SUPERUSER
-            return ticketService.findByIsOpenWithPaging(true, pageRequest);
+            return ticketService.findByIsOpenWithPaging(true, pageRequest, user);
         } else {
             return ticketService.findByIsOpenAndUser(true, user);
         }
@@ -176,7 +185,7 @@ public class TicketController {
         PageRequest pageRequest = getPageRequest(limit, start);
 
         if (user.getUserGroup().getId() == Consts.ADMIN_GROUP_ID) {//SUPERUSER
-            return ticketService.findByIsOpenWithPaging(false, pageRequest);
+            return ticketService.findByIsOpenWithPaging(false, pageRequest, user);
         } else {
             return ticketService.findByIsOpenAndUserWithPaging(false, user, pageRequest);
         }
@@ -290,9 +299,13 @@ public class TicketController {
         //buscando novamente a categoria no banco porque o valor do 'name' está vindo do extjs com o valor de translations
         Category category = categoryService.findById(ticket.getCategory().getId());
         ticket.setCategory(category);
+        if (olderTicket == null) {            
+            ticket.setLastInteration(ticket.getStartDate());
+            ticket.setUserLastInteration(ticket.getUser());
+        }
         ticket = ticketService.save(ticket);
 
-        if (olderTicket != null) {
+        if (olderTicket != null) {            
             changesTicketController.save(olderTicket, ticket, user);
         }
 

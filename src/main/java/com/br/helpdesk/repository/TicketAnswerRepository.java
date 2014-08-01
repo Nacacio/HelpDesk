@@ -18,7 +18,7 @@ import org.springframework.data.repository.query.Param;
 public interface TicketAnswerRepository extends CrudRepository<TicketAnswer, Long> {
 
     @Query(
-            "Select t FROM TicketAnswer t WHERE t.ticket.id = :ticketId "
+            "Select t FROM TicketAnswer t WHERE t.ticket.id = :ticketId ORDER BY t.dateCreation ASC"
     )
     public List<TicketAnswer> findAnswersByTicket(@Param("ticketId") Long ticketId);
 

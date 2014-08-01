@@ -110,17 +110,18 @@ public class TicketAnswerController {
 
         List<File> filesToSave = attachmentsService.getAttachmentsFromUser(userAnswer.getUserName());
 
-        User userTicket = ticket.getUser();
-        User userResponsible = ticket.getResponsible();
-
         TicketAnswer answer = new TicketAnswer();
 
         answer.setDescription(answerDescription);
         answer.setTicket(ticket);
         answer.setUser(userAnswer);
         answer.setDateCreation(new Date());
-        answerService.save(answer);
-
+        answer = answerService.save(answer);
+        
+        ticket.setLastInteration(answer.getDateCreation());
+        ticket.setUserLastInteration(answer.getUser());
+        ticketService.save(ticket);
+        
         Attachments attachment = null;
         for (File file : filesToSave) {
             //file.renameTo(file.getName().replace(username, username));

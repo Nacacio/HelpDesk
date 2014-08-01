@@ -18,6 +18,10 @@ public class UserService {
     }
 
     public User save(User model) {
+        if(model.getId()!= null && model.getId()>0 && model.getPassword()==null || model.getPassword().equals("")){
+            User userTemp = repository.findOne(model.getId());
+            model.setPassword(userTemp.getPassword());
+        }
         return repository.save(model);
     }
 

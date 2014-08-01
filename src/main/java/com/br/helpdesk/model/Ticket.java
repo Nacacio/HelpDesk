@@ -4,15 +4,11 @@ import javax.persistence.*;
 import java.util.Date;
 
 /**
- * Created with IntelliJ IDEA.
- * User: rafaelpossas
- * Date: 13/10/13
- * Time: 09:04
- * To change this template use File | Settings | File Templates.
+ * Created with IntelliJ IDEA. User: rafaelpossas Date: 13/10/13 Time: 09:04 To
+ * change this template use File | Settings | File Templates.
  */
-
 @Entity
-@Table(name="TICKET")
+@Table(name = "TICKET")
 public class Ticket {
 
     @Id
@@ -21,56 +17,65 @@ public class Ticket {
     private Long id;
 
     @Basic
-    @Column(name="ISOPEN",nullable = false)
+    @Column(name = "ISOPEN", nullable = false)
     private Boolean isOpen;
 
     @ManyToOne
-    @JoinColumn(name="USER_ID",nullable = true)
+    @JoinColumn(name = "USER_ID", nullable = true)
     private User user;
 
     @Basic
-    @Column(name="START_DATE",nullable = false)
+    @Column(name = "START_DATE", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date startDate;
 
     @Basic
-    @Column(name="END_DATE",nullable = true)
+    @Column(name = "END_DATE", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
     private Date endDate;
 
     @Lob
-    @Column(name="DESCRIPTION")
+    @Column(name = "DESCRIPTION")
     private String description;
 
     @Basic
-    @Column(name="TITLE")
+    @Column(name = "TITLE")
     private String title;
-    
+
     @Lob
-    @Column(name="STEPS_TICKET")
+    @Column(name = "STEPS_TICKET")
     private String stepsTicket;
 
     @ManyToOne
-    @JoinColumn(name="RESPONSIBLE_ID",nullable = true)
+    @JoinColumn(name = "RESPONSIBLE_ID", nullable = true)
     private User responsible;
-    
+
     @ManyToOne
-    @JoinColumn(name="CATEGORY_ID",nullable = false)
+    @JoinColumn(name = "CATEGORY_ID", nullable = false)
     private Category category;
-    
+
     @ManyToOne
-    @JoinColumn(name="CLIENT_ID",nullable = false)
+    @JoinColumn(name = "CLIENT_ID", nullable = false)
     private Client client;
-    
+
     @ManyToOne
-    @JoinColumn(name="PRIORITY_ID",nullable = true)
+    @JoinColumn(name = "PRIORITY_ID", nullable = true)
     private Priority priority;
-    
+
     @Basic
-    @Column(name="ESTIMATE_TIME",nullable = true)
+    @Column(name = "ESTIMATE_TIME", nullable = true)
     @Temporal(TemporalType.DATE)
     private Date estimateTime;
+
+    @Basic
+    @Column(name = "LAST_INTERATION", nullable = true)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastInteration;
     
+    @ManyToOne
+    @JoinColumn(name = "USER_LAST_INTERATION_ID", nullable = true)
+    private User userLastInteration;
+
     @Transient
     private String userName;
     @Transient
@@ -82,8 +87,8 @@ public class Ticket {
     @Transient
     private String categoryName;
     @Transient
-    private String priorityName; 
-    
+    private String priorityName;
+
     public Client getClient() {
         return client;
     }
@@ -99,7 +104,7 @@ public class Ticket {
     public void setCategory(Category category) {
         this.category = category;
     }
-    
+
     public Long getId() {
         return id;
     }
@@ -127,6 +132,7 @@ public class Ticket {
     public String getTitle() {
         return title;
     }
+
     public String getStepsTicket() {
         return stepsTicket;
     }
@@ -134,6 +140,7 @@ public class Ticket {
     public void setStepsTicket(String stepsTicket) {
         this.stepsTicket = stepsTicket;
     }
+
     public User getResponsible() {
         return responsible;
     }
@@ -232,5 +239,21 @@ public class Ticket {
 
     public void setPriorityName(String priorityName) {
         this.priorityName = priorityName;
+    }
+
+    public Date getLastInteration() {
+        return lastInteration;
+    }
+
+    public void setLastInteration(Date lastInteration) {
+        this.lastInteration = lastInteration;
+    }
+
+    public User getUserLastInteration() {
+        return userLastInteration;
+    }
+
+    public void setUserLastInteration(User userLastInteration) {
+        this.userLastInteration = userLastInteration;
     }
 }

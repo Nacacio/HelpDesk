@@ -29,7 +29,8 @@ Ext.define('Helpdesk.view.user.UserForm', {
                 {
                     xtype: 'hiddenfield',
                     fieldLabel: translations.ID,
-                    name: 'id'
+                    name: 'id',
+                    id: 'hiddenid'
                 },
                 {
                     xtype: 'hiddenfield',
@@ -97,16 +98,25 @@ Ext.define('Helpdesk.view.user.UserForm', {
                 },
                 {                    
                     xtype: 'checkbox',
-                    fieldLabel: translations.ACTIVE,
+                    fieldLabel: translations.ACTIVE,                    
                     beforeLabelTextTpl: '',
                     id: 'checkState'
                 },
                 {
                     xtype: 'filefield',
+                    id: 'imgprofile',
                     fieldLabel: translations.PICTURE,
+                    emptyText: translations.SELECT_A_PROFILE_PICTURE,
                     name: 'picture',
+                    buttonText: translations.BROWSE,
                     allowBlank: true,
-                    beforeLabelTextTpl: ''
+                    beforeLabelTextTpl: '',
+                    listeners: {
+                        change: function(view, value, eOpts) {
+                            var parent = this.up('form');
+                            parent.onFileChange(view, value, eOpts);
+                        }
+                    }
                 }
             ]
         },
@@ -117,12 +127,24 @@ Ext.define('Helpdesk.view.user.UserForm', {
             items: [
                 {
                     xtype: 'image', // #2
-                    height: 180,
                     width: 150,
+                    height: 200,
                     src: ''         // #3
                 }
             ]
         }
-    ]
+    ],
+    onFileChange: function(view, value, eOpts) {
+        var fileNameIndex = value.lastIndexOf("/") + 1;
+        if (fileNameIndex === 0) {
+            fileNameIndex = value.lastIndexOf("\\") + 1;
+        }
+        var filename = value.substr(fileNameIndex);
+
+        var IsValid = this.fileValidation(view, filename);
+        if (!IsValid) {
+            return;
+        }
+    }
 
 });

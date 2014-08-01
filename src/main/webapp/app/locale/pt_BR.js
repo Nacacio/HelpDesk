@@ -26,6 +26,7 @@ translations = {
     BAD_CREDENTIALS: 'Usuário e/ou Senha inválidos',
     BY: 'Por',
     BUG: 'Bug',
+    BROWSE: 'Procurar..',
     //############################################## [ C ] ##############################################//
 
     CANCEL: 'Cancelar',
@@ -94,8 +95,8 @@ translations = {
     FORMAT_DATE: 'pt-BR',
     FORMAT_DATE_TIME: 'd/m/Y H:i',    
     FORMAT_JUST_DATE: 'd/m/Y',
-    FORMAT_EN: 'Y/m/d',
-    FOR:'para',
+    FORMAT_EN: 'Y/m/d',  
+    FOR: 'para',
     //############################################## [ G ] ##############################################//
 
     GROUP: 'Grupo',
@@ -133,6 +134,7 @@ translations = {
     LATE: 'Atrasados',
     LOW_PRIORITY: 'Prioridade Baixa',
     LOADING: 'Carregando..',
+    LAST_INTERATION: 'Última Interação',
     //############################################## [ M ] ##############################################//
 
     MY_PROFILE: 'Meu perfil',
@@ -239,7 +241,9 @@ translations = {
     SEE: 'Ver',
     SELECT_A_CLIENT: 'Selecione um cliente',
     SELECT_A_USER: 'Selecione um usuário',
+    SELECT_A_PROFILE_PICTURE: 'Selecione uma foto de perfil',
     SHOW_ALL: '(Mostrar todas)',
+    SITUATION: 'Situação',
     //############################################## [ T ] ##############################################//
 
     TICKETS: 'Tickets',

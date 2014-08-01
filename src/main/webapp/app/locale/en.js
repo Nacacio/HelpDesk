@@ -26,6 +26,7 @@ translations = {
     BAD_CREDENTIALS: 'Invalidated User and/or Password',
     BY: 'By',
     BUG: 'Bug',
+    BROWSE: 'Browse..',
     //############################################## [ C ] ##############################################//
 
     CANCEL: 'Cancel',
@@ -94,8 +95,8 @@ translations = {
     FORMAT_DATE: 'en',
     FORMAT_DATE_TIME: 'Y/m/d H:i',
     FORMAT_JUST_DATE: 'Y/m/d',
-    FORMAT_EN: 'Y/m/d',
-    FOR:'for',
+    FORMAT_EN: 'Y/m/d',    
+    FOR: 'for',
     //############################################## [ G ] ##############################################//
 
     GROUP: 'Grou´p',
@@ -133,6 +134,7 @@ translations = {
     LATE: 'Late',
     LOW_PRIORITY: 'Low priority',
     LOADING: 'Loading..',
+    LAST_INTERATION: 'Last Interation',
     //############################################## [ M ] ##############################################//
 
     MY_PROFILE: 'My profile',
@@ -239,7 +241,9 @@ translations = {
     SEE: 'See',
     SELECT_A_CLIENT: 'Select a client',
     SELECT_A_USER: 'Select a user',
+    SELECT_A_PROFILE_PICTURE: 'Select a profile picture',
     SHOW_ALL: '(Show all)',
+    SITUATION: 'Situation',
     //############################################## [ T ] ##############################################//
 
     TICKETS: 'Tickets',
