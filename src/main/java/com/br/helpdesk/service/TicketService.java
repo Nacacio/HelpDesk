@@ -91,6 +91,12 @@ public class TicketService {
         resultFinal = orderByWaitingAndLastInteration(resultFinal, user);
         return resultFinal;
     }
+    
+    public List<Ticket> findByIsOpenAndResponsibleNotNullWithPaging(Boolean isOpen, Pageable pageable, User user) {
+        List<Ticket> resultFinal = IteratorUtils.toList(repository.findByIsOpenAndResponsibleNotNull(isOpen, pageable).iterator());
+        resultFinal = orderByWaitingAndLastInteration(resultFinal, user);
+        return resultFinal;
+    }
 
     public List<Ticket> findByIsOpenAndUser(Boolean isOpen, User user) {
         List<Ticket> resultFinal = IteratorUtils.toList(repository.findByIsOpenAndUser(isOpen, user).iterator());
@@ -180,6 +186,10 @@ public class TicketService {
 
     public List<Ticket> findBetweenEndDateAndUser(Date firstDate, Date lastDate, long userId) {
         return IteratorUtils.toList(repository.findBetweenEndDateAndUser(firstDate, lastDate, userId).iterator());
+    }
+    
+    public List<Ticket> findByIsOpenAndResponsibleNotNull(Boolean isOpen) {
+        return IteratorUtils.toList(repository.findByIsOpenAndResponsibleNotNull(isOpen).iterator());
     }
 
     public List<Ticket> orderByWaitingAndLastInteration(List<Ticket> list, User user) {

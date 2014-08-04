@@ -165,10 +165,11 @@ Ext.define('Helpdesk.controller.Dashboard', {
         store.load({
             callback: function() {
                 for (var i = 0; i < store.getCount(); i++) {  
-                    if (store.data.items[i].data.responsible === null && store.data.items[i].data.isOpen) {
+                    var ticket = store.data.items[i].data;
+                    if (ticket.responsible === null && ticket.isOpen) {
                         countResp++;
                     }
-                    if(store.data.items[i].data.isOpen){                       
+                    if(ticket.isOpen && ticket.responsible !== null){                       
                         countOnGoing++;                                                                   
                     }
                 }                

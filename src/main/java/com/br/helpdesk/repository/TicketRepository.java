@@ -34,6 +34,10 @@ public interface TicketRepository extends CrudRepository<Ticket, Long> {
     List<Ticket> findByResponsibleAndIsOpen(User user, Boolean isOpen);
 
     List<Ticket> findByResponsibleAndIsOpen(User user, Boolean isOpen, Pageable pageable);
+    
+    List<Ticket> findByIsOpenAndResponsibleNotNull(Boolean isOpen, Pageable pageable);
+    
+    List<Ticket> findByIsOpenAndResponsibleNotNull(Boolean isOpen);
 
     Page<Ticket> findAll(Pageable pageable);
 
@@ -153,4 +157,5 @@ public interface TicketRepository extends CrudRepository<Ticket, Long> {
     )
     public List<Ticket> findBetweenEndDateAndUser(@Param("firstDate") Date firstDate, @Param("lastDate") Date lastDate, @Param("userId") long userId);
 
+    
 }

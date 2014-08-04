@@ -148,7 +148,7 @@ public class TicketController {
         User user = this.userService.findByUserName(username);
 
         if (user.getUserGroup().getId() == Consts.ADMIN_GROUP_ID) {//SUPERUSER
-            return ticketService.findByIsOpen(true);
+            return ticketService.findByIsOpenAndResponsibleNotNull(true);
         } else {
             return ticketService.findByIsOpenAndUser(true, user);
         }
@@ -161,7 +161,7 @@ public class TicketController {
         PageRequest pageRequest = getPageRequest(limit, start);
 
         if (user.getUserGroup().getId() == Consts.ADMIN_GROUP_ID) {//SUPERUSER
-            return ticketService.findByIsOpenWithPaging(true, pageRequest, user);
+            return ticketService.findByIsOpenAndResponsibleNotNullWithPaging(true, pageRequest, user);
         } else {
             return ticketService.findByIsOpenAndUser(true, user);
         }
@@ -226,7 +226,7 @@ public class TicketController {
         int todos, abertos, fechados, withoutresponsible, mytickets;
         if (user.getUserGroup().getId() == Consts.ADMIN_GROUP_ID) {//SUPERUSER
             todos = ticketService.findAll().size();
-            abertos = ticketService.findByIsOpen(true).size();
+            abertos = ticketService.findByIsOpenAndResponsibleNotNull(true).size();
             fechados = ticketService.findByIsOpen(false).size();
             mytickets = ticketService.findByResponsible(user).size();
             withoutresponsible = ticketService.findByResponsible(null).size();
